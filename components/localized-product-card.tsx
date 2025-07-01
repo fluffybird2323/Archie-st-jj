@@ -3,10 +3,9 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
 import type { Dictionary } from "@/lib/i18n/dictionaries"
 import type { Locale } from "@/lib/i18n/config"
-import type { Product } from "@/lib/products-dynamic" // Changed import for Product type
+import type { Product } from "@/lib/products-dynamic"
 import { formatPrice } from "@/lib/i18n/utils"
 
 interface LocalizedProductCardProps {
@@ -20,34 +19,32 @@ export function LocalizedProductCard({ product, dictionary, locale }: LocalizedP
 
   const productUrl = locale === "en" ? `/product/${product.slug}` : `/${locale}/product/${product.slug}`
 
+  // Get product name with fallback
+  const productName = dictionary.productNames[product.name as keyof typeof dictionary.productNames] || product.name
+
   return (
-    <div className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 animate-fade-in">
-      <Link href={productUrl}>
+    <Link href={productUrl} className="block group">
+      <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 animate-fade-in cursor-pointer">
         <div
-          className="relative aspect-square overflow-hidden cursor-pointer"
+          className="relative aspect-[3/4] overflow-hidden"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
           <Image
             src={isHovered ? product.images[1] : product.images[0]}
-            alt={dictionary.productNames[product.name]}
+            alt={productName}
             fill
             className="object-cover transition-all duration-500 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
           />
         </div>
-      </Link>
-      <div className="p-6">
-        <Link href={productUrl}>
-          <h3 className="text-xl font-bold text-black mb-2 hover:text-gray-600 transition-colors">
-            {dictionary.productNames[product.name]}
+        <div className="p-6">
+          <h3 className="text-xl font-bold text-black mb-2 group-hover:text-gray-600 transition-colors">
+            {productName}
           </h3>
-        </Link>
-        <p className="text-2xl font-black text-black mb-6">{formatPrice(product.price, locale)}</p>
-        <Link href={productUrl}>
-          <Button className="nike-button w-full">{dictionary.products.viewProduct}</Button>
-        </Link>
+          <p className="text-2xl font-black text-black">{formatPrice(product.price, locale)}</p>
+        </div>
       </div>
-    </div>
+    </Link>
   )
 }

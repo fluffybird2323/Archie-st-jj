@@ -2,9 +2,12 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
-import { Logo } from "@/components/logo"
+// import { Logo } from "@/components/logo"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { SplashScreen } from "@/components/splash-screen"
+import { CartProvider } from "@/lib/cart-context"
+import { CartIcon } from "@/components/cart-icon"
+import { CartWrapper } from "@/components/cart-wrapper"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -34,161 +37,170 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SplashScreen />
+        <CartProvider>
+          <SplashScreen />
 
-        {/* Header */}
-        <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <a href="/" className="hover:opacity-80 transition-opacity">
-              <Logo />
-            </a>
-
-            <div className="flex items-center gap-6">
-              <LanguageSwitcher />
-
-              {/* Customer Support Link */}
-              <a
-                href="mailto:support@archie.com"
-                className="text-sm text-gray-600 hover:text-black transition-colors"
-                title="Customer Support"
-              >
-                Support
+          {/* Header */}
+          <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+            <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+              <a href="/" className="hover:opacity-80 transition-opacity">
+                {/* <Logo /> */}
+                <span className="font-black text-2xl tracking-tight">ARCHIE</span>
               </a>
-            </div>
-          </div>
-        </header>
 
-        {children}
+              <div className="flex items-center gap-6">
+                <LanguageSwitcher />
+                
+                {/* Cart Icon */}
+                <CartIcon />
 
-        {/* Enhanced Footer */}
-        <footer className="w-full py-16 px-4 bg-gray-50 border-t border-gray-200">
-          <div className="container mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-              <div>
-                <h4 className="font-bold text-black mb-4">PRODUCTS</h4>
-                <ul className="space-y-2 text-gray-600">
-                  <li>
-                    <a href="#" className="hover:text-black transition-colors">
-                      Hoodies
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-black transition-colors">
-                      T-Shirts
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-black transition-colors">
-                      Joggers
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-black transition-colors">
-                      Accessories
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-bold text-black mb-4">SUPPORT</h4>
-                <ul className="space-y-2 text-gray-600">
-                  <li>
-                    <a href="#" className="hover:text-black transition-colors">
-                      Size Guide
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-black transition-colors">
-                      Shipping Info
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-black transition-colors">
-                      Returns & Exchanges
-                    </a>
-                  </li>
-                  <li>
-                    <a href="mailto:support@archie.com" className="hover:text-black transition-colors">
-                      Contact Us
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-bold text-black mb-4">COMPANY</h4>
-                <ul className="space-y-2 text-gray-600">
-                  <li>
-                    <a href="#" className="hover:text-black transition-colors">
-                      About ARCHIE
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-black transition-colors">
-                      Sustainability
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-black transition-colors">
-                      Privacy Policy
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-black transition-colors">
-                      Terms of Service
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-bold text-black mb-4">FOLLOW US</h4>
-                <ul className="space-y-2 text-gray-600">
-                  <li>
-                    <a href="#" className="hover:text-black transition-colors">
-                      Instagram
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-black transition-colors">
-                      Twitter
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-black transition-colors">
-                      TikTok
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-black transition-colors">
-                      YouTube
-                    </a>
-                  </li>
-                </ul>
+                {/* Customer Support Link */}
+                <a
+                  href="mailto:support@archie.com"
+                  className="text-sm text-gray-600 hover:text-black transition-colors"
+                  title="Customer Support"
+                >
+                  Support
+                </a>
               </div>
             </div>
+          </header>
 
-            {/* Newsletter Signup */}
-            <div className="border-t border-gray-200 pt-8 mb-8">
-              <div className="max-w-md mx-auto text-center">
-                <h4 className="font-bold text-black mb-2">Stay Updated</h4>
-                <p className="text-gray-600 text-sm mb-4">Get the latest drops and exclusive offers</p>
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-                  />
-                  <button className="px-4 py-2 bg-black text-white rounded-md text-sm hover:bg-gray-800 transition-colors">
-                    Subscribe
-                  </button>
+          {children}
+
+          {/* Cart Component */}
+          <CartWrapper />
+
+          {/* Enhanced Footer */}
+          <footer className="w-full py-16 px-4 bg-gray-50 border-t border-gray-200">
+            <div className="container mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                  <h4 className="font-bold text-black mb-4">PRODUCTS</h4>
+                  <ul className="space-y-2 text-gray-600">
+                    <li>
+                      <a href="#" className="hover:text-black transition-colors">
+                        Hoodies
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="hover:text-black transition-colors">
+                        T-Shirts
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="hover:text-black transition-colors">
+                        Joggers
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="hover:text-black transition-colors">
+                        Accessories
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-bold text-black mb-4">SUPPORT</h4>
+                  <ul className="space-y-2 text-gray-600">
+                    <li>
+                      <a href="#" className="hover:text-black transition-colors">
+                        Size Guide
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="hover:text-black transition-colors">
+                        Shipping Info
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="hover:text-black transition-colors">
+                        Returns & Exchanges
+                      </a>
+                    </li>
+                    <li>
+                      <a href="mailto:support@archie.com" className="hover:text-black transition-colors">
+                        Contact Us
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-bold text-black mb-4">COMPANY</h4>
+                  <ul className="space-y-2 text-gray-600">
+                    <li>
+                      <a href="#" className="hover:text-black transition-colors">
+                        About ARCHIE
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="hover:text-black transition-colors">
+                        Sustainability
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="hover:text-black transition-colors">
+                        Privacy Policy
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="hover:text-black transition-colors">
+                        Terms of Service
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-bold text-black mb-4">FOLLOW US</h4>
+                  <ul className="space-y-2 text-gray-600">
+                    <li>
+                      <a href="#" className="hover:text-black transition-colors">
+                        Instagram
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="hover:text-black transition-colors">
+                        Twitter
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="hover:text-black transition-colors">
+                        TikTok
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="hover:text-black transition-colors">
+                        YouTube
+                      </a>
+                    </li>
+                  </ul>
                 </div>
               </div>
-            </div>
 
-            <div className="text-center text-gray-500 text-sm">
-              <p>&copy; 2024 ARCHIE. All rights reserved. | Free worldwide shipping on all orders</p>
+              {/* Newsletter Signup */}
+              <div className="border-t border-gray-200 pt-8 mb-8">
+                <div className="max-w-md mx-auto text-center">
+                  <h4 className="font-bold text-black mb-2">Stay Updated</h4>
+                  <p className="text-gray-600 text-sm mb-4">Get the latest drops and exclusive offers</p>
+                  <div className="flex gap-2">
+                    <input
+                      type="email"
+                      placeholder="Enter your email"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                    />
+                    <button className="px-4 py-2 bg-black text-white rounded-md text-sm hover:bg-gray-800 transition-colors">
+                      Subscribe
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-center text-gray-500 text-sm">
+                <p>&copy; 2024 ARCHIE. All rights reserved. | Free worldwide shipping on all orders</p>
+              </div>
             </div>
-          </div>
-        </footer>
+          </footer>
+        </CartProvider>
       </body>
     </html>
   )

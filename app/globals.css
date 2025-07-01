@@ -25,6 +25,16 @@ body {
   transition: all 0.2s ease-in-out;
 }
 
+/* Hide scrollbar for horizontal galleries */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
+}
+
 /* Nike-inspired button styles */
 .nike-button {
   @apply bg-black text-white px-8 py-3 rounded-full font-medium hover:bg-gray-800 transition-all duration-200 transform hover:scale-105;

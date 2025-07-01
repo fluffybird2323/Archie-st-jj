@@ -8,13 +8,14 @@ export function getDictionary(locale: Locale): Dictionary {
 export function formatPrice(price: number, locale: Locale): string {
   const currency = currencies[locale] || currencies[defaultLocale]
   const rate = exchangeRates[currency.code] || 1
-  const convertedPrice = price * rate
+  // Use proper decimal arithmetic to avoid floating point precision issues
+  const convertedPrice = Math.round(price * rate * 100) / 100
 
   // Format based on locale for display purposes only
   switch (locale) {
     case "ja":
       return `${currency.symbol}${Math.round(convertedPrice).toLocaleString("ja-JP")}`
-    case "zh":
+    case "zh-CN":
       return `${currency.symbol}${convertedPrice.toFixed(2)}`
     case "de":
     case "fr":

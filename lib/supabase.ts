@@ -33,14 +33,6 @@ export interface DatabaseProduct {
   updated_at: string
 }
 
-export interface ProductTranslation {
-  id: string
-  product_id: string
-  locale: string
-  name: string
-  description: string
-}
-
 export function isSupabaseConfigured(): boolean {
   return !!supabase
 }
@@ -59,7 +51,7 @@ export async function getProducts() {
       return []
     }
 
-    return data as DatabaseProduct[]
+    return (data || []) as unknown as DatabaseProduct[]
   } catch (error) {
     console.error("Unexpected error fetching products:", error)
     return []
@@ -80,35 +72,9 @@ export async function getProductBySlug(slug: string) {
       return null
     }
 
-    return data as DatabaseProduct
+    return data as unknown as DatabaseProduct | null
   } catch (error) {
     console.error("Unexpected error fetching product:", error)
-    return null
-  }
-}
-
-export async function getProductTranslations(productId: string, locale: string) {
-  try {
-    if (!supabase) {
-      console.warn("Supabase not configured, returning null for translations in getProductTranslations.")
-      return null
-    }
-
-    const { data, error } = await supabase
-      .from("product_translations")
-      .select("*")
-      .eq("product_id", productId)
-      .eq("locale", locale)
-      .single()
-
-    if (error) {
-      console.error("Error fetching translations:", error)
-      return null
-    }
-
-    return data as ProductTranslation
-  } catch (error) {
-    console.error("Unexpected error fetching translations:", error)
     return null
   }
 }
@@ -126,7 +92,7 @@ export async function upsertProduct(product: Partial<DatabaseProduct>) {
       throw error
     }
 
-    return data as DatabaseProduct
+    return data as unknown as DatabaseProduct
   } catch (error) {
     console.error("Unexpected error upserting product:", error)
     throw error
@@ -153,7 +119,7 @@ export async function createProduct(productData: Omit<DatabaseProduct, "id" | "c
       throw error
     }
 
-    return data as DatabaseProduct
+    return data as unknown as DatabaseProduct
   } catch (error) {
     console.error("Unexpected error creating product:", error)
     throw error
@@ -178,7 +144,7 @@ export async function updateProduct(id: string, productData: Partial<Omit<Databa
       throw error
     }
 
-    return data as DatabaseProduct
+    return data as unknown as DatabaseProduct
   } catch (error) {
     console.error("Unexpected error updating product:", error)
     throw error

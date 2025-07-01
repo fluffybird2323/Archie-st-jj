@@ -5,15 +5,16 @@ import { getProducts } from "@/lib/products-dynamic" // Changed import to dynami
 import type { Locale } from "@/lib/i18n/config"
 
 interface LocalePageProps {
-  params: {
+  params: Promise<{
     locale: Locale
-  }
+  }>
 }
 
 export default async function LocalePage({ params }: LocalePageProps) {
   // Made function async
-  const dictionary = getDictionary(params.locale)
-  const products = await getProducts(params.locale) // Fetch products dynamically
+  const { locale } = await params
+  const dictionary = getDictionary(locale)
+  const products = await getProducts(locale) // Fetch products dynamically
 
   return (
     <main className="min-h-screen bg-white">
@@ -36,7 +37,7 @@ export default async function LocalePage({ params }: LocalePageProps) {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {products.map((product) => (
-              <LocalizedProductCard key={product.id} product={product} dictionary={dictionary} locale={params.locale} />
+              <LocalizedProductCard key={product.id} product={product} dictionary={dictionary} locale={locale} />
             ))}
           </div>
         </div>

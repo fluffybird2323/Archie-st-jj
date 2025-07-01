@@ -12,15 +12,20 @@ export function SplashScreen() {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval)
-          setTimeout(() => setIsComplete(true), 300)
           return 100
         }
         return prev + 2
       })
     }, 20)
-
     return () => clearInterval(interval)
   }, [])
+
+  useEffect(() => {
+    if (progress >= 100 && !isComplete) {
+      const timeout = setTimeout(() => setIsComplete(true), 300)
+      return () => clearTimeout(timeout)
+    }
+  }, [progress, isComplete])
 
   return (
     <div

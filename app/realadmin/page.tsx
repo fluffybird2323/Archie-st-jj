@@ -4,10 +4,6 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Trash2, Edit, Plus, Users, Package, BarChart3 } from "lucide-react"
 import { getProducts, type Product } from "@/lib/products-dynamic"
@@ -197,40 +193,51 @@ export default function RealAdminPage() {
           {/* Main Content */}
           <div className="lg:col-span-3">
             {showForm && (
-              <Card className="mb-8">
-                <CardHeader>
-                  <CardTitle>{editingProduct ? "Edit Product" : "Add New Product"}</CardTitle>
-                  <CardDescription>
+              <div className="bg-white rounded-lg shadow-sm mb-8">
+                <div className="p-6 border-b">
+                  <h3 className="text-lg font-semibold">{editingProduct ? "Edit Product" : "Add New Product"}</h3>
+                  <p className="text-sm text-gray-600">
                     {editingProduct ? "Update product information" : "Create a new product for your store"}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
+                  </p>
+                </div>
+                <div className="p-6">
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="name">Product Name</Label>
-                        <Input
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                          Product Name
+                        </label>
+                        <input
                           id="name"
+                          type="text"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                           value={formData.name}
                           onChange={(e) => handleNameChange(e.target.value)}
                           required
                         />
                       </div>
                       <div>
-                        <Label htmlFor="slug">Slug</Label>
-                        <Input
+                        <label htmlFor="slug" className="block text-sm font-medium text-gray-700 mb-1">
+                          Slug
+                        </label>
+                        <input
                           id="slug"
+                          type="text"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                           value={formData.slug}
                           onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value }))}
                           required
                         />
                       </div>
                       <div>
-                        <Label htmlFor="price">Price ($)</Label>
-                        <Input
+                        <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
+                          Price ($)
+                        </label>
+                        <input
                           id="price"
                           type="number"
                           step="0.01"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                           value={formData.price}
                           onChange={(e) =>
                             setFormData((prev) => ({ ...prev, price: Number.parseFloat(e.target.value) }))
@@ -239,9 +246,13 @@ export default function RealAdminPage() {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="category">Category</Label>
-                        <Input
+                        <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
+                          Category
+                        </label>
+                        <input
                           id="category"
+                          type="text"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                           value={formData.category}
                           onChange={(e) => setFormData((prev) => ({ ...prev, category: e.target.value }))}
                           required
@@ -249,9 +260,13 @@ export default function RealAdminPage() {
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="description">Description</Label>
-                      <Textarea
+                      <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                        Description
+                      </label>
+                      <textarea
                         id="description"
+                        rows={3}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                         value={formData.description}
                         onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
                         required
@@ -259,9 +274,13 @@ export default function RealAdminPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="sizes">Sizes (comma-separated)</Label>
-                        <Input
+                        <label htmlFor="sizes" className="block text-sm font-medium text-gray-700 mb-1">
+                          Sizes (comma-separated)
+                        </label>
+                        <input
                           id="sizes"
+                          type="text"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                           value={formData.sizes.join(", ")}
                           onChange={(e) =>
                             setFormData((prev) => ({
@@ -276,9 +295,13 @@ export default function RealAdminPage() {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="colors">Colors (comma-separated)</Label>
-                        <Input
+                        <label htmlFor="colors" className="block text-sm font-medium text-gray-700 mb-1">
+                          Colors (comma-separated)
+                        </label>
+                        <input
                           id="colors"
+                          type="text"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                           value={formData.colors.join(", ")}
                           onChange={(e) =>
                             setFormData((prev) => ({
@@ -294,9 +317,13 @@ export default function RealAdminPage() {
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="images">Image URLs (comma-separated)</Label>
-                      <Textarea
+                      <label htmlFor="images" className="block text-sm font-medium text-gray-700 mb-1">
+                        Image URLs (comma-separated)
+                      </label>
+                      <textarea
                         id="images"
+                        rows={3}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                         value={formData.images.join(", ")}
                         onChange={(e) =>
                           setFormData((prev) => ({
@@ -317,17 +344,17 @@ export default function RealAdminPage() {
                       </Button>
                     </div>
                   </form>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
 
             {/* Products List */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Products</CardTitle>
-                <CardDescription>Manage your product catalog</CardDescription>
-              </CardHeader>
-              <CardContent>
+            <div className="bg-white rounded-lg shadow-sm">
+              <div className="p-6 border-b">
+                <h3 className="text-lg font-semibold">Products</h3>
+                <p className="text-sm text-gray-600">Manage your product catalog</p>
+              </div>
+              <div className="p-6">
                 {loading ? (
                   <div className="text-center py-8">Loading products...</div>
                 ) : products.length === 0 ? (
@@ -363,8 +390,8 @@ export default function RealAdminPage() {
                     ))}
                   </div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         </div>
       </div>

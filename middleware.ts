@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
-
-const locales = ["en", "zh", "ja", "de", "fr", "es", "it"]
-const defaultLocale = "en"
+import { locales, defaultLocale } from "@/lib/i18n/config"
 
 // Country to locale mapping
 const countryToLocale: Record<string, string> = {
   JP: "ja", // Japan -> Japanese
-  CN: "zh", // China -> Chinese
+  CN: "zh-CN", // China -> Chinese
   DE: "de", // Germany -> German
   FR: "fr", // France -> French
   ES: "es", // Spain -> Spanish
@@ -17,7 +15,7 @@ const countryToLocale: Record<string, string> = {
 function getLocaleFromLocation(request: NextRequest): string {
   // Get country from Vercel's geo headers
   const country =
-    request.geo?.country || request.headers.get("cf-ipcountry") || request.headers.get("x-vercel-ip-country")
+    (request as any).geo?.country || request.headers.get("cf-ipcountry") || request.headers.get("x-vercel-ip-country")
 
   if (country && countryToLocale[country]) {
     return countryToLocale[country]
@@ -27,7 +25,10 @@ function getLocaleFromLocation(request: NextRequest): string {
   const acceptLanguage = request.headers.get("accept-language")
   if (acceptLanguage) {
     const preferredLocale = acceptLanguage.split(",")[0].split("-")[0].toLowerCase()
-    if (locales.includes(preferredLocale)) {
+    if (preferredLocale === "zh") {
+      return "zh-CN" // Map zh to zh-CN
+    }
+    if (locales.includes(preferredLocale as any)) {
       return preferredLocale
     }
   }
@@ -59,12 +60,12 @@ export function middleware(request: NextRequest) {
 
     let locale = defaultLocale
 
-    if (localePreference && locales.includes(localePreference)) {
+    if (localePreference && locales.includes(localePreference as any)) {
       // Use saved preference
-      locale = localePreference
+      locale = localePreference as any
     } else {
       // Auto-detect based on location
-      locale = getLocaleFromLocation(request)
+      locale = getLocaleFromLocation(request) as any
     }
 
     // Create response with redirect

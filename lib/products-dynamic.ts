@@ -1,7 +1,6 @@
 import {
   getProducts as getDbProducts,
   getProductBySlug as getDbProductBySlug,
-  getProductTranslations,
 } from "./supabase"
 import type { Locale } from "./i18n/config"
 
@@ -29,31 +28,9 @@ export async function getProducts(locale: Locale = "en"): Promise<Product[]> {
       return []
     }
 
-    if (locale === "en") {
-      return products
-    }
-
-    // Fetch translations for all products if not English
-    const productsWithTranslations = await Promise.all(
-      products.map(async (product) => {
-        try {
-          const translation = await getProductTranslations(product.id, locale)
-          if (translation) {
-            return {
-              ...product,
-              translatedName: translation.name,
-              translatedDescription: translation.description,
-            }
-          }
-          return product
-        } catch (error) {
-          console.error(`Error fetching translation for product ${product.id}:`, error)
-          return product
-        }
-      }),
-    )
-
-    return productsWithTranslations
+    // For now, return products without translation to fix UI
+    // Translation will be handled by static dictionaries in components
+    return products
   } catch (error) {
     console.error("Error in getProducts:", error)
     return []
@@ -75,22 +52,8 @@ export async function getProductBySlug(slug: string, locale: Locale = "en"): Pro
 
     console.log(`Found product:`, product)
 
-    // Get translations if not English
-    if (locale !== "en") {
-      try {
-        const translation = await getProductTranslations(product.id, locale)
-        if (translation) {
-          return {
-            ...product,
-            translatedName: translation.name,
-            translatedDescription: translation.description,
-          }
-        }
-      } catch (error) {
-        console.error(`Error fetching translation for product ${product.id}:`, error)
-      }
-    }
-
+    // For now, return product without translation to fix UI
+    // Translation will be handled by static dictionaries in components
     return product
   } catch (error) {
     console.error("Error in getProductBySlug:", error)
