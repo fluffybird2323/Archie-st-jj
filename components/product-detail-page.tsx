@@ -48,6 +48,17 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50
 
+  // Use translated content if available, otherwise fall back to static dictionary, then original
+  const productName =
+    product.translatedName ||
+    dictionary.productNames[product.name as keyof typeof dictionary.productNames] ||
+    product.name
+
+  const productDescription =
+    product.translatedDescription ||
+    dictionary.productDescriptions[product.description as keyof typeof dictionary.productDescriptions] ||
+    product.description
+
   // Handle color selection and image switching
   const handleColorSelect = (colorOption: ColorOption) => {
     const colorName = getColorName(colorOption)
@@ -67,12 +78,9 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
       return
     }
 
-    const productDisplayName =
-      dictionary.productNames[product.name as keyof typeof dictionary.productNames] || product.name
-
     addItem({
       productId: product.id,
-      name: productDisplayName,
+      name: productName,
       price: product.price,
       image: product.images[selectedImage] || product.images[0], // Use current selected image
       size: selectedSize,
@@ -106,10 +114,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
         throw new Error("Payment system is not configured")
       }
 
-      const productDisplayName =
-        dictionary.productNames[product.name as keyof typeof dictionary.productNames] || product.name
-
-      const productTitle = `${productDisplayName} - Size: ${selectedSize} - Color: ${selectedColor}`
+      const productTitle = `${productName} - Size: ${selectedSize} - Color: ${selectedColor}`
       const usdPrice = getUSDPrice(product.price)
 
       const response = await fetch("/api/create-checkout-session", {
@@ -204,7 +209,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
           className="inline-flex items-center gap-2 text-black hover:text-gray-600 mb-6 transition-colors text-sm"
         >
           <ChevronLeft className="w-4 h-4" />
-          Back to Products
+          {dictionary.nav.back || "Back"}
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -221,7 +226,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
               >
                 <Image
                   src={product.images[selectedImage] || "/placeholder.svg"}
-                  alt={dictionary.productNames[product.name as keyof typeof dictionary.productNames] || product.name}
+                  alt={productName}
                   width={500}
                   height={500}
                   className="w-full h-full object-cover transition-opacity duration-300"
@@ -287,14 +292,9 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
           <div className="space-y-4 max-w-md">
             {/* Product Title & Price */}
             <div className="space-y-2">
-              <h1 className="text-2xl font-black text-black">
-                {dictionary.productNames[product.name as keyof typeof dictionary.productNames] || product.name}
-              </h1>
+              <h1 className="text-2xl font-black text-black">{productName}</h1>
               <p className="text-2xl font-black text-black">{formatPrice(product.price, locale)}</p>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                {dictionary.productDescriptions[product.description as keyof typeof dictionary.productDescriptions] ||
-                  product.description}
-              </p>
+              <p className="text-gray-600 text-sm leading-relaxed">{productDescription}</p>
             </div>
 
             {/* Size Selection - Compact Grid */}

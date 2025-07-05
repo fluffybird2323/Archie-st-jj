@@ -1,5 +1,5 @@
+import { LocalizedVideoBanner } from "@/components/localized-video-banner"
 import { LocalizedProductCard } from "@/components/localized-product-card"
-import { LocalizedAutoSliderBanner } from "@/components/localized-auto-slider-banner"
 import { getDictionary } from "@/lib/i18n/utils"
 import { getAllProducts } from "@/lib/products-dynamic"
 
@@ -11,7 +11,7 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-white">
-      <LocalizedAutoSliderBanner dictionary={dictionary} />
+      <LocalizedVideoBanner dictionary={dictionary} />
 
       {/* Featured Section */}
       <section className="py-24 bg-white">

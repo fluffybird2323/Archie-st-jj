@@ -1,4 +1,5 @@
 import { getProducts as getDbProducts, getProductBySlug as getDbProductBySlug } from "./supabase"
+import { translateProductContent } from "./i18n/enhanced-utils"
 import type { Locale } from "./i18n/config"
 
 export interface Product {
@@ -25,9 +26,30 @@ export async function getProducts(locale: Locale = "en"): Promise<Product[]> {
       return []
     }
 
-    // For now, return products without translation to fix UI
-    // Translation will be handled by static dictionaries in components
-    return products
+    // If English, return products as-is
+    if (locale === "en") {
+      return products
+    }
+
+    // Translate products using API services
+    const translatedProducts = await Promise.all(
+      products.map(async (product) => {
+        try {
+          const translated = await translateProductContent(product, locale, ["name", "description"])
+          return {
+            ...product,
+            translatedName: translated.name,
+            translatedDescription: translated.description,
+          }
+        } catch (error) {
+          console.error(`Failed to translate product ${product.id}:`, error)
+          // Return original product if translation fails
+          return product
+        }
+      }),
+    )
+
+    return translatedProducts
   } catch (error) {
     console.error("Error in getProducts:", error)
     return []
@@ -49,9 +71,24 @@ export async function getProductBySlug(slug: string, locale: Locale = "en"): Pro
 
     console.log(`Found product:`, product)
 
-    // For now, return product without translation to fix UI
-    // Translation will be handled by static dictionaries in components
-    return product
+    // If English, return product as-is
+    if (locale === "en") {
+      return product
+    }
+
+    // Translate product using API services
+    try {
+      const translated = await translateProductContent(product, locale, ["name", "description"])
+      return {
+        ...product,
+        translatedName: translated.name,
+        translatedDescription: translated.description,
+      }
+    } catch (error) {
+      console.error(`Failed to translate product ${product.id}:`, error)
+      // Return original product if translation fails
+      return product
+    }
   } catch (error) {
     console.error("Error in getProductBySlug:", error)
     return null

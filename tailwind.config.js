@@ -11,6 +11,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        inter: ["Inter", "sans-serif"],
+        outfit: ["Outfit", "sans-serif"],
+      },
       colors: {
         light: {
           50: "#FAFAFA",

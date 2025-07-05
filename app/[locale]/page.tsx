@@ -1,5 +1,5 @@
 import { LocalizedProductCard } from "@/components/localized-product-card"
-import { LocalizedAutoSliderBanner } from "@/components/localized-auto-slider-banner"
+import { LocalizedVideoBanner } from "@/components/localized-video-banner"
 import { getDictionary } from "@/lib/i18n/utils"
 import { getProducts } from "@/lib/products-dynamic" // Changed import to dynamic products
 import type { Locale } from "@/lib/i18n/config"
@@ -18,7 +18,7 @@ export default async function LocalePage({ params }: LocalePageProps) {
 
   return (
     <main className="min-h-screen bg-white">
-      <LocalizedAutoSliderBanner dictionary={dictionary} />
+      <LocalizedVideoBanner dictionary={dictionary} />
 
       {/* Featured Section */}
       <section className="py-24 bg-white">

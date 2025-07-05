@@ -19,8 +19,11 @@ export function LocalizedProductCard({ product, dictionary, locale }: LocalizedP
 
   const productUrl = locale === "en" ? `/product/${product.slug}` : `/${locale}/product/${product.slug}`
 
-  // Get product name with fallback
-  const productName = dictionary.productNames[product.name as keyof typeof dictionary.productNames] || product.name
+  // Use translated name if available, otherwise fall back to static dictionary, then original name
+  const productName =
+    product.translatedName ||
+    dictionary.productNames[product.name as keyof typeof dictionary.productNames] ||
+    product.name
 
   return (
     <Link href={productUrl} className="block group">
@@ -39,15 +42,10 @@ export function LocalizedProductCard({ product, dictionary, locale }: LocalizedP
           />
         </div>
         <div className="p-6">
-          <h3 className="text-xl font-bold text-black mb-2 group-hover:text-gray-600 transition-colors">
+          <h3 className="font-outfit text-xl font-bold text-black mb-2 group-hover:text-gray-600 transition-colors">
             {productName}
           </h3>
-          <p className="text-2xl font-black text-black">{formatPrice(product.price, locale)}</p>
-          {/*
-          // The product card doesn't need major changes since it doesn't interact with colors directly
-          // But if you want to show available colors, you can access them like:
-          // product.colors.map(colorObj => colorObj.name).join(", ")
-          */}
+          <p className="font-outfit text-2xl font-black text-black">{formatPrice(product.price, locale)}</p>
         </div>
       </div>
     </Link>

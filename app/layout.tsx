@@ -1,31 +1,28 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Inter, Outfit } from "next/font/google"
 import "./globals.css"
-// import { Logo } from "@/components/logo"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { SplashScreen } from "@/components/splash-screen"
 import { CartProvider } from "@/lib/cart-context"
 import { CartIcon } from "@/components/cart-icon"
 import { CartWrapper } from "@/components/cart-wrapper"
 
-const inter = Inter({ subsets: ["latin"] })
+// Load the two fonts locally; Next.js will generate and host them for us
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+})
+const outfit = Outfit({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-outfit",
+})
 
 export const metadata: Metadata = {
-  title: "ARCHIE - Premium Streetwear",
-  description: "Discover premium streetwear and hoodies at ARCHIE. Quality meets style.",
-  keywords: "streetwear, hoodies, fashion, premium clothing, ARCHIE",
-  openGraph: {
-    title: "ARCHIE - Premium Streetwear",
-    description: "Discover premium streetwear and hoodies at ARCHIE. Quality meets style.",
-    type: "website",
-    siteName: "ARCHIE",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "ARCHIE - Premium Streetwear",
-    description: "Discover premium streetwear and hoodies at ARCHIE. Quality meets style.",
-  },
+  title: "ARTIE - Premium Streetwear",
+  description: "Discover premium streetwear and hoodies at ARTIE. Quality meets style.",
     generator: 'v0.dev'
 }
 
@@ -35,8 +32,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html
+      lang="en"
+      // expose both CSS variables so Tailwind can use them
+      className={`${inter.variable} ${outfit.variable}`}
+    >
+      {/* default body text -> Inter; headings that already use font-outfit class keep working */}
+      <body className="font-sans">
         <CartProvider>
           <SplashScreen />
 
@@ -45,18 +47,18 @@ export default function RootLayout({
             <div className="container mx-auto px-4 py-4 flex items-center justify-between">
               <a href="/" className="hover:opacity-80 transition-opacity">
                 {/* <Logo /> */}
-                <span className="font-black text-2xl tracking-tight">ARCHIE</span>
+                <span className="font-outfit font-black text-2xl tracking-tight">ARTIE</span>
               </a>
 
               <div className="flex items-center gap-6">
                 <LanguageSwitcher />
-                
+
                 {/* Cart Icon */}
                 <CartIcon />
 
                 {/* Customer Support Link */}
                 <a
-                  href="mailto:support@archie.com"
+                  href="mailto:support@artie.com"
                   className="text-sm text-gray-600 hover:text-black transition-colors"
                   title="Customer Support"
                 >
@@ -76,7 +78,7 @@ export default function RootLayout({
             <div className="container mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div>
-                  <h4 className="font-bold text-black mb-4">PRODUCTS</h4>
+                  <h4 className="font-outfit font-bold text-black mb-4">PRODUCTS</h4>
                   <ul className="space-y-2 text-gray-600">
                     <li>
                       <a href="#" className="hover:text-black transition-colors">
@@ -101,7 +103,7 @@ export default function RootLayout({
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-bold text-black mb-4">SUPPORT</h4>
+                  <h4 className="font-outfit font-bold text-black mb-4">SUPPORT</h4>
                   <ul className="space-y-2 text-gray-600">
                     <li>
                       <a href="#" className="hover:text-black transition-colors">
@@ -119,18 +121,18 @@ export default function RootLayout({
                       </a>
                     </li>
                     <li>
-                      <a href="mailto:support@archie.com" className="hover:text-black transition-colors">
+                      <a href="mailto:support@artie.com" className="hover:text-black transition-colors">
                         Contact Us
                       </a>
                     </li>
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-bold text-black mb-4">COMPANY</h4>
+                  <h4 className="font-outfit font-bold text-black mb-4">COMPANY</h4>
                   <ul className="space-y-2 text-gray-600">
                     <li>
                       <a href="#" className="hover:text-black transition-colors">
-                        About ARCHIE
+                        About ARTIE
                       </a>
                     </li>
                     <li>
@@ -151,7 +153,7 @@ export default function RootLayout({
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-bold text-black mb-4">FOLLOW US</h4>
+                  <h4 className="font-outfit font-bold text-black mb-4">FOLLOW US</h4>
                   <ul className="space-y-2 text-gray-600">
                     <li>
                       <a href="#" className="hover:text-black transition-colors">
@@ -180,7 +182,7 @@ export default function RootLayout({
               {/* Newsletter Signup */}
               <div className="border-t border-gray-200 pt-8 mb-8">
                 <div className="max-w-md mx-auto text-center">
-                  <h4 className="font-bold text-black mb-2">Stay Updated</h4>
+                  <h4 className="font-outfit font-bold text-black mb-2">Stay Updated</h4>
                   <p className="text-gray-600 text-sm mb-4">Get the latest drops and exclusive offers</p>
                   <div className="flex gap-2">
                     <input
@@ -196,7 +198,7 @@ export default function RootLayout({
               </div>
 
               <div className="text-center text-gray-500 text-sm">
-                <p>&copy; 2024 ARCHIE. All rights reserved. | Free worldwide shipping on all orders</p>
+                <p>&copy; 2024 ARTIE. All rights reserved. | Free worldwide shipping on all orders</p>
               </div>
             </div>
           </footer>

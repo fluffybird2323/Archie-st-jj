@@ -52,7 +52,7 @@ export function LocalizedAutoSliderBanner({ dictionary }: LocalizedAutoSliderBan
       ))}
       <div className="absolute inset-0 bg-white bg-opacity-20 flex flex-col items-center justify-center">
         <div className="text-center max-w-4xl px-4">
-          <h1 className="text-6xl md:text-8xl font-black tracking-tight text-black mb-6 animate-fade-in">
+          <h1 className="font-outfit text-6xl md:text-8xl font-black tracking-tight text-black mb-6 animate-fade-in">
             {dictionary.hero.title}
           </h1>
           <p className="text-xl md:text-2xl text-gray-700 mb-12 font-light">{dictionary.hero.subtitle}</p>
