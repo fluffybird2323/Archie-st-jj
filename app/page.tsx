@@ -47,26 +47,6 @@ export default async function HomePage() {
       {/* Hero Video Banner */}
       <LocalizedVideoBanner dictionary={dictionary} />
 
-      {/* Professional Theme Section */}
-      <section className="py-20 bg-black text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-6xl font-black mb-8">{dictionary.sections.exploreLatest}</h2>
-          <p className="text-xl md:text-2xl font-light mb-12 max-w-3xl mx-auto">{dictionary.sections.nextEssential}</p>
-
-          {/* Professional messaging */}
-          <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
-            <div className="text-left">
-              <h3 className="text-2xl font-bold mb-4">{dictionary.hero.readyForAnything}</h3>
-              <p className="text-lg opacity-90">{dictionary.hero.subtitle}</p>
-            </div>
-            <div className="text-left">
-              <h3 className="text-2xl font-bold mb-4">{dictionary.hero.comfortAdapted}</h3>
-              <p className="text-lg opacity-90">{dictionary.hero.engineeredText}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Products Section */}
       <section id="product-section" className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
@@ -145,7 +125,7 @@ export default async function HomePage() {
               <div className="flex">
                 <input
                   type="email"
-                  placeholder={dictionary.footer.emailPlaceholder}
+                  placeholder={dictionary.footer.enterEmail}
                   className="flex-1 px-3 py-2 bg-gray-800 text-white rounded-l-md focus:outline-none focus:ring-2 focus:ring-white"
                 />
                 <button className="px-4 py-2 bg-white text-black rounded-r-md hover:bg-gray-100 font-medium">
