@@ -11,15 +11,16 @@ interface LocalizedVideoBannerProps {
 
 export function LocalizedVideoBanner({ dictionary }: LocalizedVideoBannerProps) {
   const [activeIndex, setActiveIndex] = useState(0)
+  const [videoLoaded, setVideoLoaded] = useState(false)
 
   const thematicTexts = [
     {
-      main: dictionary.hero.readyForAnything,
-      sub: dictionary.hero.readyForAnythingSubtitle,
+      main: "READY FOR ANYTHING",
+      sub: "ARTIE: Premium unisex apparel. Designed to perform, styled to live.",
     },
     {
-      main: dictionary.hero.comfortAdapted,
-      sub: dictionary.hero.engineeredText,
+      main: "COMFORT. ADAPTED.",
+      sub: "ARTIE: Engineered for every journey, styled for every moment. Premium apparel, limitless possibility.",
     },
   ]
 
@@ -40,14 +41,30 @@ export function LocalizedVideoBanner({ dictionary }: LocalizedVideoBannerProps) 
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
+      {/* Static Background Image - Shows while video loads */}
+      <div
+        className={cn(
+          "absolute inset-0 bg-cover bg-center bg-gray-900 transition-opacity duration-1000",
+          videoLoaded ? "opacity-0" : "opacity-100",
+        )}
+        style={{
+          backgroundImage: "url('/placeholder.svg?height=1080&width=1920')",
+        }}
+      />
+
       {/* Video Background */}
       <video
         autoPlay
         loop
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover"
-        crossOrigin="anonymous"
+        preload="metadata"
+        className={cn(
+          "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
+          videoLoaded ? "opacity-100" : "opacity-0",
+        )}
+        onLoadedData={() => setVideoLoaded(true)}
+        poster="/placeholder.svg?height=1080&width=1920"
       >
         <source src="https://uvd.yupoo.com/720p/artiemaster/24267105.mp4" type="video/mp4" />
       </video>
@@ -55,11 +72,21 @@ export function LocalizedVideoBanner({ dictionary }: LocalizedVideoBannerProps) 
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/40" />
 
+      {/* Loading Indicator */}
+      {!videoLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-white text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+            <p className="text-sm opacity-75">Loading...</p>
+          </div>
+        </div>
+      )}
+
       {/* Content */}
       <div className="relative z-10 h-full flex items-center justify-center">
         <div className="text-center text-white px-4 max-w-4xl mx-auto">
           {/* Main Hero Title */}
-          <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tight">{dictionary.hero.title}</h1>
+          <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tight">ARTIE</h1>
 
           {/* Animated Thematic Text */}
           <div className="min-h-[120px] md:min-h-[150px] flex flex-col justify-center items-center mb-8">
@@ -83,7 +110,7 @@ export function LocalizedVideoBanner({ dictionary }: LocalizedVideoBannerProps) 
             size="lg"
             className="bg-white text-black hover:bg-gray-100 font-bold text-lg px-8 py-4 rounded-none"
           >
-            {dictionary.hero.shopNow}
+            SHOP NOW
           </Button>
         </div>
       </div>

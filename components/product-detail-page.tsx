@@ -51,12 +51,12 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
   // Use translated content if available, otherwise fall back to static dictionary, then original
   const productName =
     product.translatedName ||
-    dictionary.productNames[product.name as keyof typeof dictionary.productNames] ||
+    dictionary.productNames?.[product.name as keyof typeof dictionary.productNames] ||
     product.name
 
   const productDescription =
     product.translatedDescription ||
-    dictionary.productDescriptions[product.description as keyof typeof dictionary.productDescriptions] ||
+    dictionary.productDescriptions?.[product.description as keyof typeof dictionary.productDescriptions] ||
     product.description
 
   // Handle color selection and image switching

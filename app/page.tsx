@@ -1,18 +1,18 @@
+import Link from "next/link"
 import { LocalizedVideoBanner } from "@/components/localized-video-banner"
 import { LocalizedProductCard } from "@/components/localized-product-card"
 import { Logo } from "@/components/logo"
 import { CartIcon } from "@/components/cart-icon"
 import { LanguageSwitcher } from "@/components/language-switcher"
-import { getDictionary } from "@/lib/i18n/dictionaries"
-import { getAllProducts } from "@/lib/products-dynamic"
-import Link from "next/link"
+import { getProducts } from "@/lib/products-dynamic"
+import { dictionaries } from "@/lib/i18n/dictionaries"
 
 export default async function HomePage() {
-  const dictionary = getDictionary("en")
-  const products = await getAllProducts()
+  const products = await getProducts("en")
+  const dictionary = dictionaries.en
 
   return (
-    <div className="min-h-screen bg-white">
+    <main className="min-h-screen">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -44,7 +44,7 @@ export default async function HomePage() {
         </div>
       </header>
 
-      {/* Hero Section with Video Banner */}
+      {/* Hero Video Banner */}
       <LocalizedVideoBanner dictionary={dictionary} />
 
       {/* Professional Theme Section */}
@@ -68,20 +68,24 @@ export default async function HomePage() {
       </section>
 
       {/* Products Section */}
-      <section id="product-section" className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
-              {dictionary.sections.featuredProducts}
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">{dictionary.sections.discoverCollection}</p>
+      <section id="product-section" className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-black text-black mb-4">{dictionary.sections.exploreLatest}</h2>
+            <p className="text-xl text-gray-600">{dictionary.sections.exploreLatestSubtitle}</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {products.map((product) => (
-              <LocalizedProductCard key={product.id} product={product} dictionary={dictionary} locale="en" />
-            ))}
-          </div>
+          {products.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {products.map((product) => (
+                <LocalizedProductCard key={product.id} product={product} dictionary={dictionary} locale="en" />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16">
+              <p className="text-gray-500 text-lg">No products available at the moment.</p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -167,6 +171,6 @@ export default async function HomePage() {
           </div>
         </div>
       </footer>
-    </div>
+    </main>
   )
 }
