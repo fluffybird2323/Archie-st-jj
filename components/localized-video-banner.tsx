@@ -2,53 +2,98 @@
 
 import { Button } from "@/components/ui/button"
 import type { Dictionary } from "@/lib/i18n/dictionaries"
+import { useState, useEffect } from "react"
+import { cn } from "@/lib/utils"
 
 interface LocalizedVideoBannerProps {
   dictionary: Dictionary
 }
 
 export function LocalizedVideoBanner({ dictionary }: LocalizedVideoBannerProps) {
-  const handleShopClick = () => {
-    const productSection = document.getElementById("product-section")
-    if (productSection) {
-      productSection.scrollIntoView({ behavior: "smooth" })
+  const [activeIndex, setActiveIndex] = useState(0)
+
+  const thematicTexts = [
+    {
+      main: dictionary.hero.readyForAnything,
+      sub: dictionary.hero.readyForAnythingSubtitle,
+    },
+    {
+      main: dictionary.hero.comfortAdapted,
+      sub: dictionary.hero.engineeredText,
+    },
+  ]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prevIndex) => (prevIndex + 1) % thematicTexts.length)
+    }, 5000) // Change text every 5 seconds
+
+    return () => clearInterval(interval)
+  }, [thematicTexts.length])
+
+  const scrollToProducts = () => {
+    const element = document.getElementById("product-section")
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" })
     }
   }
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-black">
+    <section className="relative h-screen w-full overflow-hidden">
       {/* Video Background */}
       <video
-        className="absolute top-0 left-0 w-full h-full object-cover"
         autoPlay
         loop
         muted
         playsInline
-        poster="/placeholder.svg" // Fallback image while video loads
+        className="absolute inset-0 w-full h-full object-cover"
+        crossOrigin="anonymous"
       >
-        <source src="https://uvd.yupoo.com/1080p/artiemaster/24267105.mp4" type="video/mp4" />
-        {/* Fallback for browsers that don't support video */}
-        Your browser does not support the video tag.
+        <source src="https://uvd.yupoo.com/720p/artiemaster/24267105.mp4" type="video/mp4" />
       </video>
 
-      {/* Dark overlay for better text readability */}
-      <div className="absolute inset-0 bg-black bg-opacity-30" />
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-black/40" />
 
-      {/* Content overlay */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <div className="text-center max-w-4xl px-4">
-          <h1 className="font-outfit text-6xl md:text-8xl font-black tracking-tight text-white mb-6 animate-fade-in drop-shadow-lg">
-            {dictionary.hero.title}
-          </h1>
-          <p className="text-xl md:text-2xl text-white mb-12 font-light drop-shadow-md">{dictionary.hero.subtitle}</p>
+      {/* Content */}
+      <div className="relative z-10 h-full flex items-center justify-center">
+        <div className="text-center text-white px-4 max-w-4xl mx-auto">
+          {/* Main Hero Title */}
+          <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tight">{dictionary.hero.title}</h1>
+
+          {/* Animated Thematic Text */}
+          <div className="min-h-[120px] md:min-h-[150px] flex flex-col justify-center items-center mb-8">
+            {thematicTexts.map((text, index) => (
+              <div
+                key={index}
+                className={cn(
+                  "absolute transition-all duration-1000 ease-in-out",
+                  index === activeIndex ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none",
+                )}
+              >
+                <p className="text-lg md:text-xl font-medium mb-2">{text.main}</p>
+                <p className="text-base md:text-lg font-light opacity-90 max-w-2xl mx-auto">{text.sub}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA Button */}
           <Button
-            onClick={handleShopClick}
-            className="nike-button text-lg px-12 py-4 bg-white text-black hover:bg-gray-100"
+            onClick={scrollToProducts}
+            size="lg"
+            className="bg-white text-black hover:bg-gray-100 font-bold text-lg px-8 py-4 rounded-none"
           >
             {dictionary.hero.shopNow}
           </Button>
         </div>
       </div>
-    </div>
+
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
+        <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
+          <div className="w-1 h-3 bg-white rounded-full mt-2 animate-pulse" />
+        </div>
+      </div>
+    </section>
   )
 }

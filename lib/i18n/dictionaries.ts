@@ -1,573 +1,687 @@
+export interface Dictionary {
+  hero: {
+    title: string
+    subtitle: string // This will be empty or a placeholder if not used
+    shopNow: string
+    readyForAnything: string
+    readyForAnythingSubtitle: string // New field for the animated text
+    comfortAdapted: string
+    engineeredText: string
+  }
+  nav: {
+    home: string
+    products: string
+    about: string
+    contact: string
+  }
+  product: {
+    addToCart: string
+    selectSize: string
+    selectColor: string
+    price: string
+    description: string
+    features: string
+    materials: string
+    care: string
+    shipping: string
+    returns: string
+    outOfStock: string
+    inStock: string
+    quantity: string
+    total: string
+  }
+  cart: {
+    title: string
+    empty: string
+    checkout: string
+    remove: string
+    subtotal: string
+    shipping: string
+    total: string
+    continueShopping: string
+  }
+  footer: {
+    about: string
+    aboutText: string
+    quickLinks: string
+    support: string
+    sizeGuide: string
+    shippingInfo: string
+    returnsExchanges: string
+    contactUs: string
+    followUs: string
+    newsletter: string
+    newsletterText: string
+    subscribe: string
+    emailPlaceholder: string
+    privacy: string
+    terms: string
+    sustainability: string
+    allRightsReserved: string
+  }
+  common: {
+    loading: string
+    error: string
+    success: string
+    cancel: string
+    confirm: string
+    save: string
+    edit: string
+    delete: string
+    search: string
+    filter: string
+    sort: string
+    next: string
+    previous: string
+  }
+  sections: {
+    exploreLatest: string
+    nextEssential: string
+    featuredProducts: string
+    discoverCollection: string
+  }
+}
+
 export const dictionaries = {
   en: {
-    nav: {
-      new: "NEW",
-      men: "MEN",
-      women: "WOMEN",
-      sale: "SALE",
-      back: "Back",
-    },
     hero: {
-      title: "READY FOR ANYTHING",
-      subtitle: "ARTIE: Premium unisex apparel. Designed to perform, styled to live.",
+      title: "ARTIE",
+      subtitle: "", // Removed static subtitle
       shopNow: "SHOP NOW",
-    },
-    products: {
-      title: "EXPLORE THE LATEST",
-      subtitle: "Your next essential piece starts here",
-      buyNow: "BUY NOW",
-      processing: "PROCESSING...",
-      moveInComfort: "COMFORT. ADAPTED.",
-      description:
+      readyForAnything: "READY FOR ANYTHING",
+      readyForAnythingSubtitle: "ARTIE: Premium unisex apparel. Designed to perform, styled to live.",
+      comfortAdapted: "COMFORT. ADAPTED.",
+      engineeredText:
         "ARTIE: Engineered for every journey, styled for every moment. Premium apparel, limitless possibility.",
-      viewProduct: "VIEW PRODUCT",
-      addToCart: "ADD TO CART",
-      addedToCart: "Added to cart!",
-      selectSize: "SELECT SIZE",
-      selectColor: "SELECT COLOR",
-      productDetails: "PRODUCT DETAILS",
-      sizeGuide: "SIZE GUIDE",
-      shipping: "SHIPPING & RETURNS",
+    },
+    nav: {
+      home: "Home",
+      products: "Products",
+      about: "About",
+      contact: "Contact",
+    },
+    product: {
+      addToCart: "Add to Cart",
+      selectSize: "Select Size",
+      selectColor: "Select Color",
+      price: "Price",
+      description: "Description",
+      features: "Features",
+      materials: "Materials",
+      care: "Care Instructions",
+      shipping: "Shipping",
+      returns: "Returns",
+      outOfStock: "Out of Stock",
+      inStock: "In Stock",
+      quantity: "Quantity",
+      total: "Total",
+    },
+    cart: {
+      title: "Shopping Cart",
+      empty: "Your cart is empty",
+      checkout: "Checkout",
+      remove: "Remove",
+      subtotal: "Subtotal",
+      shipping: "Shipping",
+      total: "Total",
+      continueShopping: "Continue Shopping",
     },
     footer: {
-      products: "PRODUCTS",
+      about: "About ARTIE",
+      aboutText:
+        "ARTIE is a premium streetwear brand that combines contemporary design with exceptional quality. We create clothing that speaks to the modern urban lifestyle.",
+      quickLinks: "Quick Links",
       support: "SUPPORT",
-      company: "COMPANY",
-      followUs: "FOLLOW US",
-      hoodies: "Hoodies",
-      tshirts: "T-Shirts",
-      accessories: "Accessories",
       sizeGuide: "Size Guide",
       shippingInfo: "Shipping Info",
       returnsExchanges: "Returns & Exchanges",
       contactUs: "Contact Us",
-      returns: "Returns",
-      contact: "Contact",
-      about: "About ARTIE",
-      careers: "Careers",
-      press: "Press",
-      sustainability: "Sustainability",
-      privacyPolicy: "Privacy Policy",
-      termsOfService: "Terms of Service",
-      instagram: "Instagram",
-      twitter: "Twitter",
-      tiktok: "TikTok",
-      youtube: "YouTube",
-      stayUpdated: "Stay Updated",
-      getLatestDrops: "Get the latest drops and exclusive offers",
-      enterEmail: "Enter your email",
+      followUs: "Follow Us",
+      newsletter: "Newsletter",
+      newsletterText: "Subscribe to get updates on new releases and exclusive offers",
       subscribe: "Subscribe",
-      copyright: "All rights reserved. | Free worldwide shipping on all orders",
+      emailPlaceholder: "Enter your email",
+      privacy: "Privacy Policy",
+      terms: "Terms of Service",
+      sustainability: "Sustainability",
+      allRightsReserved: "All rights reserved.",
     },
-    success: {
-      title: "ORDER CONFIRMED",
-      message:
-        "Thank you for your purchase! Your order has been successfully processed and you'll receive a confirmation email shortly.",
-      continueShopping: "CONTINUE SHOPPING",
+    common: {
+      loading: "Loading...",
+      error: "Error",
+      success: "Success",
+      cancel: "Cancel",
+      confirm: "Confirm",
+      save: "Save",
+      edit: "Edit",
+      delete: "Delete",
+      search: "Search",
+      filter: "Filter",
+      sort: "Sort",
+      next: "Next",
+      previous: "Previous",
     },
-    productNames: {
-      tshirt: "ARTIE Classic T-Shirt",
-      shorts: "ARTIE Premium Shorts",
-      hoodie: "ARTIE Signature Hoodie",
-      pants: "ARTIE Essential Pants",
-    },
-    productDescriptions: {
-      tshirtDesc:
-        "Premium cotton blend t-shirt with modern fit. Perfect for everyday wear with superior comfort and style.",
-      shortsDesc: "High-performance shorts designed for movement. Featuring moisture-wicking fabric and athletic cut.",
-      hoodieDesc:
-        "Signature hoodie crafted from premium materials. Oversized fit with attention to detail and comfort.",
-      pantsDesc:
-        "Essential pants combining style and functionality. Tailored fit with premium fabric and modern design.",
+    sections: {
+      exploreLatest: "EXPLORE THE LATEST",
+      nextEssential: "Your next essential piece starts here",
+      featuredProducts: "Featured Products",
+      discoverCollection: "Discover our latest streetwear collection",
     },
   },
-  "zh-CN": {
-    nav: {
-      new: "新品",
-      men: "男装",
-      women: "女装",
-      sale: "特价",
-      back: "返回",
-    },
+  "zh-cn": {
     hero: {
-      title: "随时准备",
-      subtitle: "ARTIE：高端中性服装。为表现而设计，为生活而造型。",
+      title: "ARTIE",
+      subtitle: "", // Removed static subtitle
       shopNow: "立即购买",
+      readyForAnything: "随时准备",
+      readyForAnythingSubtitle: "ARTIE：高端中性服装。为表现而设计，为生活而造型。",
+      comfortAdapted: "舒适。适应。",
+      engineeredText: "ARTIE：为每一次旅程而设计，为每一个时刻而造型。高端服装，无限可能。",
     },
-    products: {
-      title: "探索最新",
-      subtitle: "您的下一件必备单品从这里开始",
-      buyNow: "立即购买",
-      processing: "处理中...",
-      moveInComfort: "舒适。适应。",
-      description: "ARTIE：为每一次旅程而设计，为每一个时刻而造型。高端服装，无限可能。",
-      viewProduct: "查看产品",
+    nav: {
+      home: "首页",
+      products: "产品",
+      about: "关于",
+      contact: "联系",
+    },
+    product: {
       addToCart: "加入购物车",
-      addedToCart: "已加入购物车！",
       selectSize: "选择尺码",
       selectColor: "选择颜色",
-      productDetails: "产品详情",
-      sizeGuide: "尺码指南",
-      shipping: "配送与退货",
+      price: "价格",
+      description: "描述",
+      features: "特点",
+      materials: "材料",
+      care: "护理说明",
+      shipping: "配送",
+      returns: "退货",
+      outOfStock: "缺货",
+      inStock: "有库存",
+      quantity: "数量",
+      total: "总计",
+    },
+    cart: {
+      title: "购物车",
+      empty: "您的购物车是空的",
+      checkout: "结账",
+      remove: "移除",
+      subtotal: "小计",
+      shipping: "运费",
+      total: "总计",
+      continueShopping: "继续购物",
     },
     footer: {
-      products: "产品",
+      about: "关于 ARTIE",
+      aboutText: "ARTIE 是一个高端街头服饰品牌，将现代设计与卓越品质相结合。我们创造符合现代都市生活方式的服装。",
+      quickLinks: "快速链接",
       support: "支持",
-      company: "公司",
-      followUs: "关注我们",
-      hoodies: "连帽衫",
-      tshirts: "T恤",
-      accessories: "配件",
       sizeGuide: "尺码指南",
       shippingInfo: "配送信息",
       returnsExchanges: "退换货",
       contactUs: "联系我们",
-      returns: "退货",
-      contact: "联系",
-      about: "关于ARTIE",
-      careers: "招聘",
-      press: "新闻",
-      sustainability: "可持续发展",
-      privacyPolicy: "隐私政策",
-      termsOfService: "服务条款",
-      instagram: "Instagram",
-      twitter: "Twitter",
-      tiktok: "TikTok",
-      youtube: "YouTube",
-      stayUpdated: "保持更新",
-      getLatestDrops: "获取最新产品和独家优惠",
-      enterEmail: "输入您的邮箱",
+      followUs: "关注我们",
+      newsletter: "订阅通讯",
+      newsletterText: "订阅以获取新品发布和独家优惠的更新",
       subscribe: "订阅",
-      copyright: "版权所有。| 全球免费配送",
+      emailPlaceholder: "输入您的邮箱",
+      privacy: "隐私政策",
+      terms: "服务条款",
+      sustainability: "可持续发展",
+      allRightsReserved: "版权所有。",
     },
-    success: {
-      title: "订单确认",
-      message: "感谢您的购买！您的订单已成功处理，您将很快收到确认邮件。",
-      continueShopping: "继续购物",
+    common: {
+      loading: "加载中...",
+      error: "错误",
+      success: "成功",
+      cancel: "取消",
+      confirm: "确认",
+      save: "保存",
+      edit: "编辑",
+      delete: "删除",
+      search: "搜索",
+      filter: "筛选",
+      sort: "排序",
+      next: "下一页",
+      previous: "上一页",
     },
-    productNames: {
-      tshirt: "ARTIE 经典T恤",
-      shorts: "ARTIE 高级短裤",
-      hoodie: "ARTIE 标志连帽衫",
-      pants: "ARTIE 基础长裤",
-    },
-    productDescriptions: {
-      tshirtDesc: "优质棉混纺T恤，现代剪裁。日常穿着的完美选择，舒适时尚。",
-      shortsDesc: "为运动而设计的高性能短裤。采用吸湿排汗面料和运动剪裁。",
-      hoodieDesc: "采用优质材料制作的标志性连帽衫。宽松版型，注重细节和舒适度。",
-      pantsDesc: "结合时尚与功能的基础长裤。合身剪裁，优质面料，现代设计。",
+    sections: {
+      exploreLatest: "探索最新",
+      nextEssential: "您的下一件必备单品从这里开始",
+      featuredProducts: "精选产品",
+      discoverCollection: "发现我们最新的街头服饰系列",
     },
   },
   ja: {
-    nav: {
-      new: "新作",
-      men: "メンズ",
-      women: "レディース",
-      sale: "セール",
-      back: "戻る",
-    },
     hero: {
-      title: "何でも準備万端",
-      subtitle: "ARTIE：プレミアムユニセックスアパレル。パフォーマンスのためにデザインされ、生活のためにスタイリング。",
+      title: "ARTIE",
+      subtitle: "", // Removed static subtitle
       shopNow: "今すぐ購入",
-    },
-    products: {
-      title: "最新を探索",
-      subtitle: "あなたの次の必須アイテムはここから始まります",
-      buyNow: "今すぐ購入",
-      processing: "処理中...",
-      moveInComfort: "快適。適応。",
-      description:
+      readyForAnything: "何でも準備万端",
+      readyForAnythingSubtitle:
+        "ARTIE：プレミアムユニセックスアパレル。パフォーマンスのためにデザインされ、生活のためにスタイリング。",
+      comfortAdapted: "快適。適応。",
+      engineeredText:
         "ARTIE：すべての旅のために設計され、すべての瞬間のためにスタイリング。プレミアムアパレル、無限の可能性。",
-      viewProduct: "商品を見る",
+    },
+    nav: {
+      home: "ホーム",
+      products: "商品",
+      about: "概要",
+      contact: "お問い合わせ",
+    },
+    product: {
       addToCart: "カートに追加",
-      addedToCart: "カートに追加しました！",
       selectSize: "サイズを選択",
       selectColor: "色を選択",
-      productDetails: "商品詳細",
-      sizeGuide: "サイズガイド",
-      shipping: "配送・返品",
+      price: "価格",
+      description: "説明",
+      features: "特徴",
+      materials: "素材",
+      care: "お手入れ方法",
+      shipping: "配送",
+      returns: "返品",
+      outOfStock: "在庫切れ",
+      inStock: "在庫あり",
+      quantity: "数量",
+      total: "合計",
+    },
+    cart: {
+      title: "ショッピングカート",
+      empty: "カートは空です",
+      checkout: "チェックアウト",
+      remove: "削除",
+      subtotal: "小計",
+      shipping: "送料",
+      total: "合計",
+      continueShopping: "買い物を続ける",
     },
     footer: {
-      products: "製品",
+      about: "ARTIEについて",
+      aboutText:
+        "ARTIEは現代的なデザインと卓越した品質を組み合わせたプレミアムストリートウェアブランドです。現代の都市ライフスタイルに響く服を作っています。",
+      quickLinks: "クイックリンク",
       support: "サポート",
-      company: "会社",
-      followUs: "フォローする",
-      hoodies: "フーディー",
-      tshirts: "Tシャツ",
-      accessories: "アクセサリー",
       sizeGuide: "サイズガイド",
       shippingInfo: "配送情報",
       returnsExchanges: "返品・交換",
       contactUs: "お問い合わせ",
-      returns: "返品",
-      contact: "お問い合わせ",
-      about: "ARTIEについて",
-      careers: "採用情報",
-      press: "プレス",
-      sustainability: "持続可能性",
-      privacyPolicy: "プライバシーポリシー",
-      termsOfService: "利用規約",
-      instagram: "Instagram",
-      twitter: "Twitter",
-      tiktok: "TikTok",
-      youtube: "YouTube",
-      stayUpdated: "最新情報を受け取る",
-      getLatestDrops: "最新商品と限定オファーを受け取る",
-      enterEmail: "メールアドレスを入力",
+      followUs: "フォローする",
+      newsletter: "ニュースレター",
+      newsletterText: "新商品リリースや限定オファーの更新を受け取るために購読してください",
       subscribe: "購読",
-      copyright: "全著作権所有。| 世界中送料無料",
+      emailPlaceholder: "メールアドレスを入力",
+      privacy: "プライバシーポリシー",
+      terms: "利用規約",
+      sustainability: "持続可能性",
+      allRightsReserved: "全著作権所有。",
     },
-    success: {
-      title: "注文確認",
-      message: "ご購入ありがとうございます！ご注文は正常に処理され、まもなく確認メールをお送りします。",
-      continueShopping: "ショッピングを続ける",
+    common: {
+      loading: "読み込み中...",
+      error: "エラー",
+      success: "成功",
+      cancel: "キャンセル",
+      confirm: "確認",
+      save: "保存",
+      edit: "編集",
+      delete: "削除",
+      search: "検索",
+      filter: "フィルター",
+      sort: "並び替え",
+      next: "次へ",
+      previous: "前へ",
     },
-    productNames: {
-      tshirt: "ARTIE クラシックTシャツ",
-      shorts: "ARTIE プレミアムショーツ",
-      hoodie: "ARTIE シグネチャーフーディー",
-      pants: "ARTIE エッセンシャルパンツ",
-    },
-    productDescriptions: {
-      tshirtDesc: "プレミアムコットンブレンドTシャツ、モダンフィット。優れた快適性とスタイルで日常着に最適。",
-      shortsDesc: "動きのために設計された高性能ショーツ。吸湿発散性生地とアスレチックカットを特徴。",
-      hoodieDesc:
-        "プレミアム素材で作られたシグネチャーフーディー。細部とコンフォートにこだわったオーバーサイズフィット。",
-      pantsDesc:
-        "スタイルと機能性を兼ね備えたエッセンシャルパンツ。プレミアム生地とモダンデザインのテーラードフィット。",
+    sections: {
+      exploreLatest: "最新を探索",
+      nextEssential: "あなたの次の必須アイテムはここから始まります",
+      featuredProducts: "注目商品",
+      discoverCollection: "最新のストリートウェアコレクションを発見",
     },
   },
   de: {
-    nav: {
-      new: "NEU",
-      men: "HERREN",
-      women: "DAMEN",
-      sale: "SALE",
-      back: "Zurück",
-    },
     hero: {
-      title: "BEREIT FÜR ALLES",
-      subtitle: "ARTIE: Premium Unisex-Bekleidung. Für Leistung entworfen, für das Leben gestylt.",
+      title: "ARTIE",
+      subtitle: "", // Removed static subtitle
       shopNow: "JETZT KAUFEN",
-    },
-    products: {
-      title: "ENTDECKE DAS NEUESTE",
-      subtitle: "Dein nächstes essentielles Stück beginnt hier",
-      buyNow: "JETZT KAUFEN",
-      processing: "VERARBEITUNG...",
-      moveInComfort: "KOMFORT. ANGEPASST.",
-      description:
+      readyForAnything: "BEREIT FÜR ALLES",
+      readyForAnythingSubtitle: "ARTIE: Premium Unisex-Bekleidung. Für Leistung entworfen, für das Leben gestylt.",
+      comfortAdapted: "KOMFORT. ANGEPASST.",
+      engineeredText:
         "ARTIE: Für jede Reise entwickelt, für jeden Moment gestylt. Premium-Bekleidung, grenzenlose Möglichkeiten.",
-      viewProduct: "PRODUKT ANSEHEN",
-      addToCart: "IN DEN WARENKORB",
-      addedToCart: "In den Warenkorb",
-      selectSize: "GRÖSSE WÄHLEN",
-      selectColor: "FARBE WÄHLEN",
-      productDetails: "PRODUKTDETAILS",
-      sizeGuide: "GRÖSSENRATGEBER",
-      shipping: "VERSAND & RÜCKGABE",
+    },
+    nav: {
+      home: "Startseite",
+      products: "Produkte",
+      about: "Über uns",
+      contact: "Kontakt",
+    },
+    product: {
+      addToCart: "In den Warenkorb",
+      selectSize: "Größe wählen",
+      selectColor: "Farbe wählen",
+      price: "Preis",
+      description: "Beschreibung",
+      features: "Eigenschaften",
+      materials: "Materialien",
+      care: "Pflegehinweise",
+      shipping: "Versand",
+      returns: "Rückgabe",
+      outOfStock: "Ausverkauft",
+      inStock: "Auf Lager",
+      quantity: "Menge",
+      total: "Gesamt",
+    },
+    cart: {
+      title: "Warenkorb",
+      empty: "Ihr Warenkorb ist leer",
+      checkout: "Zur Kasse",
+      remove: "Entfernen",
+      subtotal: "Zwischensumme",
+      shipping: "Versand",
+      total: "Gesamt",
+      continueShopping: "Weiter einkaufen",
     },
     footer: {
-      products: "PRODUKTE",
-      support: "SUPPORT",
-      company: "UNTERNEHMEN",
-      followUs: "FOLGE UNS",
-      hoodies: "Hoodies",
-      tshirts: "T-Shirts",
-      accessories: "Accessoires",
-      sizeGuide: "Größenratgeber",
-      shippingInfo: "Versandinformationen",
-      returnsExchanges: "Rücksendungen & Umtausch",
-      contactUs: "Kontaktiere uns",
-      returns: "Rücksendungen",
-      contact: "Kontakt",
       about: "Über ARTIE",
-      careers: "Karriere",
-      press: "Presse",
-      sustainability: "Nachhaltigkeit",
-      privacyPolicy: "Datenschutzrichtlinie",
-      termsOfService: "Nutzungsbedingungen",
-      instagram: "Instagram",
-      twitter: "Twitter",
-      tiktok: "TikTok",
-      youtube: "YouTube",
-      stayUpdated: "Bleib auf dem Laufenden",
-      getLatestDrops: "Erhalte die neuesten Drops und exklusive Angebote",
-      enterEmail: "E-Mail eingeben",
+      aboutText:
+        "ARTIE ist eine Premium-Streetwear-Marke, die zeitgenössisches Design mit außergewöhnlicher Qualität verbindet. Wir kreieren Kleidung, die den modernen urbanen Lebensstil anspricht.",
+      quickLinks: "Schnelllinks",
+      support: "SUPPORT",
+      sizeGuide: "Größentabelle",
+      shippingInfo: "Versandinfo",
+      returnsExchanges: "Rückgabe & Umtausch",
+      contactUs: "Kontakt",
+      followUs: "Folgen Sie uns",
+      newsletter: "Newsletter",
+      newsletterText: "Abonnieren Sie Updates zu neuen Veröffentlichungen und exklusiven Angeboten",
       subscribe: "Abonnieren",
-      copyright: "Alle Rechte vorbehalten. | Kostenloser weltweiter Versand",
+      emailPlaceholder: "E-Mail eingeben",
+      privacy: "Datenschutz",
+      terms: "AGB",
+      sustainability: "Nachhaltigkeit",
+      allRightsReserved: "Alle Rechte vorbehalten.",
     },
-    success: {
-      title: "BESTELLUNG BESTÄTIGT",
-      message:
-        "Vielen Dank für Ihren Kauf! Ihre Bestellung wurde erfolgreich bearbeitet und Sie erhalten in Kürze eine Bestätigungs-E-Mail.",
-      continueShopping: "WEITER EINKAUFEN",
+    common: {
+      loading: "Laden...",
+      error: "Fehler",
+      success: "Erfolg",
+      cancel: "Abbrechen",
+      confirm: "Bestätigen",
+      save: "Speichern",
+      edit: "Bearbeiten",
+      delete: "Löschen",
+      search: "Suchen",
+      filter: "Filter",
+      sort: "Sortieren",
+      next: "Weiter",
+      previous: "Zurück",
     },
-    productNames: {
-      tshirt: "ARTIE Classic T-Shirt",
-      shorts: "ARTIE Premium Shorts",
-      hoodie: "ARTIE Signature Hoodie",
-      pants: "ARTIE Essential Hose",
-    },
-    productDescriptions: {
-      tshirtDesc:
-        "Premium Baumwollmischung T-Shirt mit moderner Passform. Perfekt für den Alltag mit überlegenem Komfort und Stil.",
-      shortsDesc:
-        "Hochleistungs-Shorts für Bewegung entwickelt. Mit feuchtigkeitsableitenden Stoffen und athletischem Schnitt.",
-      hoodieDesc: "Signature Hoodie aus Premium-Materialien. Oversized-Passform mit Liebe zum Detail und Komfort.",
-      pantsDesc:
-        "Essentielle Hose kombiniert Stil und Funktionalität. Maßgeschneiderte Passform mit Premium-Stoff und modernem Design.",
+    sections: {
+      exploreLatest: "ENTDECKE DAS NEUESTE",
+      nextEssential: "Dein nächstes essentielles Stück beginnt hier",
+      featuredProducts: "Ausgewählte Produkte",
+      discoverCollection: "Entdecke unsere neueste Streetwear-Kollektion",
     },
   },
   fr: {
-    nav: {
-      new: "NOUVEAU",
-      men: "HOMME",
-      women: "FEMME",
-      sale: "SOLDES",
-      back: "Retour",
-    },
     hero: {
-      title: "PRÊT À TOUT",
-      subtitle: "ARTIE : Vêtements unisexes premium. Conçus pour performer, stylés pour vivre.",
+      title: "ARTIE",
+      subtitle: "", // Removed static subtitle
       shopNow: "ACHETER MAINTENANT",
-    },
-    products: {
-      title: "EXPLOREZ LES DERNIÈRES",
-      subtitle: "Votre prochaine pièce essentielle commence ici",
-      buyNow: "ACHETER MAINTENANT",
-      processing: "TRAITEMENT...",
-      moveInComfort: "CONFORT. ADAPTÉ.",
-      description:
+      readyForAnything: "PRÊT À TOUT",
+      readyForAnythingSubtitle: "ARTIE : Vêtements unisexes premium. Conçus pour performer, stylés pour vivre.",
+      comfortAdapted: "CONFORT. ADAPTÉ.",
+      engineeredText:
         "ARTIE : Conçu pour chaque voyage, stylé pour chaque moment. Vêtements premium, possibilités illimitées.",
-      viewProduct: "VOIR LE PRODUIT",
-      addToCart: "AJOUTER AU PANIER",
-      addedToCart: "Ajouté au panier",
-      selectSize: "CHOISIR LA TAILLE",
-      selectColor: "CHOISIR LA COULEUR",
-      productDetails: "DÉTAILS DU PRODUIT",
-      sizeGuide: "GUIDE DES TAILLES",
-      shipping: "LIVRAISON & RETOURS",
+    },
+    nav: {
+      home: "Accueil",
+      products: "Produits",
+      about: "À propos",
+      contact: "Contact",
+    },
+    product: {
+      addToCart: "Ajouter au panier",
+      selectSize: "Choisir la taille",
+      selectColor: "Choisir la couleur",
+      price: "Prix",
+      description: "Description",
+      features: "Caractéristiques",
+      materials: "Matériaux",
+      care: "Instructions d'entretien",
+      shipping: "Livraison",
+      returns: "Retours",
+      outOfStock: "Rupture de stock",
+      inStock: "En stock",
+      quantity: "Quantité",
+      total: "Total",
+    },
+    cart: {
+      title: "Panier",
+      empty: "Votre panier est vide",
+      checkout: "Commander",
+      remove: "Supprimer",
+      subtotal: "Sous-total",
+      shipping: "Livraison",
+      total: "Total",
+      continueShopping: "Continuer les achats",
     },
     footer: {
-      products: "PRODUITS",
-      support: "SUPPORT",
-      company: "ENTREPRISE",
-      followUs: "SUIVEZ-NOUS",
-      hoodies: "Sweats à capuche",
-      tshirts: "T-Shirts",
-      accessories: "Accessoires",
-      sizeGuide: "Guide des tailles",
-      shippingInfo: "Informations de livraison",
-      returnsExchanges: "Retours et échanges",
-      contactUs: "Contactez-nous",
-      returns: "Retours",
-      contact: "Contact",
       about: "À propos d'ARTIE",
-      careers: "Carrières",
-      press: "Presse",
-      sustainability: "Durabilité",
-      privacyPolicy: "Politique de confidentialité",
-      termsOfService: "Conditions d'utilisation",
-      instagram: "Instagram",
-      twitter: "Twitter",
-      tiktok: "TikTok",
-      youtube: "YouTube",
-      stayUpdated: "Restez informé",
-      getLatestDrops: "Recevez les dernières sorties et offres exclusives",
-      enterEmail: "Entrez votre email",
+      aboutText:
+        "ARTIE est une marque de streetwear premium qui combine design contemporain et qualité exceptionnelle. Nous créons des vêtements qui parlent au mode de vie urbain moderne.",
+      quickLinks: "Liens rapides",
+      support: "SUPPORT",
+      sizeGuide: "Guide des tailles",
+      shippingInfo: "Info livraison",
+      returnsExchanges: "Retours & échanges",
+      contactUs: "Nous contacter",
+      followUs: "Suivez-nous",
+      newsletter: "Newsletter",
+      newsletterText: "Abonnez-vous pour recevoir les mises à jour sur les nouvelles sorties et les offres exclusives",
       subscribe: "S'abonner",
-      copyright: "Tous droits réservés. | Livraison gratuite dans le monde entier",
+      emailPlaceholder: "Entrez votre email",
+      privacy: "Politique de confidentialité",
+      terms: "Conditions d'utilisation",
+      sustainability: "Durabilité",
+      allRightsReserved: "Tous droits réservés.",
     },
-    success: {
-      title: "COMMANDE CONFIRMÉE",
-      message:
-        "Merci pour votre achat ! Votre commande a été traitée avec succès et vous recevrez bientôt un e-mail de confirmation.",
-      continueShopping: "CONTINUER LES ACHATS",
+    common: {
+      loading: "Chargement...",
+      error: "Erreur",
+      success: "Succès",
+      cancel: "Annuler",
+      confirm: "Confirmer",
+      save: "Sauvegarder",
+      edit: "Modifier",
+      delete: "Supprimer",
+      search: "Rechercher",
+      filter: "Filtrer",
+      sort: "Trier",
+      next: "Suivant",
+      previous: "Précédent",
     },
-    productNames: {
-      tshirt: "ARTIE T-Shirt Classique",
-      shorts: "ARTIE Short Premium",
-      hoodie: "ARTIE Sweat Signature",
-      pants: "ARTIE Pantalon Essentiel",
-    },
-    productDescriptions: {
-      tshirtDesc:
-        "T-shirt en mélange de coton premium avec coupe moderne. Parfait pour le quotidien avec un confort et un style supérieurs.",
-      shortsDesc:
-        "Short haute performance conçu pour le mouvement. Avec tissu évacuant l'humidité et coupe athlétique.",
-      hoodieDesc:
-        "Sweat signature fabriqué à partir de matériaux premium. Coupe oversized avec attention aux détails et au confort.",
-      pantsDesc:
-        "Pantalon essentiel alliant style et fonctionnalité. Coupe ajustée avec tissu premium et design moderne.",
+    sections: {
+      exploreLatest: "EXPLOREZ LES DERNIÈRES",
+      nextEssential: "Votre prochaine pièce essentielle commence ici",
+      featuredProducts: "Produits en vedette",
+      discoverCollection: "Découvrez notre dernière collection streetwear",
     },
   },
   es: {
-    nav: {
-      new: "NUEVO",
-      men: "HOMBRE",
-      women: "MUJER",
-      sale: "REBAJAS",
-      back: "Volver",
-    },
     hero: {
-      title: "LISTO PARA TODO",
-      subtitle: "ARTIE: Ropa unisex premium. Diseñada para rendir, estilizada para vivir.",
+      title: "ARTIE",
+      subtitle: "", // Removed static subtitle
       shopNow: "COMPRAR AHORA",
-    },
-    products: {
-      title: "EXPLORA LO ÚLTIMO",
-      subtitle: "Tu próxima pieza esencial comienza aquí",
-      buyNow: "COMPRAR AHORA",
-      processing: "PROCESANDO...",
-      moveInComfort: "COMODIDAD. ADAPTADA.",
-      description:
+      readyForAnything: "LISTO PARA TODO",
+      readyForAnythingSubtitle: "ARTIE: Ropa unisex premium. Diseñada para rendir, estilizada para vivir.",
+      comfortAdapted: "COMODIDAD. ADAPTADA.",
+      engineeredText:
         "ARTIE: Diseñada para cada viaje, estilizada para cada momento. Ropa premium, posibilidades ilimitadas.",
-      viewProduct: "VER PRODUCTO",
-      addToCart: "AÑADIR AL CARRITO",
-      addedToCart: "Añadido al carrito",
-      selectSize: "SELECCIONAR TALLA",
-      selectColor: "SELECCIONAR COLOR",
-      productDetails: "DETALLES DEL PRODUCTO",
-      sizeGuide: "GUÍA DE TALLAS",
-      shipping: "ENVÍO Y DEVOLUCIONES",
+    },
+    nav: {
+      home: "Inicio",
+      products: "Productos",
+      about: "Acerca de",
+      contact: "Contacto",
+    },
+    product: {
+      addToCart: "Añadir al carrito",
+      selectSize: "Seleccionar talla",
+      selectColor: "Seleccionar color",
+      price: "Precio",
+      description: "Descripción",
+      features: "Características",
+      materials: "Materiales",
+      care: "Instrucciones de cuidado",
+      shipping: "Envío",
+      returns: "Devoluciones",
+      outOfStock: "Agotado",
+      inStock: "En stock",
+      quantity: "Cantidad",
+      total: "Total",
+    },
+    cart: {
+      title: "Carrito de compras",
+      empty: "Tu carrito está vacío",
+      checkout: "Finalizar compra",
+      remove: "Eliminar",
+      subtotal: "Subtotal",
+      shipping: "Envío",
+      total: "Total",
+      continueShopping: "Seguir comprando",
     },
     footer: {
-      products: "PRODUCTOS",
+      about: "Acerca de ARTIE",
+      aboutText:
+        "ARTIE es una marca de streetwear premium que combina diseño contemporáneo con calidad excepcional. Creamos ropa que habla al estilo de vida urbano moderno.",
+      quickLinks: "Enlaces rápidos",
       support: "SOPORTE",
-      company: "EMPRESA",
-      followUs: "SÍGUENOS",
-      hoodies: "Sudaderas",
-      tshirts: "Camisetas",
-      accessories: "Accesorios",
       sizeGuide: "Guía de tallas",
-      shippingInfo: "Información de envío",
+      shippingInfo: "Info de envío",
       returnsExchanges: "Devoluciones e intercambios",
       contactUs: "Contáctanos",
-      returns: "Devoluciones",
-      contact: "Contacto",
-      about: "Acerca de ARTIE",
-      careers: "Carreras",
-      press: "Prensa",
-      sustainability: "Sostenibilidad",
-      privacyPolicy: "Política de privacidad",
-      termsOfService: "Términos de servicio",
-      instagram: "Instagram",
-      twitter: "Twitter",
-      tiktok: "TikTok",
-      youtube: "YouTube",
-      stayUpdated: "Mantente actualizado",
-      getLatestDrops: "Recibe los últimos lanzamientos y ofertas exclusivas",
-      enterEmail: "Ingresa tu email",
+      followUs: "Síguenos",
+      newsletter: "Boletín",
+      newsletterText: "Suscríbete para recibir actualizaciones sobre nuevos lanzamientos y ofertas exclusivas",
       subscribe: "Suscribirse",
-      copyright: "Todos los derechos reservados. | Envío gratuito mundial",
+      emailPlaceholder: "Ingresa tu email",
+      privacy: "Política de privacidad",
+      terms: "Términos de servicio",
+      sustainability: "Sostenibilidad",
+      allRightsReserved: "Todos los derechos reservados.",
     },
-    success: {
-      title: "PEDIDO CONFIRMADO",
-      message:
-        "¡Gracias por tu compra! Tu pedido ha sido procesado exitosamente y recibirás un email de confirmación pronto.",
-      continueShopping: "SEGUIR COMPRANDO",
+    common: {
+      loading: "Cargando...",
+      error: "Error",
+      success: "Éxito",
+      cancel: "Cancelar",
+      confirm: "Confirmar",
+      save: "Guardar",
+      edit: "Editar",
+      delete: "Eliminar",
+      search: "Buscar",
+      filter: "Filtrar",
+      sort: "Ordenar",
+      next: "Siguiente",
+      previous: "Anterior",
     },
-    productNames: {
-      tshirt: "ARTIE Camiseta Clásica",
-      shorts: "ARTIE Shorts Premium",
-      hoodie: "ARTIE Sudadera Signature",
-      pants: "ARTIE Pantalones Esenciales",
-    },
-    productDescriptions: {
-      tshirtDesc:
-        "Camiseta de mezcla de algodón premium con ajuste moderno. Perfecta para el uso diario con comodidad y estilo superiores.",
-      shortsDesc:
-        "Shorts de alto rendimiento diseñados para el movimiento. Con tela que absorbe la humedad y corte atlético.",
-      hoodieDesc:
-        "Sudadera signature hecha de materiales premium. Ajuste oversized con atención al detalle y comodidad.",
-      pantsDesc:
-        "Pantalones esenciales que combinan estilo y funcionalidad. Ajuste entallado con tela premium y diseño moderno.",
+    sections: {
+      exploreLatest: "EXPLORA LO ÚLTIMO",
+      nextEssential: "Tu próxima pieza esencial comienza aquí",
+      featuredProducts: "Productos destacados",
+      discoverCollection: "Descubre nuestra última colección streetwear",
     },
   },
   it: {
-    nav: {
-      new: "NUOVO",
-      men: "UOMO",
-      women: "DONNA",
-      sale: "SALDI",
-      back: "Indietro",
-    },
     hero: {
-      title: "PRONTO A TUTTO",
-      subtitle: "ARTIE: Abbigliamento unisex premium. Progettato per performare, stilizzato per vivere.",
+      title: "ARTIE",
+      subtitle: "", // Removed static subtitle
       shopNow: "ACQUISTA ORA",
-    },
-    products: {
-      title: "ESPLORA GLI ULTIMI",
-      subtitle: "Il tuo prossimo pezzo essenziale inizia qui",
-      buyNow: "ACQUISTA ORA",
-      processing: "ELABORAZIONE...",
-      moveInComfort: "COMFORT. ADATTATO.",
-      description:
+      readyForAnything: "PRONTO A TUTTO",
+      readyForAnythingSubtitle:
+        "ARTIE: Abbigliamento unisex premium. Progettato per performare, stilizzato per vivere.",
+      comfortAdapted: "COMFORT. ADATTATO.",
+      engineeredText:
         "ARTIE: Progettato per ogni viaggio, stilizzato per ogni momento. Abbigliamento premium, possibilità illimitate.",
-      viewProduct: "VEDI PRODOTTO",
-      addToCart: "AGGIUNGI AL CARRELLO",
-      addedToCart: "Aggiunto al carrello",
-      selectSize: "SELEZIONA TAGLIA",
-      selectColor: "SELEZIONA COLORE",
-      productDetails: "DETTAGLI PRODOTTO",
-      sizeGuide: "GUIDA ALLE TAGLIE",
-      shipping: "SPEDIZIONE E RESI",
+    },
+    nav: {
+      home: "Home",
+      products: "Prodotti",
+      about: "Chi siamo",
+      contact: "Contatti",
+    },
+    product: {
+      addToCart: "Aggiungi al carrello",
+      selectSize: "Seleziona taglia",
+      selectColor: "Seleziona colore",
+      price: "Prezzo",
+      description: "Descrizione",
+      features: "Caratteristiche",
+      materials: "Materiali",
+      care: "Istruzioni per la cura",
+      shipping: "Spedizione",
+      returns: "Resi",
+      outOfStock: "Esaurito",
+      inStock: "Disponibile",
+      quantity: "Quantità",
+      total: "Totale",
+    },
+    cart: {
+      title: "Carrello",
+      empty: "Il tuo carrello è vuoto",
+      checkout: "Checkout",
+      remove: "Rimuovi",
+      subtotal: "Subtotale",
+      shipping: "Spedizione",
+      total: "Totale",
+      continueShopping: "Continua lo shopping",
     },
     footer: {
-      products: "PRODOTTI",
+      about: "Chi è ARTIE",
+      aboutText:
+        "ARTIE è un marchio di streetwear premium che combina design contemporaneo con qualità eccezionale. Creiamo abbigliamento che parla allo stile di vita urbano moderno.",
+      quickLinks: "Link rapidi",
       support: "SUPPORTO",
-      company: "AZIENDA",
-      followUs: "SEGUICI",
-      hoodies: "Felpe",
-      tshirts: "T-Shirt",
-      accessories: "Accessori",
       sizeGuide: "Guida alle taglie",
-      shippingInfo: "Informazioni spedizione",
+      shippingInfo: "Info spedizione",
       returnsExchanges: "Resi e cambi",
       contactUs: "Contattaci",
-      returns: "Resi",
-      contact: "Contatto",
-      about: "Chi è ARTIE",
-      careers: "Carriere",
-      press: "Stampa",
-      sustainability: "Sostenibilità",
-      privacyPolicy: "Politica sulla privacy",
-      termsOfService: "Termini di servizio",
-      instagram: "Instagram",
-      twitter: "Twitter",
-      tiktok: "TikTok",
-      youtube: "YouTube",
-      stayUpdated: "Rimani aggiornato",
-      getLatestDrops: "Ricevi gli ultimi drop e offerte esclusive",
-      enterEmail: "Inserisci la tua email",
+      followUs: "Seguici",
+      newsletter: "Newsletter",
+      newsletterText: "Iscriviti per ricevere aggiornamenti su nuovi rilasci e offerte esclusive",
       subscribe: "Iscriviti",
-      copyright: "Tutti i diritti riservati. | Spedizione gratuita in tutto il mondo",
+      emailPlaceholder: "Inserisci la tua email",
+      privacy: "Privacy Policy",
+      terms: "Termini di servizio",
+      sustainability: "Sostenibilità",
+      allRightsReserved: "Tutti i diritti riservati.",
     },
-    success: {
-      title: "ORDINE CONFERMATO",
-      message:
-        "Grazie per il tuo acquisto! Il tuo ordine è stato elaborato con successo e riceverai presto un'email di conferma.",
-      continueShopping: "CONTINUA LO SHOPPING",
+    common: {
+      loading: "Caricamento...",
+      error: "Errore",
+      success: "Successo",
+      cancel: "Annulla",
+      confirm: "Conferma",
+      save: "Salva",
+      edit: "Modifica",
+      delete: "Elimina",
+      search: "Cerca",
+      filter: "Filtra",
+      sort: "Ordina",
+      next: "Avanti",
+      previous: "Indietro",
     },
-    productNames: {
-      tshirt: "ARTIE T-Shirt Classica",
-      shorts: "ARTIE Shorts Premium",
-      hoodie: "ARTIE Felpa Signature",
-      pants: "ARTIE Pantaloni Essenziali",
-    },
-    productDescriptions: {
-      tshirtDesc:
-        "T-shirt in misto cotone premium con vestibilità moderna. Perfetta per l'uso quotidiano con comfort e stile superiori.",
-      shortsDesc: "Shorts ad alte prestazioni progettati per il movimento. Con tessuto traspirante e taglio atletico.",
-      hoodieDesc:
-        "Felpa signature realizzata con materiali premium. Vestibilità oversized con attenzione ai dettagli e al comfort.",
-      pantsDesc:
-        "Pantaloni essenziali che combinano stile e funzionalità. Vestibilità sartoriale con tessuto premium e design moderno.",
+    sections: {
+      exploreLatest: "ESPLORA GLI ULTIMI",
+      nextEssential: "Il tuo prossimo pezzo essenziale inizia qui",
+      featuredProducts: "Prodotti in evidenza",
+      discoverCollection: "Scopri la nostra ultima collezione streetwear",
     },
   },
-}
+} as const
 
-export type Dictionary = typeof dictionaries.en
+export type Locale = keyof typeof dictionaries
+
+export function getDictionary(locale: Locale): Dictionary {
+  return dictionaries[locale] || dictionaries.en
+}
