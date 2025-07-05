@@ -161,4 +161,4 @@ export function clearTranslationCache(): void {
  */
 export function getCacheStats(): { size: number } {
   return { size: translationCache.size }
-} 
+}

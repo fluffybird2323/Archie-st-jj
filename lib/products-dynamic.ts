@@ -1,7 +1,4 @@
-import {
-  getProducts as getDbProducts,
-  getProductBySlug as getDbProductBySlug,
-} from "./supabase"
+import { getProducts as getDbProducts, getProductBySlug as getDbProductBySlug } from "./supabase"
 import type { Locale } from "./i18n/config"
 
 export interface Product {
@@ -13,7 +10,7 @@ export interface Product {
   description: string
   images: string[]
   sizes: string[]
-  colors: string[]
+  colors: string[] // Back to simple string array
   translatedName?: string
   translatedDescription?: string
 }

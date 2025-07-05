@@ -118,4 +118,4 @@ export async function translateProductContentSimple(
   }
 
   return translatedProduct
-} 
+}

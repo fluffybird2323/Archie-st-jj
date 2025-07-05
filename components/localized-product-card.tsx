@@ -43,6 +43,11 @@ export function LocalizedProductCard({ product, dictionary, locale }: LocalizedP
             {productName}
           </h3>
           <p className="text-2xl font-black text-black">{formatPrice(product.price, locale)}</p>
+          {/*
+          // The product card doesn't need major changes since it doesn't interact with colors directly
+          // But if you want to show available colors, you can access them like:
+          // product.colors.map(colorObj => colorObj.name).join(", ")
+          */}
         </div>
       </div>
     </Link>

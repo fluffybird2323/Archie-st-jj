@@ -128,4 +128,4 @@ export function useCartTranslation(locale: Locale) {
     translateCartItem,
     isLoading,
   }
-} 
+}

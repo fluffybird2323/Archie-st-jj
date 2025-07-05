@@ -59,4 +59,4 @@ export async function GET() {
     service: "MyMemory API",
     limits: "1000 words/day, 500 characters per request",
   })
-} 
+}

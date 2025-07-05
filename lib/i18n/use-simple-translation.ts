@@ -87,4 +87,4 @@ export function useProductTranslationSimple(locale: Locale) {
     translateProduct,
     isLoading,
   }
-} 
+}

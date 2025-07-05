@@ -146,4 +146,4 @@ const fallbackTranslations: Record<string, Partial<Record<Locale, string>>> = {
 export function getFallbackTranslation(text: string, targetLocale: Locale): string | null {
   const translations = fallbackTranslations[text]
   return translations ? translations[targetLocale] || null : null
-} 
+}

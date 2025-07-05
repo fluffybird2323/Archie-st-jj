@@ -69,4 +69,4 @@ export async function GET() {
     message: "DeepL translation service is not available",
     service: "DeepL API",
   })
-} 
+}

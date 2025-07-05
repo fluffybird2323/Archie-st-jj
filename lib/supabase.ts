@@ -28,7 +28,7 @@ export interface DatabaseProduct {
   description: string
   images: string[]
   sizes: string[]
-  colors: string[]
+  colors: Array<string | { name: string; imageIndex: number }> // Support both formats
   created_at: string
   updated_at: string
 }
@@ -100,55 +100,29 @@ export async function upsertProduct(product: Partial<DatabaseProduct>) {
 }
 
 export async function createProduct(productData: Omit<DatabaseProduct, "id" | "created_at" | "updated_at">) {
-  try {
-    if (!supabase) {
-      throw new Error("Supabase not configured in createProduct.")
-    }
+  if (!supabase) throw new Error("Supabase not configured in createProduct.")
 
-    const now = new Date().toISOString()
-    const newProduct = {
-      ...productData,
-      created_at: now,
-      updated_at: now,
-    }
+  const now = new Date().toISOString()
+  const newProduct = { ...productData, created_at: now, updated_at: now }
 
-    const { data, error } = await supabase.from("products").insert(newProduct).select().single()
+  const { data, error } = await supabase.from("products").insert(newProduct).select().maybeSingle() // <= tolerate 0 or 1 rows
 
-    if (error) {
-      console.error("Error creating product:", error)
-      throw error
-    }
+  if (error) throw error
 
-    return data as unknown as DatabaseProduct
-  } catch (error) {
-    console.error("Unexpected error creating product:", error)
-    throw error
-  }
+  // If data is array (older Supabase versions) grab first item
+  return (Array.isArray(data) ? data[0] : data) as unknown as DatabaseProduct
 }
 
 export async function updateProduct(id: string, productData: Partial<Omit<DatabaseProduct, "id" | "created_at">>) {
-  try {
-    if (!supabase) {
-      throw new Error("Supabase not configured in updateProduct.")
-    }
+  if (!supabase) throw new Error("Supabase not configured in updateProduct.")
 
-    const updatedProduct = {
-      ...productData,
-      updated_at: new Date().toISOString(),
-    }
+  const updatedProduct = { ...productData, updated_at: new Date().toISOString() }
 
-    const { data, error } = await supabase.from("products").update(updatedProduct).eq("id", id).select().single()
+  const { data, error } = await supabase.from("products").update(updatedProduct).eq("id", id).select().maybeSingle() // <= tolerate 0 or 1 rows
 
-    if (error) {
-      console.error("Error updating product:", error)
-      throw error
-    }
+  if (error) throw error
 
-    return data as unknown as DatabaseProduct
-  } catch (error) {
-    console.error("Unexpected error updating product:", error)
-    throw error
-  }
+  return (Array.isArray(data) ? data[0] : data) as unknown as DatabaseProduct
 }
 
 export async function deleteProduct(id: string) {

@@ -93,4 +93,4 @@ console.log('\n=== Exact Scenario Test ===');
 console.log('10 items at 5999 each:');
 console.log(`Direct calculation: ${5999 * 10}`);
 console.log(`With Math.round: ${Math.round(5999 * 10 * 100) / 100}`);
-console.log(`Without Math.round: ${5999 * 10}`); 
+console.log(`Without Math.round: ${5999 * 10}`);

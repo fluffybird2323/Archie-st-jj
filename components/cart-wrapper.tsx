@@ -37,4 +37,4 @@ export function CartWrapper() {
   }
 
   return <Cart locale={getCurrentLocale()} />
-} 
+}

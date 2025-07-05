@@ -166,4 +166,4 @@ export async function translateCartItem(
     console.error('Failed to translate cart item:', error)
     return item
   }
-} 
+}

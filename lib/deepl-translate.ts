@@ -127,4 +127,4 @@ export function clearDeepLCache(): void {
  */
 export function getDeepLCacheStats(): { size: number } {
   return { size: translationCache.size }
-} 
+}

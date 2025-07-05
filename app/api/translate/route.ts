@@ -57,4 +57,4 @@ export async function GET() {
     configured: isConfigured,
     message: isConfigured ? "Google Translate API is configured" : "Google Translate API is not configured",
   })
-} 
+}

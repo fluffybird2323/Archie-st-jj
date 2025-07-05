@@ -22,20 +22,20 @@ Any changes you make to your deployed app will be automatically pushed to this r
 ### Environment Setup
 
 1. Clone the repository:
-```bash
+\`\`\`bash
 git clone <your-repo-url>
 cd Archie-st-jj
-```
+\`\`\`
 
 2. Install dependencies:
-```bash
+\`\`\`bash
 pnpm install
 # or
 npm install
-```
+\`\`\`
 
 3. Create a `.env.local` file in the root directory with the following variables:
-```env
+\`\`\`env
 # Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -46,7 +46,7 @@ STRIPE_SECRET_KEY=your_stripe_secret_key
 
 # Optional: Google Translate API (for premium translation service)
 GOOGLE_TRANSLATE_API_KEY=your_google_translate_api_key
-```
+\`\`\`
 
 ### Database Setup
 
@@ -60,11 +60,11 @@ GOOGLE_TRANSLATE_API_KEY=your_google_translate_api_key
 ### Running the Application
 
 1. Start the development server:
-```bash
+\`\`\`bash
 pnpm dev
 # or
 npm run dev
-```
+\`\`\`
 
 2. Open [http://localhost:3000](http://localhost:3000) in your browser
 
@@ -77,7 +77,7 @@ npm run dev
 
 ### Project Structure
 
-```
+\`\`\`
 ├── app/                    # Next.js app directory
 │   ├── [locale]/          # Internationalized routes
 │   ├── admin/             # Admin panel routes
@@ -103,7 +103,7 @@ npm run dev
 │   └── cart-context.tsx           # Shopping cart state
 ├── scripts/              # Database setup scripts
 └── public/               # Static assets
-```
+\`\`\`
 
 ## Translation Services
 
@@ -138,7 +138,7 @@ Google Translate API as an alternative:
 
 ### Using Translation in Components
 
-```tsx
+\`\`\`tsx
 import { useEnhancedDictionary } from "@/lib/i18n/use-enhanced-dictionary"
 
 function MyComponent() {
@@ -156,7 +156,7 @@ function MyComponent() {
     </div>
   )
 }
-```
+\`\`\`
 
 ### Translation API Endpoints
 

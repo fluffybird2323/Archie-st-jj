@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
@@ -11,6 +13,12 @@ import { formatPrice, getUSDPrice } from "@/lib/i18n/utils"
 import type { Product } from "@/lib/products-dynamic"
 import type { Dictionary } from "@/lib/i18n/dictionaries"
 import type { Locale } from "@/lib/i18n/config"
+
+// Handle both string colors and color-index objects
+type ColorOption = string | { name: string; imageIndex: number }
+
+const getColorName = (c: ColorOption): string => (typeof c === "string" ? c : (c?.name ?? ""))
+const getColorImageIndex = (c: ColorOption): number => (typeof c === "string" ? 0 : (c?.imageIndex ?? 0))
 
 const getStripePromise = () => {
   const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
@@ -40,6 +48,19 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50
 
+  // Handle color selection and image switching
+  const handleColorSelect = (colorOption: ColorOption) => {
+    const colorName = getColorName(colorOption)
+    const imageIndex = getColorImageIndex(colorOption)
+
+    setSelectedColor(colorName)
+
+    // Switch to the corresponding image if it exists
+    if (imageIndex < product.images.length) {
+      setSelectedImage(imageIndex)
+    }
+  }
+
   const handleAddToCart = () => {
     if (!selectedSize || !selectedColor) {
       setError("Please select size and color")
@@ -53,7 +74,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
       productId: product.id,
       name: productDisplayName,
       price: product.price,
-      image: product.images[0],
+      image: product.images[selectedImage] || product.images[0], // Use current selected image
       size: selectedSize,
       color: selectedColor,
       quantity: quantity,
@@ -62,10 +83,10 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
 
     setAddToCartSuccess(true)
     setError(null)
-    
+
     // Automatically open the cart
     toggleCart()
-    
+
     // Hide success message after 3 seconds
     setTimeout(() => setAddToCartSuccess(false), 3000)
   }
@@ -99,7 +120,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
         body: JSON.stringify({
           priceId: usdPrice * quantity,
           productName: productTitle,
-          productImage: product.images[0],
+          productImage: product.images[selectedImage] || product.images[0],
           locale: locale,
         }),
       })
@@ -174,16 +195,6 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
 
   const backUrl = locale === "en" ? "/" : `/${locale}`
 
-  const handleColorSelect = (color: string) => {
-    setSelectedColor(color)
-    const colorIndex = product.colors.indexOf(color)
-    // Map colors to images starting from index 1 (second image)
-    // First image (index 0) is the main thumbnail
-    if (colorIndex !== -1 && colorIndex + 1 < product.images.length) {
-      setSelectedImage(colorIndex + 1)
-    }
-  }
-
   return (
     <div className="min-h-screen bg-white pt-16">
       <div className="max-w-6xl mx-auto px-4 py-6">
@@ -199,7 +210,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Product Images - Enhanced with Navigation */}
           <div className="space-y-3">
-            <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-light-100 max-w-md mx-auto lg:mx-0">
+            <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-light-100 max-w-md mx-auto lg:mx-0 group">
               {/* Main Image */}
               <div
                 ref={imageContainerRef}
@@ -213,9 +224,9 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
                   alt={dictionary.productNames[product.name as keyof typeof dictionary.productNames] || product.name}
                   width={500}
                   height={500}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-opacity duration-300"
                 />
-                
+
                 {/* Navigation Buttons - Only show if there are multiple images */}
                 {product.images.length > 1 && (
                   <>
@@ -227,7 +238,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
                     >
                       <ChevronLeft className="w-5 h-5" />
                     </button>
-                    
+
                     {/* Right Button */}
                     <button
                       onClick={goToNextImage}
@@ -236,7 +247,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
                     >
                       <ChevronRight className="w-5 h-5" />
                     </button>
-                    
+
                     {/* Image Counter */}
                     <div className="absolute bottom-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-xs">
                       {selectedImage + 1} / {product.images.length}
@@ -245,7 +256,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
                 )}
               </div>
             </div>
-            
+
             {/* Thumbnail Navigation - Horizontal Scrolling Gallery */}
             {product.images.length > 1 && (
               <div className="max-w-md mx-auto lg:mx-0">
@@ -306,23 +317,26 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
               </div>
             </div>
 
-            {/* Color Selection - Compact */}
+            {/* Color Selection with Image Switching */}
             <div>
               <h3 className="text-sm font-bold text-black mb-2">{dictionary.products.selectColor}</h3>
               <div className="flex gap-2 flex-wrap">
-                {product.colors.map((color) => (
-                  <button
-                    key={color}
-                    onClick={() => handleColorSelect(color)}
-                    className={`py-2 px-3 border-2 rounded text-sm font-medium transition-colors ${
-                      selectedColor === color
-                        ? "border-black bg-black text-white"
-                        : "border-light-300 text-black hover:border-gray-400"
-                    }`}
-                  >
-                    {color}
-                  </button>
-                ))}
+                {(product.colors as ColorOption[]).map((colorOpt, idx) => {
+                  const colorName = getColorName(colorOpt)
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => handleColorSelect(colorOpt)}
+                      className={`py-2 px-3 border-2 rounded text-sm font-medium transition-colors ${
+                        selectedColor === colorName
+                          ? "border-black bg-black text-white"
+                          : "border-light-300 text-black hover:border-gray-400"
+                      }`}
+                    >
+                      {colorName}
+                    </button>
+                  )
+                })}
               </div>
             </div>
 
