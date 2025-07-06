@@ -40,18 +40,7 @@ export function LocalizedVideoBanner({ dictionary }: LocalizedVideoBannerProps) 
   }
 
   return (
-    <section className="relative h-screen w-full overflow-hidden">
-      {/* Static Background Image - Shows while video loads */}
-      <div
-        className={cn(
-          "absolute inset-0 bg-cover bg-center bg-gray-900 transition-opacity duration-1000",
-          videoLoaded ? "opacity-0" : "opacity-100",
-        )}
-        style={{
-          backgroundImage: "url('/placeholder.svg?height=1080&width=1920')",
-        }}
-      />
-
+    <section className="relative h-screen w-full overflow-hidden bg-black">
       {/* Video Background */}
       <video
         autoPlay
@@ -74,7 +63,7 @@ export function LocalizedVideoBanner({ dictionary }: LocalizedVideoBannerProps) 
 
       {/* Loading Indicator */}
       {!videoLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0 flex items-center justify-center bg-black">
           <div className="text-white text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
             <p className="text-sm opacity-75">Loading...</p>
