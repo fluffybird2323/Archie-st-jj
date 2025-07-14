@@ -11,9 +11,10 @@ export interface Product {
   description: string
   images: string[]
   sizes: string[]
-  colors: string[] // Back to simple string array
+  colors: Array<string | { name: string; imageIndex: number }>
   translatedName?: string
   translatedDescription?: string
+  reviews?: any[] // Add this line for reviews
 }
 
 // Export both getProducts and getAllProducts for compatibility

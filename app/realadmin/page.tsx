@@ -11,12 +11,23 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Trash2, Edit, Plus, Users, Package, BarChart3, X, Save } from "lucide-react"
 import { getProducts, type Product } from "@/lib/products-dynamic"
-import { createProduct, updateProduct, deleteProduct } from "@/lib/supabase"
+import { createProduct, updateProduct, deleteProduct, checkProductExists, testSupabaseConnection } from "@/lib/supabase"
 import Image from "next/image"
 
 interface ColorWithIndex {
   name: string
   imageIndex: number
+}
+
+// Add ProductReview type for admin editing
+interface ProductReview {
+  title: string
+  text: string
+  images: string[]
+  author_name: string
+  author_country: string
+  rating: number
+  review_date: string
 }
 
 interface ProductFormData {
@@ -28,6 +39,7 @@ interface ProductFormData {
   images: string[]
   sizes: string[]
   colors: ColorWithIndex[] // Support color-index mapping
+  reviews: ProductReview[]
 }
 
 export default function RealAdminPage() {
@@ -45,6 +57,7 @@ export default function RealAdminPage() {
     images: [],
     sizes: [],
     colors: [],
+    reviews: [],
   })
   const router = useRouter()
 
@@ -55,6 +68,19 @@ export default function RealAdminPage() {
       router.push("/realadmin/login")
       return
     }
+    
+    // Test Supabase connection first
+    const testConnection = async () => {
+      const result = await testSupabaseConnection()
+      if (!result.success) {
+        console.error("Supabase connection test failed:", result.error)
+        alert(`Database connection failed: ${result.error}. Please check your environment variables.`)
+        return
+      }
+      console.log("Supabase connection test successful")
+    }
+    
+    testConnection()
     loadProducts()
   }, [router])
 
@@ -80,6 +106,11 @@ export default function RealAdminPage() {
       }
 
       if (editingProduct) {
+        // Debug: Check if product exists before updating
+        const exists = await checkProductExists(editingProduct.id)
+        if (!exists) {
+          throw new Error(`Product with ID ${editingProduct.id} no longer exists in the database. Please refresh the page and try again.`)
+        }
         await updateProduct(editingProduct.id, productData)
       } else {
         await createProduct(productData)
@@ -88,6 +119,8 @@ export default function RealAdminPage() {
       resetForm()
     } catch (error) {
       console.error("Error saving product:", error)
+      // Show user-friendly error message
+      alert(`Failed to save product: ${error instanceof Error ? error.message : 'Unknown error occurred'}`)
     }
   }
 
@@ -107,7 +140,7 @@ export default function RealAdminPage() {
 
     // Convert colors to the format expected by the form
     const colors: ColorWithIndex[] = Array.isArray(product.colors)
-      ? product.colors.map((color, index) => {
+      ? product.colors.map((color: any, index) => {
           if (typeof color === "string") {
             return { name: color, imageIndex: index }
           } else if (color && typeof color === "object" && "name" in color) {
@@ -129,6 +162,7 @@ export default function RealAdminPage() {
       images: product.images,
       sizes: product.sizes,
       colors: colors,
+      reviews: Array.isArray(product.reviews) ? product.reviews : [],
     })
     setShowForm(true)
   }
@@ -146,6 +180,7 @@ export default function RealAdminPage() {
       images: [],
       sizes: [],
       colors: [],
+      reviews: [],
     })
   }
 
@@ -193,7 +228,7 @@ export default function RealAdminPage() {
 
       // Convert colors to the format we can work with
       const colors: ColorWithIndex[] = Array.isArray(product.colors)
-        ? product.colors.map((color, index) => {
+        ? product.colors.map((color: any, index) => {
             if (typeof color === "string") {
               return { name: color, imageIndex: index }
             } else if (color && typeof color === "object" && "name" in color) {
@@ -217,6 +252,7 @@ export default function RealAdminPage() {
       setEditingColorIndex(null)
     } catch (error) {
       console.error("Error updating color index:", error)
+      alert(`Failed to update color index: ${error instanceof Error ? error.message : 'Unknown error occurred'}`)
     }
   }
 
@@ -270,6 +306,20 @@ export default function RealAdminPage() {
               <Button onClick={() => setShowForm(true)} className="flex items-center gap-2">
                 <Plus className="h-4 w-4" />
                 Add Product
+              </Button>
+              <Button variant="outline" onClick={loadProducts} className="flex items-center gap-2">
+                <Package className="h-4 w-4" />
+                Refresh
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={async () => {
+                  const result = await testSupabaseConnection()
+                  alert(result.success ? "Connection successful!" : `Connection failed: ${result.error}`)
+                }}
+                className="flex items-center gap-2"
+              >
+                Test DB
               </Button>
               <Button variant="outline" onClick={handleLogout}>
                 Logout
@@ -484,6 +534,100 @@ export default function RealAdminPage() {
                       <p className="text-xs text-gray-500 mt-1">
                         Image index corresponds to the position in your image URLs list (starting from 0)
                       </p>
+                    </div>
+
+                    {/* Reviews Editing Section */}
+                    <div>
+                      <Label>Product Reviews</Label>
+                      <div className="space-y-4 mt-2">
+                        {formData.reviews.map((review, idx) => (
+                          <div key={idx} className="border rounded-lg p-4 bg-gray-50 flex flex-col gap-2">
+                            <div className="flex gap-2">
+                              <Input
+                                className="flex-1"
+                                placeholder="Title"
+                                value={review.title}
+                                onChange={e => setFormData(prev => ({
+                                  ...prev,
+                                  reviews: prev.reviews.map((r, i) => i === idx ? { ...r, title: e.target.value } : r)
+                                }))}
+                              />
+                              <Input
+                                className="w-24"
+                                placeholder="Rating"
+                                type="number"
+                                min={1}
+                                max={5}
+                                value={review.rating}
+                                onChange={e => setFormData(prev => ({
+                                  ...prev,
+                                  reviews: prev.reviews.map((r, i) => i === idx ? { ...r, rating: Number(e.target.value) } : r)
+                                }))}
+                              />
+                            </div>
+                            <Textarea
+                              placeholder="Review text"
+                              value={review.text}
+                              onChange={e => setFormData(prev => ({
+                                ...prev,
+                                reviews: prev.reviews.map((r, i) => i === idx ? { ...r, text: e.target.value } : r)
+                              }))}
+                            />
+                            <Input
+                              placeholder="Image URLs (comma separated)"
+                              value={review.images.join(", ")}
+                              onChange={e => setFormData(prev => ({
+                                ...prev,
+                                reviews: prev.reviews.map((r, i) => i === idx ? { ...r, images: e.target.value.split(",").map(s => s.trim()).filter(Boolean) } : r)
+                              }))}
+                            />
+                            <div className="flex gap-2">
+                              <Input
+                                className="flex-1"
+                                placeholder="Author Name"
+                                value={review.author_name}
+                                onChange={e => setFormData(prev => ({
+                                  ...prev,
+                                  reviews: prev.reviews.map((r, i) => i === idx ? { ...r, author_name: e.target.value } : r)
+                                }))}
+                              />
+                              <Input
+                                className="w-16"
+                                placeholder="Country"
+                                value={review.author_country}
+                                onChange={e => setFormData(prev => ({
+                                  ...prev,
+                                  reviews: prev.reviews.map((r, i) => i === idx ? { ...r, author_country: e.target.value } : r)
+                                }))}
+                              />
+                              <Input
+                                className="w-36"
+                                placeholder="Date (YYYY-MM-DD)"
+                                value={review.review_date}
+                                onChange={e => setFormData(prev => ({
+                                  ...prev,
+                                  reviews: prev.reviews.map((r, i) => i === idx ? { ...r, review_date: e.target.value } : r)
+                                }))}
+                              />
+                            </div>
+                            <Button type="button" variant="outline" size="sm" onClick={() => setFormData(prev => ({
+                              ...prev,
+                              reviews: prev.reviews.filter((_, i) => i !== idx)
+                            }))}>
+                              Delete Review
+                            </Button>
+                          </div>
+                        ))}
+                        <Button type="button" variant="outline" size="sm" onClick={() => setFormData(prev => ({
+                          ...prev,
+                          reviews: [
+                            ...prev.reviews,
+                            { title: "", text: "", images: [], author_name: "", author_country: "", rating: 5, review_date: new Date().toISOString().slice(0, 10) }
+                          ]
+                        }))}>
+                          Add Review
+                        </Button>
+                      </div>
                     </div>
 
                     <div className="flex gap-2">

@@ -5,9 +5,26 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 let supabaseInstance: ReturnType<typeof createClient> | null = null
 
+// Debug environment variables (only in development)
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  console.log("Supabase URL:", supabaseUrl ? "Set" : "Not set")
+  console.log("Supabase Anon Key:", supabaseAnonKey ? "Set" : "Not set")
+}
+
 if (supabaseUrl && supabaseAnonKey) {
   try {
-    supabaseInstance = createClient(supabaseUrl, supabaseAnonKey)
+    supabaseInstance = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true
+      },
+      global: {
+        headers: {
+          'apikey': supabaseAnonKey
+        }
+      }
+    })
     console.log("Supabase client initialized successfully.")
   } catch (error) {
     console.error("Failed to initialize Supabase client:", error)
@@ -31,6 +48,7 @@ export interface DatabaseProduct {
   colors: Array<string | { name: string; imageIndex: number }> // Support both formats
   created_at: string
   updated_at: string
+  reviews?: any[] // Add this line for reviews
 }
 
 export function isSupabaseConfigured(): boolean {
@@ -118,11 +136,26 @@ export async function updateProduct(id: string, productData: Partial<Omit<Databa
 
   const updatedProduct = { ...productData, updated_at: new Date().toISOString() }
 
-  const { data, error } = await supabase.from("products").update(updatedProduct).eq("id", id).select().maybeSingle() // <= tolerate 0 or 1 rows
+  // First check if the product exists
+  const { data: existingProduct, error: checkError } = await supabase
+    .from("products")
+    .select("id")
+    .eq("id", id)
+    .single()
 
-  if (error) throw error
+  if (checkError) {
+    console.error(`Product with ID ${id} not found in database`)
+    throw new Error(`Product with ID ${id} not found. It may have been deleted or the ID is incorrect.`)
+  }
 
-  return (Array.isArray(data) ? data[0] : data) as unknown as DatabaseProduct
+  const { data, error } = await supabase.from("products").update(updatedProduct).eq("id", id).select().single()
+
+  if (error) {
+    console.error("Error updating product:", error)
+    throw error
+  }
+
+  return data as unknown as DatabaseProduct
 }
 
 export async function deleteProduct(id: string) {
@@ -180,5 +213,54 @@ export async function checkDatabaseSetup() {
   } catch (error) {
     console.error("Database connection issue:", error)
     return { isSetup: false, error: "Cannot connect to database" }
+  }
+}
+
+export async function checkProductExists(id: string): Promise<boolean> {
+  try {
+    if (!supabase) {
+      console.warn("Supabase not configured")
+      return false
+    }
+
+    const { data, error } = await supabase
+      .from("products")
+      .select("id")
+      .eq("id", id)
+      .single()
+
+    if (error) {
+      console.error(`Product with ID ${id} not found:`, error)
+      return false
+    }
+
+    return !!data
+  } catch (error) {
+    console.error("Error checking product existence:", error)
+    return false
+  }
+}
+
+export async function testSupabaseConnection(): Promise<{ success: boolean; error?: string }> {
+  try {
+    if (!supabase) {
+      return { success: false, error: "Supabase client not initialized" }
+    }
+
+    // Test a simple query to verify connection and API key
+    const { data, error } = await supabase
+      .from("products")
+      .select("count")
+      .limit(1)
+
+    if (error) {
+      console.error("Supabase connection test failed:", error)
+      return { success: false, error: error.message }
+    }
+
+    return { success: true }
+  } catch (error) {
+    console.error("Unexpected error testing Supabase connection:", error)
+    return { success: false, error: "Unexpected error occurred" }
   }
 }

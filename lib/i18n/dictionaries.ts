@@ -66,7 +66,7 @@ export const dictionaries = {
       exploreLatestSubtitle: "Your next essential starts here",
     },
   },
-  "zh-cn": {
+  "zh-CN": {
     nav: {
       home: "首页",
       products: "产品",

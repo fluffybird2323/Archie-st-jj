@@ -9,15 +9,17 @@ import type { Locale } from "@/lib/i18n/config"
 import Link from "next/link"
 
 interface HomePageProps {
-  params: {
+  params: Promise<{
     locale: Locale
-  }
+  }>
 }
 
 export default async function LocalizedHomePage({ params }: HomePageProps) {
-  const { locale } = params
+  const { locale } = await params
   const products = await getProducts(locale)
-  const dictionary = dictionaries[locale]
+  
+  // Handle case where dictionary might be undefined
+  const dictionary = dictionaries[locale] || dictionaries.en
 
   return (
     <main className="min-h-screen">

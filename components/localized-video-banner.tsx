@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import type { Dictionary } from "@/lib/i18n/dictionaries"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
+import { useRef } from "react"
 
 interface LocalizedVideoBannerProps {
   dictionary: Dictionary
@@ -12,15 +13,18 @@ interface LocalizedVideoBannerProps {
 export function LocalizedVideoBanner({ dictionary }: LocalizedVideoBannerProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [videoLoaded, setVideoLoaded] = useState(false)
+  const [videoError, setVideoError] = useState(false)
+  const starfieldRef = useRef<HTMLCanvasElement>(null)
+  const [showStarfield, setShowStarfield] = useState(true)
 
   const thematicTexts = [
     {
-      main: "READY FOR ANYTHING",
-      sub: "ARTIE: Premium unisex apparel. Designed to perform, styled to live.",
+      main: dictionary.hero.readyForAnything,
+      sub: dictionary.hero.readyForAnythingSubtitle,
     },
     {
-      main: "COMFORT. ADAPTED.",
-      sub: "ARTIE: Engineered for every journey, styled for every moment. Premium apparel, limitless possibility.",
+      main: dictionary.hero.comfortAdapted,
+      sub: dictionary.hero.engineeredText,
     },
   ]
 
@@ -31,6 +35,64 @@ export function LocalizedVideoBanner({ dictionary }: LocalizedVideoBannerProps) 
 
     return () => clearInterval(interval)
   }, [thematicTexts.length])
+
+  useEffect(() => {
+    if (videoLoaded) {
+      // Fade out starfield smoothly
+      setTimeout(() => setShowStarfield(false), 1000)
+    } else {
+      setShowStarfield(true)
+    }
+  }, [videoLoaded])
+
+  useEffect(() => {
+    if (!showStarfield) return
+    const canvas = starfieldRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+
+    let animationFrameId: number
+    const w = canvas.width = window.innerWidth
+    const h = canvas.height = window.innerHeight
+    const numStars = 350
+    const stars = Array.from({ length: numStars }, () => ({
+      x: (Math.random() - 0.5) * w,
+      y: (Math.random() - 0.5) * h,
+      z: Math.random() * w,
+      o: Math.random() * 0.5 + 0.5,
+    }))
+
+    function draw() {
+      if (!ctx) return
+      ctx.clearRect(0, 0, w, h)
+      ctx.save()
+      ctx.translate(w / 2, h / 2)
+      for (const star of stars) {
+        star.z -= 8
+        if (star.z <= 1) {
+          star.x = (Math.random() - 0.5) * w
+          star.y = (Math.random() - 0.5) * h
+          star.z = w
+        }
+        const k = 128 / star.z
+        const sx = star.x * k
+        const sy = star.y * k
+        const r = Math.max(0.5, 2 - star.z / w * 2)
+        ctx.globalAlpha = star.o
+        ctx.beginPath()
+        ctx.arc(sx, sy, r, 0, 2 * Math.PI)
+        ctx.fillStyle = '#fff'
+        ctx.shadowColor = '#fff'
+        ctx.shadowBlur = 8
+        ctx.fill()
+      }
+      ctx.restore()
+      animationFrameId = requestAnimationFrame(draw)
+    }
+    draw()
+    return () => cancelAnimationFrame(animationFrameId)
+  }, [showStarfield])
 
   const scrollToProducts = () => {
     const element = document.getElementById("product-section")
@@ -47,26 +109,32 @@ export function LocalizedVideoBanner({ dictionary }: LocalizedVideoBannerProps) 
         loop
         muted
         playsInline
-        preload="metadata"
+        preload="auto"
         className={cn(
           "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
           videoLoaded ? "opacity-100" : "opacity-0",
         )}
-        onLoadedData={() => setVideoLoaded(true)}
+        onCanPlay={() => setVideoLoaded(true)}
+        onError={() => setVideoError(true)}
         poster="/placeholder.svg?height=1080&width=1920"
       >
         <source src="https://uvd.yupoo.com/720p/artiemaster/24267105.mp4" type="video/mp4" />
       </video>
 
+      {/* Animated Starfield Overlay (only visible when video is loading or fails) */}
+      {showStarfield && (!videoLoaded || videoError) && (
+        <canvas ref={starfieldRef} className="absolute inset-0 w-full h-full z-0 pointer-events-none transition-opacity duration-1000" style={{ opacity: videoLoaded ? 0 : 1 }} />
+      )}
+
       {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/40" />
+      <div className="absolute inset-0 bg-black/40 z-10" />
 
       {/* Loading Indicator */}
-      {!videoLoaded && (
+      {/* Loader removed: no spinner or loading text, just black background while video loads */}
+      {videoError && (
         <div className="absolute inset-0 flex items-center justify-center bg-black">
           <div className="text-white text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-            <p className="text-sm opacity-75">Loading...</p>
+            <p className="text-lg font-bold">Video failed to load.</p>
           </div>
         </div>
       )}
@@ -75,7 +143,7 @@ export function LocalizedVideoBanner({ dictionary }: LocalizedVideoBannerProps) 
       <div className="relative z-10 h-full flex items-center justify-center">
         <div className="text-center text-white px-4 max-w-4xl mx-auto">
           {/* Main Hero Title */}
-          <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tight">ARTIE</h1>
+          <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tight">{dictionary.hero.title}</h1>
 
           {/* Animated Thematic Text */}
           <div className="min-h-[120px] md:min-h-[150px] flex flex-col justify-center items-center mb-8">
@@ -99,7 +167,7 @@ export function LocalizedVideoBanner({ dictionary }: LocalizedVideoBannerProps) 
             size="lg"
             className="bg-white text-black hover:bg-gray-100 font-bold text-lg px-8 py-4 rounded-none"
           >
-            SHOP NOW
+            {dictionary.hero.shopNow}
           </Button>
         </div>
       </div>
