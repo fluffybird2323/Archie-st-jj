@@ -231,10 +231,10 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
           {/* Product Images Card */}
           <div className="w-full">
-            <div className="bg-white rounded-2xl shadow-xl p-4 relative aspect-[3/4] flex flex-col items-center justify-center">
+            <div className="bg-white rounded-2xl shadow-xl p-4 relative flex flex-col items-center justify-center">
               <div
                 ref={imageContainerRef}
-                className="w-full h-full flex items-center justify-center relative aspect-[3/4]"
+                className="w-full h-full flex items-center justify-center relative"
                 onTouchStart={onTouchStart}
                 onTouchMove={onTouchMove}
                 onTouchEnd={onTouchEnd}
@@ -244,7 +244,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
                   alt={productName}
                   width={600}
                   height={800}
-                  className="w-full h-full object-cover rounded-2xl transition-opacity duration-300 aspect-[3/4]"
+                  className="max-w-full max-h-[70vh] object-contain rounded-2xl transition-opacity duration-300"
                 />
 
                 {/* Navigation Buttons */}
