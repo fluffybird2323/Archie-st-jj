@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Trash2, Edit, Plus, Users, Package, BarChart3, X, Save } from "lucide-react"
+import { Trash2, Edit, Plus, Users, Package, BarChart3, X, Save, ChevronLeft, ChevronRight } from "lucide-react"
 import { getProducts, type Product } from "@/lib/products-dynamic"
 import { createProduct, updateProduct, deleteProduct, checkProductExists, testSupabaseConnection } from "@/lib/supabase"
 import Image from "next/image"
@@ -68,7 +68,7 @@ export default function RealAdminPage() {
       router.push("/realadmin/login")
       return
     }
-    
+
     // Test Supabase connection first
     const testConnection = async () => {
       const result = await testSupabaseConnection()
@@ -79,7 +79,7 @@ export default function RealAdminPage() {
       }
       console.log("Supabase connection test successful")
     }
-    
+
     testConnection()
     loadProducts()
   }, [router])
@@ -109,7 +109,9 @@ export default function RealAdminPage() {
         // Debug: Check if product exists before updating
         const exists = await checkProductExists(editingProduct.id)
         if (!exists) {
-          throw new Error(`Product with ID ${editingProduct.id} no longer exists in the database. Please refresh the page and try again.`)
+          throw new Error(
+            `Product with ID ${editingProduct.id} no longer exists in the database. Please refresh the page and try again.`,
+          )
         }
         await updateProduct(editingProduct.id, productData)
       } else {
@@ -120,7 +122,7 @@ export default function RealAdminPage() {
     } catch (error) {
       console.error("Error saving product:", error)
       // Show user-friendly error message
-      alert(`Failed to save product: ${error instanceof Error ? error.message : 'Unknown error occurred'}`)
+      alert(`Failed to save product: ${error instanceof Error ? error.message : "Unknown error occurred"}`)
     }
   }
 
@@ -220,6 +222,57 @@ export default function RealAdminPage() {
     }))
   }
 
+  // Image management functions
+  const deleteImage = (imageIndex: number) => {
+    setFormData((prev) => {
+      const newImages = prev.images.filter((_, i) => i !== imageIndex)
+
+      // Update color image indices after deletion
+      const updatedColors = prev.colors.map((color) => {
+        if (color.imageIndex > imageIndex) {
+          return { ...color, imageIndex: color.imageIndex - 1 }
+        } else if (color.imageIndex === imageIndex) {
+          return { ...color, imageIndex: 0 } // Reset to first image if deleted image was referenced
+        }
+        return color
+      })
+
+      return {
+        ...prev,
+        images: newImages,
+        colors: updatedColors,
+      }
+    })
+  }
+
+  const moveImage = (fromIndex: number, toIndex: number) => {
+    if (toIndex < 0 || toIndex >= formData.images.length) return
+
+    setFormData((prev) => {
+      const newImages = [...prev.images]
+      const [movedImage] = newImages.splice(fromIndex, 1)
+      newImages.splice(toIndex, 0, movedImage)
+
+      // Update color image indices after reordering
+      const updatedColors = prev.colors.map((color) => {
+        if (color.imageIndex === fromIndex) {
+          return { ...color, imageIndex: toIndex }
+        } else if (fromIndex < toIndex && color.imageIndex > fromIndex && color.imageIndex <= toIndex) {
+          return { ...color, imageIndex: color.imageIndex - 1 }
+        } else if (fromIndex > toIndex && color.imageIndex >= toIndex && color.imageIndex < fromIndex) {
+          return { ...color, imageIndex: color.imageIndex + 1 }
+        }
+        return color
+      })
+
+      return {
+        ...prev,
+        images: newImages,
+        colors: updatedColors,
+      }
+    })
+  }
+
   // Quick edit functions for existing products
   const handleQuickEditColorIndex = async (productId: string, colorIndex: number, newImageIndex: number) => {
     try {
@@ -252,7 +305,7 @@ export default function RealAdminPage() {
       setEditingColorIndex(null)
     } catch (error) {
       console.error("Error updating color index:", error)
-      alert(`Failed to update color index: ${error instanceof Error ? error.message : 'Unknown error occurred'}`)
+      alert(`Failed to update color index: ${error instanceof Error ? error.message : "Unknown error occurred"}`)
     }
   }
 
@@ -307,12 +360,12 @@ export default function RealAdminPage() {
                 <Plus className="h-4 w-4" />
                 Add Product
               </Button>
-              <Button variant="outline" onClick={loadProducts} className="flex items-center gap-2">
+              <Button variant="outline" onClick={loadProducts} className="flex items-center gap-2 bg-transparent">
                 <Package className="h-4 w-4" />
                 Refresh
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={async () => {
                   const result = await testSupabaseConnection()
                   alert(result.success ? "Connection successful!" : `Connection failed: ${result.error}`)
@@ -459,6 +512,76 @@ export default function RealAdminPage() {
                       />
                     </div>
 
+                    {/* Enhanced Image Management Section */}
+                    {formData.images.length > 0 && (
+                      <div className="mb-4 p-4 bg-gray-50 rounded-lg border">
+                        <div className="flex items-center justify-between mb-3">
+                          <Label className="text-sm font-medium text-gray-700">Image Management</Label>
+                          <p className="text-xs text-gray-500">Drag to reorder, click X to delete</p>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                          {formData.images.map((image, index) => (
+                            <div key={index} className="relative group">
+                              <div className="aspect-square relative border-2 border-gray-200 rounded-lg overflow-hidden bg-white">
+                                <Image
+                                  src={image || "/placeholder.svg"}
+                                  alt={`Image ${index}`}
+                                  fill
+                                  className="object-cover"
+                                />
+
+                                {/* Delete Button */}
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="sm"
+                                  className="absolute top-1 right-1 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                  onClick={() => deleteImage(index)}
+                                >
+                                  <X className="h-3 w-3" />
+                                </Button>
+
+                                {/* Move Left Button */}
+                                {index > 0 && (
+                                  <Button
+                                    type="button"
+                                    variant="secondary"
+                                    size="sm"
+                                    className="absolute top-1 left-1 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    onClick={() => moveImage(index, index - 1)}
+                                  >
+                                    <ChevronLeft className="h-3 w-3" />
+                                  </Button>
+                                )}
+
+                                {/* Move Right Button */}
+                                {index < formData.images.length - 1 && (
+                                  <Button
+                                    type="button"
+                                    variant="secondary"
+                                    size="sm"
+                                    className="absolute bottom-1 right-1 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    onClick={() => moveImage(index, index + 1)}
+                                  >
+                                    <ChevronRight className="h-3 w-3" />
+                                  </Button>
+                                )}
+
+                                {/* Index Badge */}
+                                <div className="absolute bottom-1 left-1 bg-black bg-opacity-75 text-white text-xs px-1.5 py-0.5 rounded">
+                                  {index}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-xs text-gray-500 mt-2">
+                          Index numbers will update automatically when you reorder or delete images. Colors will be
+                          updated accordingly.
+                        </p>
+                      </div>
+                    )}
+
                     {/* Enhanced Colors Section with Image Preview */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
@@ -468,28 +591,6 @@ export default function RealAdminPage() {
                           Add Color
                         </Button>
                       </div>
-
-                      {/* Image Preview Row */}
-                      {formData.images.length > 0 && (
-                        <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                          <p className="text-sm font-medium text-gray-700 mb-2">Image Preview (for reference):</p>
-                          <div className="flex gap-2 overflow-x-auto">
-                            {formData.images.map((image, index) => (
-                              <div key={index} className="flex-shrink-0 text-center">
-                                <div className="w-16 h-16 relative border rounded overflow-hidden">
-                                  <Image
-                                    src={image || "/placeholder.svg"}
-                                    alt={`Image ${index}`}
-                                    fill
-                                    className="object-cover"
-                                  />
-                                </div>
-                                <p className="text-xs text-gray-500 mt-1">Index: {index}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
 
                       <div className="space-y-2">
                         {formData.colors.map((color, index) => (
@@ -547,10 +648,14 @@ export default function RealAdminPage() {
                                 className="flex-1"
                                 placeholder="Title"
                                 value={review.title}
-                                onChange={e => setFormData(prev => ({
-                                  ...prev,
-                                  reviews: prev.reviews.map((r, i) => i === idx ? { ...r, title: e.target.value } : r)
-                                }))}
+                                onChange={(e) =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    reviews: prev.reviews.map((r, i) =>
+                                      i === idx ? { ...r, title: e.target.value } : r,
+                                    ),
+                                  }))
+                                }
                               />
                               <Input
                                 className="w-24"
@@ -559,72 +664,124 @@ export default function RealAdminPage() {
                                 min={1}
                                 max={5}
                                 value={review.rating}
-                                onChange={e => setFormData(prev => ({
-                                  ...prev,
-                                  reviews: prev.reviews.map((r, i) => i === idx ? { ...r, rating: Number(e.target.value) } : r)
-                                }))}
+                                onChange={(e) =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    reviews: prev.reviews.map((r, i) =>
+                                      i === idx ? { ...r, rating: Number(e.target.value) } : r,
+                                    ),
+                                  }))
+                                }
                               />
                             </div>
                             <Textarea
                               placeholder="Review text"
                               value={review.text}
-                              onChange={e => setFormData(prev => ({
-                                ...prev,
-                                reviews: prev.reviews.map((r, i) => i === idx ? { ...r, text: e.target.value } : r)
-                              }))}
+                              onChange={(e) =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  reviews: prev.reviews.map((r, i) => (i === idx ? { ...r, text: e.target.value } : r)),
+                                }))
+                              }
                             />
                             <Input
                               placeholder="Image URLs (comma separated)"
                               value={review.images.join(", ")}
-                              onChange={e => setFormData(prev => ({
-                                ...prev,
-                                reviews: prev.reviews.map((r, i) => i === idx ? { ...r, images: e.target.value.split(",").map(s => s.trim()).filter(Boolean) } : r)
-                              }))}
+                              onChange={(e) =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  reviews: prev.reviews.map((r, i) =>
+                                    i === idx
+                                      ? {
+                                          ...r,
+                                          images: e.target.value
+                                            .split(",")
+                                            .map((s) => s.trim())
+                                            .filter(Boolean),
+                                        }
+                                      : r,
+                                  ),
+                                }))
+                              }
                             />
                             <div className="flex gap-2">
                               <Input
                                 className="flex-1"
                                 placeholder="Author Name"
                                 value={review.author_name}
-                                onChange={e => setFormData(prev => ({
-                                  ...prev,
-                                  reviews: prev.reviews.map((r, i) => i === idx ? { ...r, author_name: e.target.value } : r)
-                                }))}
+                                onChange={(e) =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    reviews: prev.reviews.map((r, i) =>
+                                      i === idx ? { ...r, author_name: e.target.value } : r,
+                                    ),
+                                  }))
+                                }
                               />
                               <Input
                                 className="w-16"
                                 placeholder="Country"
                                 value={review.author_country}
-                                onChange={e => setFormData(prev => ({
-                                  ...prev,
-                                  reviews: prev.reviews.map((r, i) => i === idx ? { ...r, author_country: e.target.value } : r)
-                                }))}
+                                onChange={(e) =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    reviews: prev.reviews.map((r, i) =>
+                                      i === idx ? { ...r, author_country: e.target.value } : r,
+                                    ),
+                                  }))
+                                }
                               />
                               <Input
                                 className="w-36"
                                 placeholder="Date (YYYY-MM-DD)"
                                 value={review.review_date}
-                                onChange={e => setFormData(prev => ({
-                                  ...prev,
-                                  reviews: prev.reviews.map((r, i) => i === idx ? { ...r, review_date: e.target.value } : r)
-                                }))}
+                                onChange={(e) =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    reviews: prev.reviews.map((r, i) =>
+                                      i === idx ? { ...r, review_date: e.target.value } : r,
+                                    ),
+                                  }))
+                                }
                               />
                             </div>
-                            <Button type="button" variant="outline" size="sm" onClick={() => setFormData(prev => ({
-                              ...prev,
-                              reviews: prev.reviews.filter((_, i) => i !== idx)
-                            }))}>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  reviews: prev.reviews.filter((_, i) => i !== idx),
+                                }))
+                              }
+                            >
                               Delete Review
                             </Button>
                           </div>
                         ))}
-                        <Button type="button" variant="outline" size="sm" onClick={() => setFormData(prev => ({
-                          ...prev,
-                          reviews: [
-                            ...prev.reviews,
-                            { title: "", text: "", images: [], author_name: "", author_country: "", rating: 5, review_date: new Date().toISOString().slice(0, 10) }
-                          ]
-                        }))}>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              reviews: [
+                                ...prev.reviews,
+                                {
+                                  title: "",
+                                  text: "",
+                                  images: [],
+                                  author_name: "",
+                                  author_country: "",
+                                  rating: 5,
+                                  review_date: new Date().toISOString().slice(0, 10),
+                                },
+                              ],
+                            }))
+                          }
+                        >
                           Add Review
                         </Button>
                       </div>
