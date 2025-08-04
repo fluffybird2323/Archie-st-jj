@@ -1,8 +1,12 @@
+"use client"
+
 import Link from "next/link"
 import { ChevronLeft, Truck, Clock, Globe, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
+import type { Dictionary } from "@/lib/i18n/dictionaries"
+import { use } from "react"
 
 interface ShippingPageProps {
   params: {
@@ -10,9 +14,11 @@ interface ShippingPageProps {
   }
 }
 
-export default async function ShippingPage({ params }: ShippingPageProps) {
-  const dictionary = getDictionary(params.locale)
-  const backUrl = params.locale === "en" ? "/" : `/${params.locale}`
+export default function ShippingPage({ params }: ShippingPageProps) {
+  // Use the params object correctly with the use() hook
+  const { locale } = use(params)
+  const dictionary = getDictionary(locale)
+  const backUrl = locale === "en" ? "/" : `/${locale}`
 
   return (
     <div className="min-h-screen bg-white">
@@ -45,8 +51,8 @@ export default async function ShippingPage({ params }: ShippingPageProps) {
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Clock className="w-8 h-8 text-blue-600" />
             </div>
-            <h3 className="font-bold text-lg mb-2">Fast Delivery</h3>
-            <p className="text-gray-600 text-sm">3-7 business days</p>
+            <h3 className="font-bold text-lg mb-2">Standard Delivery</h3>
+            <p className="text-gray-600 text-sm">5-15 business days</p>
           </div>
           <div className="text-center">
             <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -69,31 +75,13 @@ export default async function ShippingPage({ params }: ShippingPageProps) {
           <div className="bg-white rounded-2xl shadow-xl p-8 border">
             <h2 className="text-2xl font-bold mb-6">Shipping Methods</h2>
             <div className="space-y-6">
-              <div className="flex justify-between items-center py-4 border-b border-gray-200">
+              <div className="flex justify-between items-center py-4">
                 <div>
                   <h3 className="font-semibold">Standard Shipping</h3>
-                  <p className="text-gray-600 text-sm">3-7 business days</p>
+                  <p className="text-gray-600 text-sm">5-15 business days</p>
                 </div>
                 <div className="text-right">
                   <span className="font-bold text-green-600">FREE</span>
-                </div>
-              </div>
-              <div className="flex justify-between items-center py-4 border-b border-gray-200">
-                <div>
-                  <h3 className="font-semibold">Express Shipping</h3>
-                  <p className="text-gray-600 text-sm">1-3 business days</p>
-                </div>
-                <div className="text-right">
-                  <span className="font-bold">$15.00</span>
-                </div>
-              </div>
-              <div className="flex justify-between items-center py-4">
-                <div>
-                  <h3 className="font-semibold">Next Day Delivery</h3>
-                  <p className="text-gray-600 text-sm">1 business day (select cities)</p>
-                </div>
-                <div className="text-right">
-                  <span className="font-bold">$25.00</span>
                 </div>
               </div>
             </div>
@@ -103,7 +91,7 @@ export default async function ShippingPage({ params }: ShippingPageProps) {
             <h2 className="text-2xl font-bold mb-6">Processing Time</h2>
             <div className="space-y-4">
               <p className="text-gray-700">
-                All orders are processed within 1-2 business days. Orders are not shipped or delivered on weekends or
+                All orders are processed within 2-3 business days. Orders are not shipped or delivered on weekends or
                 holidays.
               </p>
               <p className="text-gray-700">

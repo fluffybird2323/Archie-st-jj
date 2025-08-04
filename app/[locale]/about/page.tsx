@@ -3,6 +3,8 @@ import type { Locale } from "@/lib/i18n/config"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
 import { ArrowLeft, Users, Target, Award, Heart, Zap, Globe } from "lucide-react"
+import { Logo } from "@/components/logo"
+import { LocalizedVideoBanner } from "@/components/localized-video-banner"
 
 interface AboutPageProps {
   params: {
@@ -22,8 +24,8 @@ export default async function AboutPage({ params }: AboutPageProps) {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href={getLocalizedPath("/")} className="text-2xl font-bold">
-            ARTIE
+          <Link href={getLocalizedPath("/")} className="flex items-center">
+            <Logo className="h-8 w-auto" />
           </Link>
           <Link
             href={getLocalizedPath("/")}
@@ -38,19 +40,12 @@ export default async function AboutPage({ params }: AboutPageProps) {
       {/* Main Content */}
       <main className="pt-20 pb-16">
         {/* Hero Section */}
-        <section className="relative min-h-[70vh] flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white overflow-hidden">
-          <div className="absolute inset-0 bg-[url('/placeholder.svg?height=800&width=1200')] opacity-10"></div>
-          <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
-              About <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300">ARTIE</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-300 leading-relaxed max-w-3xl mx-auto">
-              We're not just a clothing brand. We're a movement towards conscious fashion, premium quality, and timeless
-              design that transcends trends.
-            </p>
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent"></div>
-        </section>
+        <LocalizedVideoBanner
+          dictionary={dictionary}
+          title={dictionary.about.title}
+          mainText={dictionary.about.mainText}
+          subText={dictionary.about.subText}
+        />
 
         <div className="max-w-6xl mx-auto px-4">
           {/* Story Section */}

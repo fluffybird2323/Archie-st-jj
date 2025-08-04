@@ -8,6 +8,34 @@ export const dictionaries = {
       cart: "Cart",
       back: "Back",
     },
+    product: {
+      backToProducts: "Back to Products",
+      freeShipping: "Free Shipping",
+      freeShippingDesc: "On all orders over $50",
+      easyReturns: "Easy Returns",
+      easyReturnsDesc: "30-day return policy",
+      share: "Share",
+      color: "Color",
+      size: "Size",
+      sizeGuide: "Size Guide",
+      addToCart: "Add to Cart",
+      addToWishlist: "Add to Wishlist",
+      warranty: "Warranty",
+      warrantyDesc: "1-year warranty",
+      details: "Details",
+      shipping: "Shipping",
+      reviews: "Reviews",
+      productDetails: "Product Details",
+      materials: "Materials",
+      care: "Care Instructions",
+      shippingInfo: "Shipping Information",
+      standardShipping: "Standard Shipping",
+      expressShipping: "Express Shipping",
+      overnightShipping: "Overnight Shipping",
+      customerReviews: "Customer Reviews",
+      selectSize: "Please select a size",
+      selectColor: "Please select a color",
+    },
     hero: {
       title: "ARTIE",
       subtitle: "",
@@ -104,6 +132,11 @@ export const dictionaries = {
       exploreLatest: "EXPLORE THE LATEST",
       exploreLatestSubtitle: "Your next essential starts here",
     },
+    about: {
+      title: "About ARTIE",
+      mainText: "We're not just a clothing brand.",
+      subText: "We're a movement towards conscious fashion, premium quality, and timeless design that transcends trends.",
+    },
   },
   "zh-CN": {
     nav: {
@@ -113,6 +146,13 @@ export const dictionaries = {
       contact: "联系",
       cart: "购物车",
       back: "返回",
+    },
+    product: {
+      backToProducts: "返回产品",
+      freeShipping: "免费送货",
+      freeShippingDesc: "所有订单超过$50",
+      easyReturns: "轻松退货",
+      share: "分享",
     },
     hero: {
       title: "ARTIE",
@@ -197,7 +237,12 @@ export const dictionaries = {
       privacy: "隐私政策",
       terms: "服务条款",
       sustainability: "可持续发展",
-      allRightsReserved: "版权所有。",
+      allRightsReserved: "版权所有。"
+    },
+    about: {
+      title: "关于ARTIE",
+      mainText: "我们不仅仅是一个服装品牌。",
+      subText: "我们是一场迈向有意识时尚、卓越品质和超越潮流的永恒设计的运动。"
     },
     common: {
       loading: "加载中...",
@@ -219,6 +264,13 @@ export const dictionaries = {
       contact: "お問い合わせ",
       cart: "カート",
       back: "戻る",
+    },
+    product: {
+      backToProducts: "製品に戻る",
+      freeShipping: "送料無料",
+      freeShippingDesc: "$50以上のすべての注文",
+      easyReturns: "簡単な返品",
+      share: "共有",
     },
     hero: {
       title: "ARTIE",
@@ -327,6 +379,13 @@ export const dictionaries = {
       cart: "Warenkorb",
       back: "Zurück",
     },
+    product: {
+      backToProducts: "Zurück zu Produkten",
+      freeShipping: "Kostenloser Versand",
+      freeShippingDesc: "Bei allen Bestellungen über $50",
+      easyReturns: "Einfache Rücksendung",
+      share: "Teilen",
+    },
     hero: {
       title: "ARTIE",
       subtitle: "",
@@ -432,6 +491,13 @@ export const dictionaries = {
       contact: "Contact",
       cart: "Panier",
       back: "Retour",
+    },
+    product: {
+      backToProducts: "Retour aux produits",
+      freeShipping: "Livraison gratuite",
+      freeShippingDesc: "Sur toutes les commandes de plus de $50",
+      easyReturns: "Retours faciles",
+      share: "Partager",
     },
     hero: {
       title: "ARTIE",
@@ -541,6 +607,13 @@ export const dictionaries = {
       cart: "Carrito",
       back: "Volver",
     },
+    product: {
+      backToProducts: "Volver a Productos",
+      freeShipping: "Envío gratuito",
+      freeShippingDesc: "En todos los pedidos superiores a $50",
+      easyReturns: "Devoluciones fáciles",
+      share: "Compartir",
+    },
     hero: {
       title: "ARTIE",
       subtitle: "",
@@ -646,6 +719,13 @@ export const dictionaries = {
       contact: "Contatto",
       cart: "Carrello",
       back: "Indietro",
+    },
+    product: {
+      backToProducts: "Torna ai Prodotti",
+      freeShipping: "Spedizione gratuita",
+      freeShippingDesc: "Su tutti gli ordini superiori a $50",
+      easyReturns: "Resi facili",
+      share: "Condividi",
     },
     hero: {
       title: "ARTIE",

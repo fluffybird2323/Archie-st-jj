@@ -8,25 +8,31 @@ import { useRef } from "react"
 
 interface LocalizedVideoBannerProps {
   dictionary: Dictionary
+  title?: string
+  mainText?: string
+  subText?: string
 }
 
-export function LocalizedVideoBanner({ dictionary }: LocalizedVideoBannerProps) {
+export function LocalizedVideoBanner({ dictionary, title, mainText, subText }: LocalizedVideoBannerProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [videoLoaded, setVideoLoaded] = useState(false)
   const [videoError, setVideoError] = useState(false)
   const starfieldRef = useRef<HTMLCanvasElement>(null)
   const [showStarfield, setShowStarfield] = useState(true)
 
-  const thematicTexts = [
-    {
-      main: dictionary.hero.readyForAnything,
-      sub: dictionary.hero.readyForAnythingSubtitle,
-    },
-    {
-      main: dictionary.hero.comfortAdapted,
-      sub: dictionary.hero.engineeredText,
-    },
-  ]
+  const thematicTexts =
+    mainText && subText
+      ? [{ main: mainText, sub: subText }]
+      : [
+          {
+            main: dictionary.hero.readyForAnything,
+            sub: dictionary.hero.readyForAnythingSubtitle,
+          },
+          {
+            main: dictionary.hero.comfortAdapted,
+            sub: dictionary.hero.engineeredText,
+          },
+        ]
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -143,7 +149,7 @@ export function LocalizedVideoBanner({ dictionary }: LocalizedVideoBannerProps) 
       <div className="relative z-10 h-full flex items-center justify-center">
         <div className="text-center text-white px-4 max-w-4xl mx-auto">
           {/* Main Hero Title */}
-          <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tight">{dictionary.hero.title}</h1>
+          <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tight">{title || dictionary.hero.title}</h1>
 
           {/* Animated Thematic Text */}
           <div className="min-h-[120px] md:min-h-[150px] flex flex-col justify-center items-center mb-8">

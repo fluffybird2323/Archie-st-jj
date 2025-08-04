@@ -29,9 +29,13 @@ interface ProductDetailPageProps {
 
 export function ProductDetailPage({ product, dictionary, locale }: ProductDetailPageProps) {
   const [selectedSize, setSelectedSize] = useState<string>("")
-  const [selectedColor, setSelectedColor] = useState<string>(product.colors[0] || "")
-  const [selectedImage, setSelectedImage] = useState(0)
-  const { addToCart } = useCart()
+  const [selectedColor, setSelectedColor] = useState<ColorOption>(product.colors[0] || "")
+  // Set initial image index based on first color if it has an imageIndex
+  const initialImageIndex = typeof product.colors[0] !== "string" && product.colors[0]?.imageIndex !== undefined
+    ? product.colors[0].imageIndex
+    : 0
+  const [selectedImage, setSelectedImage] = useState(initialImageIndex)
+  const { addItem } = useCart()
 
   const getLocalizedPath = (path: string) => {
     return locale === "en" ? path : `/${locale}${path}`
@@ -43,13 +47,14 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
       return
     }
 
-    addToCart({
-      id: `${product.id}-${selectedSize}-${selectedColor}`,
+    addItem({
+      productId: product.id,
+      slug: product.slug,
       name: product.name,
       price: product.price,
       image: product.images[0],
       size: selectedSize,
-      color: selectedColor,
+      color: getColorName(selectedColor),
       quantity: 1,
     })
   }
@@ -183,20 +188,26 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
               {product.colors.length > 0 && (
                 <div>
                   <h3 className="text-lg font-semibold mb-3">
-                    {dictionary.product.color}: {selectedColor}
+                    {dictionary.product.color}: {getColorName(selectedColor)}
                   </h3>
                   <div className="flex space-x-3">
                     {product.colors.map((color) => (
                       <button
-                        key={color}
-                        onClick={() => setSelectedColor(color)}
+                        key={typeof color === "string" ? color : color.name}
+                        onClick={() => {
+                          setSelectedColor(color);
+                          // If color has an imageIndex, update the selected image
+                          if (typeof color !== "string" && color.imageIndex !== undefined) {
+                            setSelectedImage(color.imageIndex);
+                          }
+                        }}
                         className={`w-12 h-12 rounded-full border-2 transition-all ${
-                          selectedColor === color
+                          getColorName(selectedColor) === getColorName(color)
                             ? "border-gray-900 scale-110"
                             : "border-gray-300 hover:border-gray-400"
                         }`}
-                        style={{ backgroundColor: color.toLowerCase() }}
-                        title={color}
+                        style={{ backgroundColor: getColorName(color).toLowerCase() }}
+                        title={getColorName(color)}
                       />
                     ))}
                   </div>
