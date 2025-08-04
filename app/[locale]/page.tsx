@@ -12,12 +12,12 @@ import { getProducts } from "@/lib/products-dynamic"
 import type { Locale } from "@/lib/i18n/config"
 import type { Dictionary } from "@/lib/i18n/dictionaries"
 import type { Product } from "@/lib/products-dynamic"
-import { useState, useEffect } from "react"
+import { use as usePromise, useState, useEffect } from "react"
 
 interface HomePageProps {
-  params: {
+  params: Promise<{
     locale: Locale
-  }
+  }>
 }
 
 // Default dictionary with all required properties
@@ -123,7 +123,7 @@ const defaultDictionary: Dictionary = {
 
 export default function HomePage({ params }: HomePageProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { locale } = params // Corrected: Directly destructure locale from params
+  const { locale } = usePromise(params)
 
   // Initialize with default values to prevent undefined errors
   const [dictionary, setDictionary] = useState<Dictionary>(defaultDictionary)
@@ -166,7 +166,7 @@ export default function HomePage({ params }: HomePageProps) {
               <Link href={getLocalizedPath("/#products")} className="text-gray-900 hover:text-gray-600 font-medium">
                 {dictionary.nav.products}
               </Link>
-              <Link href={getLocalizedPath("/#about")} className="text-gray-900 hover:text-gray-600 font-medium">
+              <Link href={getLocalizedPath("/about")} className="text-gray-900 hover:text-gray-600 font-medium">
                 {dictionary.nav.about}
               </Link>
               <Link href={getLocalizedPath("/contact")} className="text-gray-900 hover:text-gray-600 font-medium">
@@ -215,7 +215,7 @@ export default function HomePage({ params }: HomePageProps) {
                 {dictionary?.nav?.products || "Products"}
               </Link>
               <Link
-                href={getLocalizedPath("/#about")}
+                href={getLocalizedPath("/about")}
                 className="text-gray-900 hover:text-gray-600 font-medium py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >

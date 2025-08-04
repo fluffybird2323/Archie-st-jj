@@ -17,6 +17,7 @@ const outfit = Outfit({
 })
 
 export const metadata = {
+  metadataBase: new URL('http://localhost:3003'),
   title: "ARTIE - Premium Streetwear",
   description: "Premium streetwear that defines your style. Discover ARTIE's collection of contemporary urban fashion.",
   keywords: "streetwear, fashion, urban, premium, clothing, hoodies, t-shirts, ARTIE",

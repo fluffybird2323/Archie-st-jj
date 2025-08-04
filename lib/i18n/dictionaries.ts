@@ -40,11 +40,10 @@ export const dictionaries = {
       title: "ARTIE",
       subtitle: "",
       shopNow: "SHOP NOW",
-      readyForAnything: "READY FOR ANYTHING",
-      readyForAnythingSubtitle: "ARTIE: Premium unisex apparel. Designed to perform, styled to live.",
-      comfortAdapted: "COMFORT. ADAPTED.",
-      engineeredText:
-        "ARTIE: Engineered for every journey, styled for every moment. Premium apparel, limitless possibility.",
+      readyForAnything: "Ready for Anything",
+      readyForAnythingSubtitle: "Designed for comfort and performance",
+      comfortAdapted: "Comfort Adapted",
+      engineeredText: "Engineered for your lifestyle",
     },
     products: {
       title: "Our Products",
@@ -65,7 +64,7 @@ export const dictionaries = {
     },
     success: {
       title: "Order Successful!",
-      message: "Thank you for your purchase! Your order has been confirmed and will be processed shortly.",
+      message: "Thank you for your purchase!",
       continueShopping: "Continue Shopping",
       orderNumber: "Order Number",
       estimatedDelivery: "Estimated Delivery",
@@ -74,8 +73,8 @@ export const dictionaries = {
     },
     sizeGuide: {
       title: "SIZE GUIDE",
-      subtitle: "Find your perfect fit with precision and confidence",
-      productDescription: "Premium cotton-poly blend • 360g weight • Engineered for comfort and durability",
+      subtitle: "Find your perfect fit",
+      productDescription: "Premium cotton-poly blend",
       size: "SIZE",
       height: "HEIGHT",
       weight: "WEIGHT",
@@ -90,29 +89,27 @@ export const dictionaries = {
       oversizedFit: "Oversized Fit",
       howToMeasure: "HOW TO MEASURE",
       chestMeasurement: "Chest Measurement",
-      chestInstructions: "Measure around the fullest part of your chest, keeping the tape horizontal.",
+      chestInstructions: "Measure around the chest",
       waistMeasurement: "Waist Measurement",
-      waistInstructions: "Measure around your natural waistline, keeping the tape comfortably loose.",
+      waistInstructions: "Measure around the waist",
       heightMeasurement: "Height Measurement",
-      heightInstructions: "Stand straight against a wall and measure from floor to the top of your head.",
+      heightInstructions: "Stand straight and measure",
       weightMeasurement: "Weight Reference",
-      weightInstructions: "Use your current weight as a reference for the best size recommendation.",
+      weightInstructions: "Use your current weight",
       sizingNotes: "SIZING NOTES",
-      sizingNotesText:
-        "Measurements may vary ±1-3cm due to manufacturing tolerances. For an oversized fit, consider sizing up. All dimensions are taken flat and may vary depending on fabric stretch and wash care.",
+      sizingNotesText: "Measurements may vary",
       backToShopping: "Back to Shopping",
     },
     footer: {
-      about: "About ARTIE",
-      aboutText:
-        "Premium unisex apparel designed for performance and style. Every piece is crafted with attention to detail and built to last.",
+      about: "About Us",
+      aboutText: "We create high-quality products designed for comfort and performance.",
       support: "SUPPORT",
       sizeGuide: "Size Guide",
-      shippingInfo: "Shipping Info",
+      shippingInfo: "Shipping Information",
       returnsExchanges: "Returns & Exchanges",
       contactUs: "Contact Us",
       newsletter: "Newsletter",
-      newsletterText: "Stay updated with our latest releases and exclusive offers.",
+      newsletterText: "Subscribe to receive updates, access to exclusive deals, and more.",
       subscribe: "Subscribe",
       enterEmail: "Enter your email",
       followUs: "Follow Us",
@@ -126,11 +123,11 @@ export const dictionaries = {
       error: "Error",
       success: "Success",
       cancel: "Cancel",
-      confirm: "Confirm",
+
     },
     sections: {
-      exploreLatest: "EXPLORE THE LATEST",
-      exploreLatestSubtitle: "Your next essential starts here",
+      exploreLatest: "Explore Latest",
+      exploreLatestSubtitle: "Check out our newest products",
     },
     about: {
       title: "About ARTIE",
@@ -153,6 +150,11 @@ export const dictionaries = {
       freeShippingDesc: "所有订单超过$50",
       easyReturns: "轻松退货",
       share: "分享",
+    },
+    about: {
+      title: "关于ARTIE",
+      mainText: "我们不仅仅是一个服装品牌。",
+      subText: "我们致力于推动有意识的时尚、优质的产品和超越潮流的永恒设计。",
     },
     hero: {
       title: "ARTIE",
@@ -239,11 +241,6 @@ export const dictionaries = {
       sustainability: "可持续发展",
       allRightsReserved: "版权所有。"
     },
-    about: {
-      title: "关于ARTIE",
-      mainText: "我们不仅仅是一个服装品牌。",
-      subText: "我们是一场迈向有意识时尚、卓越品质和超越潮流的永恒设计的运动。"
-    },
     common: {
       loading: "加载中...",
       error: "错误",
@@ -291,6 +288,11 @@ export const dictionaries = {
       addedToCart: "カートに追加されました！",
       productDetails: "製品詳細",
       viewProduct: "製品を見る",
+    },
+    about: {
+      title: "ARTIEについて",
+      mainText: "私たちは単なる衣料ブランドではありません。",
+      subText: "意識的なファッション、プレミアム品質、トレンドを超えたタイムレスなデザインへのムーブメントです。",
     },
     cart: {
       title: "ショッピングカート",
@@ -633,6 +635,11 @@ export const dictionaries = {
       productDetails: "Detalles del producto",
       viewProduct: "Ver producto",
     },
+    about: {
+      title: "Acerca de ARTIE",
+      mainText: "No somos solo una marca de ropa.",
+      subText: "Somos un movimiento hacia la moda consciente, la calidad premium y el diseño atemporal que trasciende las tendencias.",
+    },
     cart: {
       title: "Carrito de compras",
       empty: "Tu carrito está vacío",
@@ -746,6 +753,11 @@ export const dictionaries = {
       addedToCart: "Aggiunto al carrello!",
       productDetails: "Dettagli prodotto",
       viewProduct: "Vedi prodotto",
+    },
+    about: {
+      title: "Chi è ARTIE",
+      mainText: "Non siamo solo un marchio di abbigliamento.",
+      subText: "Siamo un movimento verso la moda consapevole, la qualità premium e il design senza tempo che trascende le tendenze.",
     },
     cart: {
       title: "Carrello della spesa",

@@ -8,6 +8,7 @@ import { useRef } from "react"
 
 interface LocalizedVideoBannerProps {
   dictionary: Dictionary
+  locale: string
   title?: string
   mainText?: string
   subText?: string

@@ -210,6 +210,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
   }, [])
 
   const backUrl = locale === "en" ? "/" : `/${locale}`
+  const aboutUrl = locale === "en" ? "/about" : `/${locale}/about`
   const sizeGuideUrl = locale === "en" ? "/size-guide" : `/${locale}/size-guide`
 
   // Reviews pagination state
@@ -230,6 +231,9 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
             </Link>
 
             <nav className="hidden md:flex items-center space-x-8">
+              <Link href={aboutUrl} className="text-gray-700 hover:text-black transition-colors text-sm font-medium">
+                {dictionary.nav.about || "About"}
+              </Link>
               <Link href={getLocalizedPath("/")} className="text-gray-900 hover:text-gray-600 font-medium">
                 {dictionary.nav.home}
               </Link>
@@ -266,67 +270,144 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
             {/* Product Images Card */}
             <div className="w-full">
-              <div className="bg-white rounded-2xl shadow-xl p-4 relative flex flex-col items-center justify-center">
-                <div
-                  ref={imageContainerRef}
-                  className="w-full h-full flex items-center justify-center relative"
-                  onTouchStart={onTouchStart}
-                  onTouchMove={onTouchMove}
-                  onTouchEnd={onTouchEnd}
-                >
-                  <Image
-                    src={product.images[selectedImage] || "/placeholder.svg"}
-                    alt={productName}
-                    width={600}
-                    height={800}
-                    className="max-w-full max-h-[70vh] object-contain rounded-2xl transition-opacity duration-300"
-                  />
+              <div className="bg-white rounded-2xl shadow-xl p-6 relative">
+                {/* Desktop Layout */}
+                <div className="hidden md:block">
+                  {/* Main Image - Desktop */}
+                  <div
+                    ref={imageContainerRef}
+                    className="w-full flex items-center justify-center relative rounded-xl overflow-hidden bg-gray-50"
+                    onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
+                    onTouchEnd={onTouchEnd}
+                  >
+                    <div className="relative w-full">
+                      <Image
+                        src={product.images[selectedImage] || "/placeholder.svg"}
+                        alt={productName}
+                        width={1000}
+                        height={1500}
+                        className="object-contain w-full h-auto transition-opacity duration-300"
+                        priority
+                      />
+                    </div>
 
-                  {/* Navigation Buttons */}
+                    {/* Navigation Buttons */}
+                    {product.images.length > 1 && (
+                      <>
+                        <button
+                          onClick={goToPreviousImage}
+                          className="image-nav absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-all backdrop-blur-md"
+                          aria-label="Previous image"
+                        >
+                          <ChevronLeft className="w-5 h-5 text-gray-700" />
+                        </button>
+                        <button
+                          onClick={goToNextImage}
+                          className="image-nav absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-all backdrop-blur-md"
+                          aria-label="Next image"
+                        >
+                          <ChevronRight className="w-5 h-5 text-gray-700" />
+                        </button>
+                        <div className="image-counter absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-xs font-medium backdrop-blur-md">
+                          {selectedImage + 1} / {product.images.length}
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Image Grid - Desktop Only */}
                   {product.images.length > 1 && (
-                    <>
-                      <button
-                        onClick={goToPreviousImage}
-                        className="image-nav absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all backdrop-blur-md"
-                        aria-label="Previous image"
-                      >
-                        <ChevronLeft className="w-6 h-6 text-gray-700" />
-                      </button>
-                      <button
-                        onClick={goToNextImage}
-                        className="image-nav absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all backdrop-blur-md"
-                        aria-label="Next image"
-                      >
-                        <ChevronRight className="w-6 h-6 text-gray-700" />
-                      </button>
-                      <div className="image-counter absolute bottom-4 right-4 bg-black/70 text-white px-4 py-2 rounded-full text-xs font-semibold backdrop-blur-md">
-                        {selectedImage + 1} / {product.images.length}
+                    <div className="mt-4 w-full">
+                      <div className="grid grid-cols-4 gap-3">
+                        {product.images.map((image, index) => (
+                          <button
+                            key={`grid-${index}`}
+                            onClick={() => setSelectedImage(index)}
+                            className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                              selectedImage === index ? "border-black ring-1 ring-black" : "border-transparent hover:border-gray-300"
+                            }`}
+                          >
+                            <Image
+                              src={image || "/placeholder.svg"}
+                              alt={`View ${index + 1}`}
+                              fill
+                              className="object-cover"
+                            />
+                          </button>
+                        ))}
                       </div>
-                    </>
+                    </div>
                   )}
                 </div>
-                {/* Thumbnails */}
-                {product.images.length > 1 && (
-                  <div className="flex gap-3 mt-6 w-full overflow-x-auto scrollbar-hide">
-                    {product.images.map((image, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setSelectedImage(index)}
-                        className={`thumbnail flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all ${
-                          selectedImage === index ? "border-black" : "border-transparent hover:border-gray-400"
-                        }`}
-                      >
-                        <Image
-                          src={image || "/placeholder.svg"}
-                          alt={`View ${index + 1}`}
-                          width={64}
-                          height={64}
-                          className="w-full h-full object-cover"
-                        />
-                      </button>
-                    ))}
+                
+                {/* Mobile Layout */}
+                <div className="md:hidden">
+                  {/* Main Image - Mobile */}
+                  <div
+                    className="w-full flex items-center justify-center relative rounded-xl overflow-hidden bg-gray-50"
+                    onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
+                    onTouchEnd={onTouchEnd}
+                  >
+                    <div className="relative w-full aspect-square">
+                      <Image
+                        src={product.images[selectedImage] || "/placeholder.svg"}
+                        alt={productName}
+                        fill
+                        className="object-contain transition-opacity duration-300"
+                        priority
+                      />
+                    </div>
+
+                    {/* Navigation Buttons */}
+                    {product.images.length > 1 && (
+                      <>
+                        <button
+                          onClick={goToPreviousImage}
+                          className="image-nav absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white w-9 h-9 rounded-full flex items-center justify-center shadow-md transition-all backdrop-blur-md"
+                          aria-label="Previous image"
+                        >
+                          <ChevronLeft className="w-5 h-5 text-gray-700" />
+                        </button>
+                        <button
+                          onClick={goToNextImage}
+                          className="image-nav absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white w-9 h-9 rounded-full flex items-center justify-center shadow-md transition-all backdrop-blur-md"
+                          aria-label="Next image"
+                        >
+                          <ChevronRight className="w-5 h-5 text-gray-700" />
+                        </button>
+                        <div className="image-counter absolute bottom-3 right-3 bg-black/70 text-white px-3 py-1 rounded-full text-xs font-medium backdrop-blur-md">
+                          {selectedImage + 1} / {product.images.length}
+                        </div>
+                      </>
+                    )}
                   </div>
-                )}
+                  
+                  {/* Horizontal Thumbnails - Mobile Only */}
+                  {product.images.length > 1 && (
+                    <div className="flex gap-2 mt-4 w-full overflow-x-auto pb-2 scrollbar-hide">
+                      {product.images.map((image, index) => (
+                        <button
+                          key={`mobile-${index}`}
+                          onClick={() => setSelectedImage(index)}
+                          className={`thumbnail flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                            selectedImage === index ? "border-black ring-1 ring-black" : "border-transparent hover:border-gray-300"
+                          }`}
+                        >
+                          <div className="relative w-full h-full">
+                            <Image
+                              src={image || "/placeholder.svg"}
+                              alt={`View ${index + 1}`}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
