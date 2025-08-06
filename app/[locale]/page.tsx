@@ -4,6 +4,7 @@ import Link from "next/link"
 import { getDictionary } from "@/lib/i18n/utils"
 import { LocalizedVideoBanner } from "@/components/localized-video-banner"
 import { LocalizedProductCard } from "@/components/localized-product-card"
+import { ProductCardSkeleton } from "@/components/product-card-skeleton"
 import { Footer } from "@/components/footer"
 import { Logo } from "@/components/logo"
 import { CartIcon } from "@/components/cart-icon"
@@ -29,6 +30,34 @@ const defaultDictionary: Dictionary = {
     contact: "Contact",
     cart: "Cart",
     back: "Back",
+  },
+  product: {
+    backToProducts: "Back to Products",
+    freeShipping: "Free Shipping",
+    freeShippingDesc: "On all orders over $50",
+    easyReturns: "Easy Returns",
+    easyReturnsDesc: "30-day return policy",
+    share: "Share",
+    color: "Color",
+    size: "Size",
+    sizeGuide: "Size Guide",
+    addToCart: "Add to Cart",
+    addToWishlist: "Add to Wishlist",
+    warranty: "Warranty",
+    warrantyDesc: "1-year warranty",
+    details: "Details",
+    shipping: "Shipping",
+    reviews: "Reviews",
+    productDetails: "Product Details",
+    materials: "Materials",
+    care: "Care Instructions",
+    shippingInfo: "Shipping Information",
+    standardShipping: "Standard Shipping",
+    expressShipping: "Express Shipping",
+    overnightShipping: "Overnight Shipping",
+    customerReviews: "Customer Reviews",
+    selectSize: "Please select a size",
+    selectColor: "Please select a color",
   },
   sections: { exploreLatest: "Explore Latest", exploreLatestSubtitle: "Check out our newest products" },
   hero: {
@@ -119,6 +148,11 @@ const defaultDictionary: Dictionary = {
     success: "Success",
     cancel: "Cancel",
   },
+  about: {
+    title: "About ARTIE",
+    mainText: "We're not just a clothing brand.",
+    subText: "We're a movement towards conscious fashion, premium quality, and timeless design that transcends trends.",
+  },
 }
 
 export default function HomePage({ params }: HomePageProps) {
@@ -128,17 +162,21 @@ export default function HomePage({ params }: HomePageProps) {
   // Initialize with default values to prevent undefined errors
   const [dictionary, setDictionary] = useState<Dictionary>(defaultDictionary)
   const [products, setProducts] = useState<Product[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   // Load data on component mount
   useEffect(() => {
     const loadData = async () => {
       try {
+        setIsLoading(true)
         const dict = await getDictionary(locale)
         const prods = await getProducts(locale)
         if (dict) setDictionary(dict)
         if (prods) setProducts(prods)
       } catch (error) {
         console.error("Error loading data:", error)
+      } finally {
+        setIsLoading(false)
       }
     }
 
@@ -244,8 +282,14 @@ export default function HomePage({ params }: HomePageProps) {
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">{dictionary.sections.exploreLatestSubtitle}</p>
           </div>
 
-          {products.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {isLoading ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <ProductCardSkeleton key={index} />
+              ))}
+            </div>
+          ) : products.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
               {products.map((product) => (
                 <LocalizedProductCard key={product.id} product={product} dictionary={dictionary} locale={locale} />
               ))}

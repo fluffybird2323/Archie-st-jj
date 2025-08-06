@@ -125,7 +125,7 @@ export function LocalizedVideoBanner({ dictionary, title, mainText, subText }: L
         onError={() => setVideoError(true)}
         poster="/placeholder.svg?height=1080&width=1920"
       >
-        <source src="https://uvd.yupoo.com/720p/artiemaster/24267105.mp4" type="video/mp4" />
+        <source src="https://i.imgur.com/gZlvEPD.mp4" type="video/mp4" />
       </video>
 
       {/* Animated Starfield Overlay (only visible when video is loading or fails) */}

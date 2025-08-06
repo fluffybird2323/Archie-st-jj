@@ -40,7 +40,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
       {/* Main Content */}
       <main className="pt-20 pb-16">
         {/* Hero Section */}
-        <LocalizedVideoBanner
+        <LocalizedVideoBanner locale={params.locale}
           dictionary={dictionary}
           title={dictionary.about.title}
           mainText={dictionary.about.mainText}

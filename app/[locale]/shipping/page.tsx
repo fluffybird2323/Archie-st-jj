@@ -16,7 +16,7 @@ interface ShippingPageProps {
 
 export default function ShippingPage({ params }: ShippingPageProps) {
   // Use the params object correctly with the use() hook
-  const { locale } = use(params)
+const { locale } = params as { locale: Locale }
   const dictionary = getDictionary(locale)
   const backUrl = locale === "en" ? "/" : `/${locale}`
 
