@@ -407,6 +407,11 @@ export const dictionaries = {
       productDetails: "Produktdetails",
       viewProduct: "Produkt ansehen",
     },
+    about: {
+      title: "Über ARTIE",
+      mainText: "Wir sind nicht nur eine Bekleidungsmarke.",
+      subText: "Wir sind eine Bewegung hin zu bewusster Mode, Premium-Qualität und zeitlosem Design, das Trends übersteigt.",
+    },
     cart: {
       title: "Warenkorb",
       empty: "Ihr Warenkorb ist leer",
@@ -519,6 +524,11 @@ export const dictionaries = {
       addedToCart: "Ajouté au panier!",
       productDetails: "Détails du produit",
       viewProduct: "Voir le produit",
+    },
+    about: {
+      title: "À propos d'ARTIE",
+      mainText: "Nous ne sommes pas seulement une marque de vêtements.",
+      subText: "Nous sommes un mouvement vers une mode consciente, une qualité premium et un design intemporel qui transcende les tendances.",
     },
     cart: {
       title: "Panier",

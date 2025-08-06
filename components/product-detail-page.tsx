@@ -414,8 +414,8 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
             {/* Product Info Card */}
             <div className="w-full flex flex-col gap-8">
               <div className="product-info">
-                <h1 className="text-3xl font-extrabold text-gray-900 mb-2 leading-tight">{productName}</h1>
-                <div className="price text-2xl font-bold text-gray-900 mb-2">{formatPrice(product.price, locale)}</div>
+                <h1 className="text-xl font-medium text-gray-900 mb-2 leading-tight">{productName}</h1>
+                <div className="price text-lg font-bold text-gray-900 mb-2">{formatPrice(product.price, locale)}</div>
                 <p className="product-description text-gray-600 text-base mb-6 leading-relaxed">{productDescription}</p>
 
                 {/* Size Selection */}
@@ -456,7 +456,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
                   <div className="option-label font-semibold mb-3 text-gray-900 text-base">
                     Color: {selectedColor && <span className="text-gray-600">({selectedColor})</span>}
                   </div>
-                  <div className="color-options flex gap-4">
+                  <div className="color-options grid grid-cols-2 gap-4">
                     {(product.colors as ColorOption[]).map((colorOpt, idx) => {
                       const colorName = getColorName(colorOpt)
                       return (

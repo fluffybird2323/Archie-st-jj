@@ -100,10 +100,10 @@ export function LocalizedProductCard({ product, dictionary, locale }: LocalizedP
         </Link>
         <Link href={productUrl} className="block">
           <div className="p-6">
-            <h3 className="font-outfit text-xl font-bold text-black mb-2 group-hover:text-gray-600 transition-colors">
+            <h3 className="font-outfit text-base font-medium text-black mb-2 group-hover:text-gray-600 transition-colors">
               {productName}
             </h3>
-            <p className="font-outfit text-2xl font-black text-black">{formatPrice(product.price, locale)}</p>
+            <p className="font-outfit text-lg font-bold text-black">{formatPrice(product.price, locale)}</p>
           </div>
         </Link>
       </div>

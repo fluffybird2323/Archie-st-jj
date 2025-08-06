@@ -1,19 +1,15 @@
-"use client"
-
+import Header from "@/components/header"
 import Link from "next/link"
 import { getDictionary } from "@/lib/i18n/utils"
 import { LocalizedVideoBanner } from "@/components/localized-video-banner"
 import { LocalizedProductCard } from "@/components/localized-product-card"
 import { ProductCardSkeleton } from "@/components/product-card-skeleton"
 import { Footer } from "@/components/footer"
-import { Logo } from "@/components/logo"
-import { CartIcon } from "@/components/cart-icon"
-import { LanguageSwitcher } from "@/components/language-switcher"
 import { getProducts } from "@/lib/products-dynamic"
 import type { Locale } from "@/lib/i18n/config"
 import type { Dictionary } from "@/lib/i18n/dictionaries"
 import type { Product } from "@/lib/products-dynamic"
-import { use as usePromise, useState, useEffect } from "react"
+import { Suspense } from "react"
 
 interface HomePageProps {
   params: Promise<{
@@ -21,255 +17,26 @@ interface HomePageProps {
   }>
 }
 
-// Default dictionary with all required properties
-const defaultDictionary: Dictionary = {
-  nav: {
-    home: "Home",
-    products: "Products",
-    about: "About",
-    contact: "Contact",
-    cart: "Cart",
-    back: "Back",
-  },
-  product: {
-    backToProducts: "Back to Products",
-    freeShipping: "Free Shipping",
-    freeShippingDesc: "On all orders over $50",
-    easyReturns: "Easy Returns",
-    easyReturnsDesc: "30-day return policy",
-    share: "Share",
-    color: "Color",
-    size: "Size",
-    sizeGuide: "Size Guide",
-    addToCart: "Add to Cart",
-    addToWishlist: "Add to Wishlist",
-    warranty: "Warranty",
-    warrantyDesc: "1-year warranty",
-    details: "Details",
-    shipping: "Shipping",
-    reviews: "Reviews",
-    productDetails: "Product Details",
-    materials: "Materials",
-    care: "Care Instructions",
-    shippingInfo: "Shipping Information",
-    standardShipping: "Standard Shipping",
-    expressShipping: "Express Shipping",
-    overnightShipping: "Overnight Shipping",
-    customerReviews: "Customer Reviews",
-    selectSize: "Please select a size",
-    selectColor: "Please select a color",
-  },
-  sections: { exploreLatest: "Explore Latest", exploreLatestSubtitle: "Check out our newest products" },
-  hero: {
-    title: "ARTIE",
-    subtitle: "",
-    shopNow: "SHOP NOW",
-    readyForAnything: "Ready for Anything",
-    readyForAnythingSubtitle: "Designed for comfort and performance",
-    comfortAdapted: "Comfort Adapted",
-    engineeredText: "Engineered for your lifestyle",
-  },
-  products: {
-    title: "Our Products",
-    selectSize: "Select Size",
-    selectColor: "Select Color",
-    addToCart: "Add to Cart",
-    addedToCart: "Added to Cart!",
-    productDetails: "Product Details",
-    viewProduct: "View Product",
-  },
-  cart: {
-    title: "Shopping Cart",
-    empty: "Your cart is empty",
-    total: "Total",
-    checkout: "Checkout",
-    remove: "Remove",
-    quantity: "Quantity",
-  },
-  success: {
-    title: "Order Successful!",
-    message: "Thank you for your purchase!",
-    continueShopping: "Continue Shopping",
-    orderNumber: "Order Number",
-    estimatedDelivery: "Estimated Delivery",
-    businessDays: "3-7 business days",
-    trackingInfo: "You will receive tracking information via email once your order ships.",
-  },
-  sizeGuide: {
-    title: "SIZE GUIDE",
-    subtitle: "Find your perfect fit",
-    productDescription: "Premium cotton-poly blend",
-    size: "SIZE",
-    height: "HEIGHT",
-    weight: "WEIGHT",
-    chest: "CHEST",
-    waist: "WAIST",
-    visualGuide: "VISUAL FIT GUIDE",
-    fitComparison: "FIT COMPARISON",
-    slimFit: "Slim Fit",
-    regularFit: "Regular Fit",
-    relaxedFit: "Relaxed Fit",
-    looseFit: "Loose Fit",
-    oversizedFit: "Oversized Fit",
-    howToMeasure: "HOW TO MEASURE",
-    chestMeasurement: "Chest Measurement",
-    chestInstructions: "Measure around the chest",
-    waistMeasurement: "Waist Measurement",
-    waistInstructions: "Measure around the waist",
-    heightMeasurement: "Height Measurement",
-    heightInstructions: "Stand straight and measure",
-    weightMeasurement: "Weight Reference",
-    weightInstructions: "Use your current weight",
-    sizingNotes: "SIZING NOTES",
-    sizingNotesText: "Measurements may vary",
-    backToShopping: "Back to Shopping",
-  },
-  footer: {
-    about: "About Us",
-    aboutText: "We create high-quality products designed for comfort and performance.",
-    support: "SUPPORT",
-    sizeGuide: "Size Guide",
-    shippingInfo: "Shipping Information",
-    returnsExchanges: "Returns & Exchanges",
-    contactUs: "Contact Us",
-    newsletter: "Newsletter",
-    newsletterText: "Subscribe to receive updates, access to exclusive deals, and more.",
-    enterEmail: "Enter your email",
-    subscribe: "Subscribe",
-    followUs: "Follow Us",
-    privacy: "Privacy Policy",
-    terms: "Terms of Service",
-    sustainability: "Sustainability",
-    allRightsReserved: "All rights reserved.",
-  },
-  common: {
-    loading: "Loading...",
-    error: "Error",
-    success: "Success",
-    cancel: "Cancel",
-  },
-  about: {
-    title: "About ARTIE",
-    mainText: "We're not just a clothing brand.",
-    subText: "We're a movement towards conscious fashion, premium quality, and timeless design that transcends trends.",
-  },
+async function ProductsSection({ locale, dictionary }: { locale: Locale; dictionary: Dictionary }) {
+  const products = await getProducts(locale)
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
+      {products.map((product) => (
+        <LocalizedProductCard key={product.id} product={product} dictionary={dictionary} locale={locale} />
+      ))}
+    </div>
+  )
 }
 
-export default function HomePage({ params }: HomePageProps) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { locale } = usePromise(params)
-
-  // Initialize with default values to prevent undefined errors
-  const [dictionary, setDictionary] = useState<Dictionary>(defaultDictionary)
-  const [products, setProducts] = useState<Product[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  // Load data on component mount
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setIsLoading(true)
-        const dict = await getDictionary(locale)
-        const prods = await getProducts(locale)
-        if (dict) setDictionary(dict)
-        if (prods) setProducts(prods)
-      } catch (error) {
-        console.error("Error loading data:", error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    loadData()
-  }, [locale])
-
-  const getLocalizedPath = (path: string) => {
-    return locale === "en" ? path : `/${locale}${path}`
-  }
+export default async function HomePage({ params }: HomePageProps) {
+  const resolvedParams = await params
+  const { locale } = resolvedParams
+  const dictionary = await getDictionary(locale)
 
   return (
     <main className="min-h-screen">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link href={getLocalizedPath("/")} className="flex items-center">
-              <Logo className="h-8 w-auto" />
-            </Link>
-
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link href={getLocalizedPath("/")} className="text-gray-900 hover:text-gray-600 font-medium">
-                {dictionary.nav.home}
-              </Link>
-              <Link href={getLocalizedPath("/#products")} className="text-gray-900 hover:text-gray-600 font-medium">
-                {dictionary.nav.products}
-              </Link>
-              <Link href={getLocalizedPath("/about")} className="text-gray-900 hover:text-gray-600 font-medium">
-                {dictionary.nav.about}
-              </Link>
-              <Link href={getLocalizedPath("/contact")} className="text-gray-900 hover:text-gray-600 font-medium">
-                {dictionary.nav.contact}
-              </Link>
-            </nav>
-
-            <div className="flex items-center space-x-4">
-              <button
-                className="md:hidden text-gray-900 hover:text-gray-600 focus:outline-none"
-                aria-label="Toggle menu"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-              <LanguageSwitcher />
-              <CartIcon />
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 bg-white border-b border-gray-200 shadow-lg z-50">
-            <nav className="flex flex-col p-4">
-              <Link
-                href={getLocalizedPath("/")}
-                className="text-gray-900 hover:text-gray-600 font-medium py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {dictionary?.nav?.home || "Home"}
-              </Link>
-              <Link
-                href={getLocalizedPath("/#products")}
-                className="text-gray-900 hover:text-gray-600 font-medium py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {dictionary?.nav?.products || "Products"}
-              </Link>
-              <Link
-                href={getLocalizedPath("/about")}
-                className="text-gray-900 hover:text-gray-600 font-medium py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {dictionary?.nav?.about || "About"}
-              </Link>
-              <Link
-                href={getLocalizedPath("/contact")}
-                className="text-gray-900 hover:text-gray-600 font-medium py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {dictionary?.nav?.contact || "Contact"}
-              </Link>
-            </nav>
-          </div>
-        )}
-      </header>
+      <Header dictionary={dictionary} locale={locale} />
 
       {/* Video Banner */}
       <LocalizedVideoBanner dictionary={dictionary} locale={locale} />
@@ -282,23 +49,15 @@ export default function HomePage({ params }: HomePageProps) {
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">{dictionary.sections.exploreLatestSubtitle}</p>
           </div>
 
-          {isLoading ? (
+          <Suspense fallback={
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
               {Array.from({ length: 6 }).map((_, index) => (
                 <ProductCardSkeleton key={index} />
               ))}
             </div>
-          ) : products.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
-              {products.map((product) => (
-                <LocalizedProductCard key={product.id} product={product} dictionary={dictionary} locale={locale} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16">
-              <p className="text-gray-500 text-lg">No products available at the moment.</p>
-            </div>
-          )}
+          }>
+            <ProductsSection locale={locale} dictionary={dictionary} />
+          </Suspense>
         </div>
       </section>
 

@@ -42,7 +42,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
         {/* Hero Section */}
         <LocalizedVideoBanner locale={params.locale}
           dictionary={dictionary}
-          title={dictionary.about.title}
+          title={dictionary.about?.title || 'About'}
           mainText={dictionary.about.mainText}
           subText={dictionary.about.subText}
         />
