@@ -98,7 +98,7 @@ export default async function TermsPage({ params }: TermsPageProps) {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Shipping</h3>
                 <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li>Standard shipping takes 3-7 business days</li>
+                  <li>Standard shipping takes 5-15 business days</li>
                   <li>Express shipping options available at checkout</li>
                   <li>International shipping available to select countries</li>
                   <li>Shipping costs calculated at checkout</li>

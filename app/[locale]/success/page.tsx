@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Footer } from "@/components/footer"
 import { getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
+import Stripe from "stripe"
+import { headers } from "next/headers"
 
 interface SuccessPageProps {
   params: {
@@ -11,13 +13,73 @@ interface SuccessPageProps {
   }
 }
 
-export default async function SuccessPage({ params }: SuccessPageProps) {
+const getStripe = () => {
+  const secretKey = process.env.STRIPE_SECRET_KEY
+  if (!secretKey) {
+    throw new Error("STRIPE_SECRET_KEY environment variable is not set")
+  }
+  return new Stripe(secretKey, {
+    apiVersion: "2025-05-28.basil",
+  })
+}
+
+async function sendTelegramOrderNotification(orderDetails: string) {
+  const token = process.env.TELEGRAM_BOT_TOKEN
+  const chatId = process.env.TELEGRAM_CHAT_ID
+
+  if (!token || !chatId) {
+    console.error('Telegram configuration missing')
+    return
+  }
+
+  const text = `New Order Placed:\n${orderDetails}`
+
+  try {
+    const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      console.error('Telegram API error:', errorData)
+    }
+  } catch (error) {
+    console.error('Failed to send Telegram notification:', error)
+  }
+}
+
+export default async function SuccessPage({ params, searchParams }: SuccessPageProps & { searchParams: { session_id?: string } }) {
   const dictionary = getDictionary(params.locale)
   const homeUrl = params.locale === "en" ? "/" : `/${params.locale}`
+  const sessionId = searchParams.session_id
 
-  // Generate a mock order number
-  const orderNumber = `ARTIE-${Date.now().toString().slice(-6)}`
-  const estimatedDelivery = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toLocaleDateString()
+  let orderNumber = `ARTIE-${Date.now().toString().slice(-6)}`
+  let estimatedDelivery = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toLocaleDateString()
+  let orderDetails = ''
+
+  if (sessionId) {
+    try {
+      const stripe = getStripe()
+      const session = await stripe.checkout.sessions.retrieve(sessionId, {
+        expand: ['line_items', 'payment_intent']
+      })
+
+      if (session.payment_status === 'paid') {
+        // Generate order details
+        orderDetails = `Order ID: ${session.id}\nCustomer: ${session.customer_details?.name || 'N/A'}\nEmail: ${session.customer_details?.email || 'N/A'}\nAmount: ${(session.amount_total || 0) / 100} ${session.currency?.toUpperCase() || 'USD'}\nItems:\n${session.line_items?.data.map(item => `- ${item.description} x${item.quantity}`).join('\n') || 'No items'}`
+
+        // Send to Telegram
+        await sendTelegramOrderNotification(orderDetails)
+
+        // Use real data if available
+        orderNumber = `ARTIE-${session.id.slice(-6).toUpperCase()}`
+      }
+    } catch (error) {
+      console.error('Error fetching Stripe session:', error)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">

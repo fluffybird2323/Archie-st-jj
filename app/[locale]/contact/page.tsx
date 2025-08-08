@@ -1,8 +1,7 @@
 import Link from "next/link"
 import { ChevronLeft, Mail, MessageCircle, Phone, MapPin, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { ContactForm } from "@/components/contact-form"
 import { getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
 
@@ -12,7 +11,8 @@ interface ContactPageProps {
   }
 }
 
-export default async function ContactPage({ params }: ContactPageProps) {
+export default async function ContactPage({ params: paramsPromise }: ContactPageProps) {
+  const params = await paramsPromise;
   const dictionary = getDictionary(params.locale)
   const backUrl = params.locale === "en" ? "/" : `/${params.locale}`
 
@@ -38,43 +38,7 @@ export default async function ContactPage({ params }: ContactPageProps) {
           {/* Contact Form */}
           <div className="bg-white rounded-2xl shadow-xl p-8 border">
             <h2 className="text-2xl font-bold mb-6">Send us a message</h2>
-            <form className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-                    First Name
-                  </label>
-                  <Input id="firstName" type="text" placeholder="John" className="w-full" />
-                </div>
-                <div>
-                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
-                    Last Name
-                  </label>
-                  <Input id="lastName" type="text" placeholder="Doe" className="w-full" />
-                </div>
-              </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address
-                </label>
-                <Input id="email" type="email" placeholder="john@example.com" className="w-full" />
-              </div>
-              <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                  Subject
-                </label>
-                <Input id="subject" type="text" placeholder="How can we help you?" className="w-full" />
-              </div>
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                  Message
-                </label>
-                <Textarea id="message" placeholder="Tell us more about your inquiry..." rows={6} className="w-full" />
-              </div>
-              <Button className="w-full bg-black text-white py-3 text-lg font-semibold hover:bg-gray-800 transition-colors">
-                Send Message
-              </Button>
-            </form>
+            <ContactForm />
           </div>
 
           {/* Contact Information */}
@@ -97,9 +61,9 @@ export default async function ContactPage({ params }: ContactPageProps) {
                     <MessageCircle className="w-6 h-6 text-green-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">Live Chat</h3>
+                    <h3 className="font-semibold mb-1">Contact form</h3>
                     <p className="text-gray-600">Available on our website</p>
-                    <p className="text-gray-600 text-sm">Mon-Fri, 9AM-6PM EST</p>
+                    <p className="text-gray-600 text-sm">We'll respond within 24 hours</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -108,8 +72,8 @@ export default async function ContactPage({ params }: ContactPageProps) {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Phone</h3>
-                    <p className="text-gray-600">+1 (555) 123-4567</p>
-                    <p className="text-gray-600 text-sm">Mon-Fri, 9AM-6PM EST</p>
+                    <p className="text-gray-600">+81 (070) 9121-6346</p>
+                    <p className="text-gray-600 text-sm">Mon-Fri, 9AM-6PM JST(UTC+9)</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -118,8 +82,8 @@ export default async function ContactPage({ params }: ContactPageProps) {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Address</h3>
-                    <p className="text-gray-600">123 Fashion Street</p>
-                    <p className="text-gray-600">New York, NY 10001</p>
+                    <p className="text-gray-600">8-503 , 203 Takamura</p>
+                    <p className="text-gray-600 text-sm">Hiratsuka, Kanagawa 254-0914 Japan</p>
                   </div>
                 </div>
               </div>

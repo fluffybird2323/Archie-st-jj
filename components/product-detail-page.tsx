@@ -510,7 +510,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
                     </span>{" "}
                     Free shipping worldwide
                   </div>
-                  <div className="shipping-details text-green-700 text-sm">Delivered in 3-7 business days</div>
+                  <div className="shipping-details text-green-700 text-sm">Delivered in 5-15 business days</div>
                 </div>
 
                 {/* Error Message */}
