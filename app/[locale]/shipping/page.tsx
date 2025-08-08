@@ -34,7 +34,7 @@ const { locale } = params as { locale: Locale }
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">SHIPPING INFO</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Fast, reliable, and free worldwide shipping on all orders
+            Fast, reliable, and free worldwide shipping on all orders. Please note that international customers may be responsible for customs duties and taxes imposed by their country.
           </p>
         </div>
 
@@ -91,8 +91,7 @@ const { locale } = params as { locale: Locale }
             <h2 className="text-2xl font-bold mb-6">Processing Time</h2>
             <div className="space-y-4">
               <p className="text-gray-700">
-                All orders are processed within 2-3 business days. Orders are not shipped or delivered on weekends or
-                holidays.
+                All orders are processed within 2-3 business days. Orders are not shipped or delivered on weekends or holidays. In case of delays, we will notify you promptly.
               </p>
               <p className="text-gray-700">
                 If we are experiencing a high volume of orders, shipments may be delayed by a few days. Please allow

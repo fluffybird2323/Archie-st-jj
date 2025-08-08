@@ -11,8 +11,9 @@ interface ReturnsPageProps {
 }
 
 export default async function ReturnsPage({ params }: ReturnsPageProps) {
-  const dictionary = getDictionary(params.locale)
-  const backUrl = params.locale === "en" ? "/" : `/${params.locale}`
+  const { locale } = await params
+  const dictionary = getDictionary(locale)
+  const backUrl = locale === "en" ? "/" : `/${locale}`
 
   return (
     <div className="min-h-screen bg-white">
@@ -28,7 +29,7 @@ export default async function ReturnsPage({ params }: ReturnsPageProps) {
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">RETURNS & EXCHANGES</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Easy returns and exchanges within 30 days of purchase
+            Easy returns and exchanges within 30 days of purchase. Refunds will be processed to your original payment method within 3-5 business days after we receive your returned item.
           </p>
         </div>
 
@@ -70,8 +71,7 @@ export default async function ReturnsPage({ params }: ReturnsPageProps) {
             <h2 className="text-2xl font-bold mb-6">Return Policy</h2>
             <div className="space-y-4">
               <p className="text-gray-700">
-                We want you to be completely satisfied with your ARTIE purchase. If you're not happy with your order,
-                you can return it within 30 days of delivery for a full refund.
+                We want you to be completely satisfied with your ARTIE purchase. If you're not happy with your order, you can return it within 30 days of delivery for a full refund. Please note that customized or personalized items are non-refundable.
               </p>
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                 <h3 className="font-semibold text-green-800 mb-2">What can be returned:</h3>

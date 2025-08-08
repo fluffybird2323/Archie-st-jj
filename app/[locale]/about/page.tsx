@@ -13,10 +13,11 @@ interface AboutPageProps {
 }
 
 export default async function AboutPage({ params }: AboutPageProps) {
-  const dictionary = await getDictionary(params.locale)
+  const { locale } = await params
+  const dictionary = await getDictionary(locale)
 
   const getLocalizedPath = (path: string) => {
-    return params.locale === "en" ? path : `/${params.locale}${path}`
+    return locale === "en" ? path : `/${locale}${path}`
   }
 
   return (
@@ -55,8 +56,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
                 <h2 className="text-4xl font-bold mb-8">Our Story</h2>
                 <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
                   <p>
-                    ARTIE was born from a simple belief: that great design should be accessible, sustainable, and built
-                    to last. Founded in 2023, we set out to challenge the fast fashion industry with a different
+                    ARTIE was born from a simple belief: that great design should be accessible, sustainable, and built to last. We are committed to transparency and ethical practices in all aspects of our business. Founded in 2023, we set out to challenge the fast fashion industry with a different
                     approach.
                   </p>
                   <p>
@@ -64,8 +64,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
                     materials. We believe in quality over quantity, timeless style over fleeting trends.
                   </p>
                   <p>
-                    Today, ARTIE represents more than apparel—it's a commitment to conscious consumption, environmental
-                    responsibility, and the belief that what you wear should reflect your values.
+                    Today, ARTIE represents more than apparel—it's a commitment to conscious consumption, environmental responsibility, and the belief that what you wear should reflect your values. For inquiries, please contact us at info@artie.com.
                   </p>
                 </div>
               </div>

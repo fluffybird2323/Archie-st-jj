@@ -11,16 +11,68 @@ interface SizeGuidePageProps {
 }
 
 export default async function SizeGuidePage({ params }: SizeGuidePageProps) {
-  const dictionary = getDictionary(params.locale)
-  const backUrl = params.locale === "en" ? "/" : `/${params.locale}`
+  const { locale } = await params
+  const dictionary = getDictionary(locale)
+  const backUrl = locale === "en" ? "/" : `/${locale}`
 
   const sizeData = [
-    { size: "S", height: "160-170 cm", weight: "45-55 kg", chest: "86-91 cm", waist: "71-76 cm" },
-    { size: "M", height: "170-175 cm", weight: "55-65 kg", chest: "91-96 cm", waist: "76-81 cm" },
-    { size: "L", height: "175-180 cm", weight: "60-75 kg", chest: "96-101 cm", waist: "81-86 cm" },
-    { size: "XL", height: "175-185 cm", weight: "70-85 kg", chest: "101-106 cm", waist: "86-91 cm" },
-    { size: "XXL", height: "180-195 cm", weight: "75-90 kg", chest: "106-111 cm", waist: "91-96 cm" },
+    {
+      size: "S",
+      height: "150-155 cm",
+      heightImperial: "4'11\"–5'1\"",
+      weight: "40-47 kg",
+      weightImperial: "88–104 lbs",
+      chest: "76-81 cm",
+      chestImperial: "30–32\"",
+      waist: "58-64 cm",
+      waistImperial: "23–25\"",
+    },
+    {
+      size: "M",
+      height: "155-160 cm",
+      heightImperial: "5'1\"–5'3\"",
+      weight: "47-54 kg",
+      weightImperial: "104–119 lbs",
+      chest: "81-86 cm",
+      chestImperial: "32–34\"",
+      waist: "64-70 cm",
+      waistImperial: "25–27.5\"",
+    },
+    {
+      size: "L",
+      height: "160-165 cm",
+      heightImperial: "5'3\"–5'5\"",
+      weight: "54-61 kg",
+      weightImperial: "119–134 lbs",
+      chest: "86-91 cm",
+      chestImperial: "34–36\"",
+      waist: "70-76 cm",
+      waistImperial: "27.5–30\"",
+    },
+    {
+      size: "XL",
+      height: "165-170 cm",
+      heightImperial: "5'5\"–5'7\"",
+      weight: "61-68 kg",
+      weightImperial: "134–150 lbs",
+      chest: "91-96 cm",
+      chestImperial: "36–38\"",
+      waist: "76-82 cm",
+      waistImperial: "30–32.5\"",
+    },
+    {
+      size: "XXL",
+      height: "180-195 cm",
+      heightImperial: "5'11\"–6'5\"",
+      weight: "80-95 kg",
+      weightImperial: "176–210 lbs",
+      chest: "101-108 cm",
+      chestImperial: "40–42.5\"",
+      waist: "88-94 cm",
+      waistImperial: "34.5–37\"",
+    },
   ]
+
 
   const fitTypes = [
     { name: dictionary.sizeGuide.slimFit, description: "Close-fitting, tailored silhouette" },
@@ -47,10 +99,10 @@ export default async function SizeGuidePage({ params }: SizeGuidePageProps) {
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">{dictionary.sizeGuide.subtitle}</p>
         </div>
 
-        {/* Product Info */}
+        {/* Size Guide Info */}
         <div className="text-center mb-12">
-          <h2 className="text-2xl font-bold mb-2">ARTIE SIGNATURE HOODIE</h2>
-          <p className="text-gray-600">{dictionary.sizeGuide.productDescription}</p>
+          <h2 className="text-2xl font-bold mb-2">{dictionary.sizeGuide.title}</h2>
+          <p className="text-gray-600">{dictionary.sizeGuide.subtitle}</p>
         </div>
 
         {/* Size Table */}
@@ -58,10 +110,10 @@ export default async function SizeGuidePage({ params }: SizeGuidePageProps) {
           <div className="bg-black text-white">
             <div className="grid grid-cols-5 text-center font-bold text-sm md:text-base uppercase tracking-wide">
               <div className="p-4 md:p-6 border-r border-gray-600">{dictionary.sizeGuide.size}</div>
-              <div className="p-4 md:p-6 border-r border-gray-600">{dictionary.sizeGuide.height}</div>
-              <div className="p-4 md:p-6 border-r border-gray-600">{dictionary.sizeGuide.weight}</div>
-              <div className="p-4 md:p-6 border-r border-gray-600">{dictionary.sizeGuide.chest}</div>
-              <div className="p-4 md:p-6">{dictionary.sizeGuide.waist}</div>
+              <div className="p-4 md:p-6 border-r border-gray-600">{`${dictionary.sizeGuide.height} (cm / in)`}</div>
+              <div className="p-4 md:p-6 border-r border-gray-600">{`${dictionary.sizeGuide.weight} (kg / lbs)`}</div>
+              <div className="p-4 md:p-6 border-r border-gray-600">{`${dictionary.sizeGuide.chest} (cm / in)`}</div>
+              <div className="p-4 md:p-6">{`${dictionary.sizeGuide.waist} (cm / in)`}</div>
             </div>
           </div>
           {sizeData.map((row, index) => (
@@ -71,60 +123,54 @@ export default async function SizeGuidePage({ params }: SizeGuidePageProps) {
             >
               <div className="p-4 md:p-6 border-r border-gray-200 text-2xl md:text-3xl font-black">{row.size}</div>
               <div className="p-4 md:p-6 border-r border-gray-200 text-base md:text-lg font-medium text-gray-800">
-                {row.height}
+                {`${row.height} / ${row.heightImperial}`}
               </div>
               <div className="p-4 md:p-6 border-r border-gray-200 text-base md:text-lg font-medium text-gray-800">
-                {row.weight}
+                {`${row.weight} / ${row.weightImperial}`}
               </div>
               <div className="p-4 md:p-6 border-r border-gray-200 text-base md:text-lg font-medium text-gray-800">
-                {row.chest}
+                {`${row.chest} / ${row.chestImperial}`}
               </div>
-              <div className="p-4 md:p-6 text-base md:text-lg font-medium text-gray-800">{row.waist}</div>
+              <div className="p-4 md:p-6 text-base md:text-lg font-medium text-gray-800">{`${row.waist} / ${row.waistImperial}`}</div>
             </div>
           ))}
         </div>
 
-        {/* Visual Guide */}
+        {/* Measurement Guide */}
         <div className="mb-16">
-          <h3 className="text-2xl md:text-3xl font-bold text-center mb-12">{dictionary.sizeGuide.visualGuide}</h3>
-          <div className="flex justify-center items-end flex-wrap gap-8 mb-12">
-            {sizeData.map((size, index) => (
-              <div key={size.size} className="flex flex-col items-center group cursor-pointer">
-                <div className="relative mb-4">
-                  <div className="w-20 h-24 md:w-24 md:h-28 bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl flex items-center justify-center">
-                    <User className="w-8 h-8 md:w-10 md:h-10 text-white" />
-                  </div>
-                  {/* Dynamic collage elements */}
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">{index + 1}</span>
-                  </div>
-                </div>
-                <div className="text-lg font-bold tracking-wide">{size.size}</div>
-                <div className="text-sm text-gray-600">{size.height.split(" ")[0]}</div>
-              </div>
-            ))}
+          <h3 className="text-2xl md:text-3xl font-bold text-center mb-12">{dictionary.sizeGuide.howToMeasure}</h3>
+          <div className="text-center mb-12">
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">{dictionary.sizeGuide.measurementGuideIntro}</p>
           </div>
         </div>
 
-        {/* Fit Comparison */}
+        {/* Sizing Tip */}
+        <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-16">
+          <p className="text-gray-800 text-sm md:text-base"><span className="font-bold">Tip:</span> For a relaxed or oversized look, simply size up by one size.</p>
+        </div>
+
+        {/* Size Recommendations */}
         <div className="mb-16">
-          <h3 className="text-2xl md:text-3xl font-bold text-center mb-12">{dictionary.sizeGuide.fitComparison}</h3>
+          <h3 className="text-2xl md:text-3xl font-bold text-center mb-12">Size Recommendations</h3>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-            {fitTypes.map((fit, index) => (
-              <div key={fit.name} className="bg-gray-50 rounded-xl p-6 text-center hover:bg-gray-100 transition-colors">
-                <div className="w-16 h-20 bg-gradient-to-b from-gray-700 to-gray-900 rounded-lg mx-auto mb-4 relative overflow-hidden">
-                  <div
-                    className="absolute inset-0 bg-white rounded-lg transition-all duration-300"
-                    style={{
-                      transform: `scale(${0.6 + index * 0.1})`,
-                      opacity: 0.8,
-                    }}
-                  />
+            {sizeData.map((size) => {
+              let bodyType = '';
+              switch(size.size) {
+                case 'S': bodyType = 'Slim or petite build, ideal for smaller frames.'; break;
+                case 'M': bodyType = 'Average athletic build, suitable for standard proportions.'; break;
+                case 'L': bodyType = 'Muscular or broader build, good for athletic physiques.'; break;
+                case 'XL': bodyType = 'Larger build, accommodates taller or fuller figures.'; break;
+                case 'XXL': bodyType = 'Plus size or very tall, for maximum comfort and coverage.'; break;
+              }
+              return (
+                <div key={size.size} className="bg-gray-50 rounded-xl p-6 text-center hover:bg-gray-100 transition-colors">
+                  <h4 className="font-bold text-lg mb-2">{size.size}</h4>
+                  <p className="text-sm text-gray-600 mb-2">Height: {size.height} / {size.heightImperial}</p>
+                  <p className="text-sm text-gray-600 mb-2">Weight: {size.weight} / {size.weightImperial}</p>
+                  <p className="text-sm text-gray-600 font-medium">{bodyType}</p>
                 </div>
-                <h4 className="font-bold text-sm mb-2">{fit.name}</h4>
-                <p className="text-xs text-gray-600">{fit.description}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 

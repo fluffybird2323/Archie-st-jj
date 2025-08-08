@@ -11,10 +11,11 @@ interface PrivacyPageProps {
 }
 
 export default async function PrivacyPage({ params }: PrivacyPageProps) {
-  const dictionary = await getDictionary(params.locale)
+  const { locale } = await params
+  const dictionary = await getDictionary(locale)
 
   const getLocalizedPath = (path: string) => {
-    return params.locale === "en" ? path : `/${params.locale}${path}`
+    return locale === "en" ? path : `/${locale}${path}`
   }
 
   return (
@@ -45,7 +46,7 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Privacy Policy</h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Your privacy is important to us. This policy explains how we collect, use, and protect your information.
+              Your privacy is important to us. This policy explains how we collect, use, and protect your information. Additionally, it outlines your rights and our obligations under applicable laws.
             </p>
             <div className="text-sm text-gray-500 mt-4">Last updated: January 2024</div>
           </div>
@@ -123,7 +124,7 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
                   <li>Data portability</li>
                   <li>Withdraw consent at any time</li>
                 </ul>
-                <p className="mt-6">To exercise these rights, please contact us at privacy@artie.com</p>
+                <p className="mt-6">To exercise these rights, please contact us at privacy@artie.com. For disputes or complaints, you may also reach out to our legal team at legal@artie.com.</p>
               </div>
             </section>
 
