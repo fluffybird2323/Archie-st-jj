@@ -71,7 +71,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
               <div className="relative">
                 <div className="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl overflow-hidden">
                   <img
-                    src="/placeholder.svg?height=600&width=600"
+                    src="https://i.imgur.com/mdlHa17.png"
                     alt="ARTIE Studio"
                     className="w-full h-full object-cover"
                   />
@@ -161,55 +161,21 @@ export default async function AboutPage({ params }: AboutPageProps) {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-1 gap-8">
               <div className="text-center group">
                 <div className="relative mb-6">
                   <div className="w-48 h-48 mx-auto bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl overflow-hidden">
                     <img
-                      src="/placeholder.svg?height=300&width=300"
-                      alt="Sarah Chen"
+                      src="https://i.imgur.com/FhSZl6J.png"
+                      alt="Ishaan Yadav"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                     />
                   </div>
                 </div>
-                <h3 className="text-xl font-bold mb-2">Sarah Chen</h3>
-                <p className="text-gray-600 mb-2">Founder & Creative Director</p>
+                <h3 className="text-xl font-bold mb-2">Ishaan Yadav</h3>
+                <p className="text-gray-600 mb-2">Founder</p>
                 <p className="text-sm text-gray-500">
-                  Former designer at sustainable fashion brands with 10+ years experience.
-                </p>
-              </div>
-
-              <div className="text-center group">
-                <div className="relative mb-6">
-                  <div className="w-48 h-48 mx-auto bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl overflow-hidden">
-                    <img
-                      src="/placeholder.svg?height=300&width=300"
-                      alt="Marcus Johnson"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                    />
-                  </div>
-                </div>
-                <h3 className="text-xl font-bold mb-2">Marcus Johnson</h3>
-                <p className="text-gray-600 mb-2">Head of Operations</p>
-                <p className="text-sm text-gray-500">
-                  Supply chain expert focused on ethical manufacturing and sustainability.
-                </p>
-              </div>
-
-              <div className="text-center group">
-                <div className="relative mb-6">
-                  <div className="w-48 h-48 mx-auto bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl overflow-hidden">
-                    <img
-                      src="/placeholder.svg?height=300&width=300"
-                      alt="Elena Rodriguez"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                    />
-                  </div>
-                </div>
-                <h3 className="text-xl font-bold mb-2">Elena Rodriguez</h3>
-                <p className="text-gray-600 mb-2">Brand & Marketing Director</p>
-                <p className="text-sm text-gray-500">
-                  Brand strategist passionate about authentic storytelling and community building.
+                  The visionary behind ARTIE.
                 </p>
               </div>
             </div>
