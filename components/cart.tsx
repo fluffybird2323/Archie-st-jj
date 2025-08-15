@@ -22,51 +22,34 @@ export function Cart({ isOpen, onClose, dictionary, locale }: CartProps) {
   const exchangeRate = exchangeRates[currency.code] || 1
 
   const handleCheckout = async () => {
-    if (items.length === 0) return
-
     setIsLoading(true)
-    setError(null)
-
     try {
-      // Prepare line items for Square checkout
-      const lineItems = items.map((item) => ({
-        price_data: {
-          currency: "usd", // Base currency for calculations
-          product_data: {
-            name: item.name,
-            images: item.image ? [item.image] : [],
-          },
-          unit_amount: Math.round(item.price * 100), // Convert to cents for USD base
-        },
-        quantity: item.quantity,
-      }))
-
       const response = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          lineItems,
+          items: items.map((item) => ({
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+          })),
           locale,
         }),
       })
 
-      const data = await response.json()
-
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create checkout session")
+        throw new Error("Failed to create checkout session")
       }
 
-      // Redirect to Square checkout URL
-      if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl
-      } else {
-        throw new Error("No checkout URL received from Square")
-      }
-    } catch (err) {
-      console.error("Checkout error:", err)
-      setError(err instanceof Error ? err.message : "An error occurred during checkout")
+      const { checkoutUrl } = await response.json()
+
+      // Redirect to Square checkout
+      window.location.href = checkoutUrl
+    } catch (error) {
+      console.error("Checkout error:", error)
+      // Handle error (show toast, etc.)
     } finally {
       setIsLoading(false)
     }
