@@ -1,28 +1,39 @@
 import { type NextRequest, NextResponse } from "next/server"
-import Stripe from "stripe"
+import { Client, Environment, ApiError } from "squareup"
 import { currencies, exchangeRates, type Locale } from "@/lib/i18n/config"
 
-// Initialize Stripe with proper error handling
-const getStripe = () => {
-  const secretKey = process.env.STRIPE_SECRET_KEY
-  if (!secretKey) {
-    throw new Error("STRIPE_SECRET_KEY environment variable is not set")
+// Initialize Square client with proper error handling
+const getSquareClient = () => {
+  const accessToken = process.env.SQUARE_ACCESS_TOKEN
+  const environment = process.env.SQUARE_ENVIRONMENT
+
+  if (!accessToken) {
+    throw new Error("SQUARE_ACCESS_TOKEN environment variable is not set")
   }
-  return new Stripe(secretKey, {
-    apiVersion: "2025-05-28.basil",
+
+  if (!environment) {
+    throw new Error("SQUARE_ENVIRONMENT environment variable is not set")
+  }
+
+  return new Client({
+    accessToken,
+    environment: environment === "production" ? Environment.Production : Environment.Sandbox,
   })
 }
 
 export async function POST(request: NextRequest) {
   try {
-    if (!process.env.STRIPE_SECRET_KEY) {
+    if (!process.env.SQUARE_ACCESS_TOKEN || !process.env.SQUARE_LOCATION_ID) {
       return NextResponse.json(
-        { error: "Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable." },
+        {
+          error:
+            "Square is not configured. Please set SQUARE_ACCESS_TOKEN and SQUARE_LOCATION_ID environment variables.",
+        },
         { status: 500 },
       )
     }
 
-    const stripe = getStripe()
+    const squareClient = getSquareClient()
     const body = await request.json()
     const { priceId, productName, productImage, locale = "en", lineItems } = body
 
@@ -30,130 +41,159 @@ export async function POST(request: NextRequest) {
     const currency = currencies[locale as Locale] || currencies.en
     const exchangeRate = exchangeRates[currency.code] || 1
 
-    // Configure payment methods based on locale
-    const paymentMethodTypes: Stripe.Checkout.SessionCreateParams.PaymentMethodType[] = ["card"]
-    if (locale === "ja") paymentMethodTypes.push("konbini")
-    if (locale === "zh") paymentMethodTypes.push("alipay", "wechat_pay")
-
-    let sessionConfig: Stripe.Checkout.SessionCreateParams
+    let orderRequest: any
 
     // Handle cart checkout (multiple items)
     if (lineItems && Array.isArray(lineItems)) {
       if (lineItems.length === 0) {
         return NextResponse.json({ error: "Cart is empty" }, { status: 400 })
       }
-      sessionConfig = {
-        payment_method_types: paymentMethodTypes,
-        line_items: lineItems.map((item: any) => ({
-          price_data: {
-            currency: item.price_data.currency,
-            product_data: {
-              name: item.price_data.product_data.name,
-              images: item.price_data.product_data.images || [],
-            },
-            unit_amount: item.price_data.unit_amount,
+
+      const lineItemsForSquare = lineItems.map((item: any) => {
+        const localPrice = (item.price_data.unit_amount / (currency.code === "JPY" ? 1 : 100)) * exchangeRate
+        const priceInSmallestUnit = Math.round(localPrice * (currency.code === "JPY" ? 1 : 100))
+
+        return {
+          quantity: item.quantity.toString(),
+          catalogObjectId: undefined, // For custom items
+          itemType: "ITEM",
+          name: item.price_data.product_data.name,
+          basePriceMoney: {
+            amount: BigInt(priceInSmallestUnit),
+            currency: currency.code,
           },
-          quantity: item.quantity,
-        })),
-        mode: "payment",
-        shipping_address_collection: {
-          allowed_countries: [
-            "US", "CA", "GB", "AU", "DE", "FR", "IT", "ES", "NL", "BE", "AT", "CH", "SE", "NO", "DK", "FI", "IE", "PT", "LU", "GR", "JP", "SG", "HK", "NZ", "MX", "BR", "IN", "KR", "TW", "TH",
+        }
+      })
+
+      orderRequest = {
+        order: {
+          locationId: process.env.SQUARE_LOCATION_ID,
+          lineItems: lineItemsForSquare,
+          fulfillments: [
+            {
+              type: "SHIPMENT",
+              state: "PROPOSED",
+              shipmentDetails: {
+                recipient: {
+                  displayName: "Customer",
+                },
+              },
+            },
           ],
         },
-        shipping_options: [
-          {
-            shipping_rate_data: {
-              type: "fixed_amount",
-              fixed_amount: {
-                amount: 0, // Free shipping
-                currency: currency.code.toLowerCase(),
-              },
-              display_name: "Free Shipping",
-              delivery_estimate: {
-                minimum: { unit: "business_day", value: 3 },
-                maximum: { unit: "business_day", value: 7 },
-              },
-            },
-          },
-        ],
-        success_url: `${request.nextUrl.origin}/${locale === "en" ? "" : locale + "/"}success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${request.nextUrl.origin}/${locale === "en" ? "" : locale + "/"}`,
       }
     } else {
       // Handle single item checkout (backward compatibility)
       if (!priceId || !productName) {
         return NextResponse.json({ error: "Missing required fields: priceId and productName" }, { status: 400 })
       }
+
       // Convert USD price to local currency
       const localPrice = priceId * exchangeRate
       const priceInSmallestUnit = Math.round(localPrice * (currency.code === "JPY" ? 1 : 100))
-      sessionConfig = {
-        payment_method_types: paymentMethodTypes,
-        line_items: [
-          {
-            price_data: {
-              currency: currency.code.toLowerCase(),
-              product_data: {
-                name: productName,
-                images: productImage ? [productImage] : [],
+
+      orderRequest = {
+        order: {
+          locationId: process.env.SQUARE_LOCATION_ID,
+          lineItems: [
+            {
+              quantity: "1",
+              catalogObjectId: undefined, // For custom items
+              itemType: "ITEM",
+              name: productName,
+              basePriceMoney: {
+                amount: BigInt(priceInSmallestUnit),
+                currency: currency.code,
               },
-              unit_amount: priceInSmallestUnit,
             },
-            quantity: 1,
-          },
-        ],
-        mode: "payment",
-        shipping_address_collection: {
-          allowed_countries: [
-            "US", "CA", "GB", "AU", "DE", "FR", "IT", "ES", "NL", "BE", "AT", "CH", "SE", "NO", "DK", "FI", "IE", "PT", "LU", "GR", "JP", "SG", "HK", "NZ", "MX", "BR", "IN", "KR", "TW", "TH",
+          ],
+          fulfillments: [
+            {
+              type: "SHIPMENT",
+              state: "PROPOSED",
+              shipmentDetails: {
+                recipient: {
+                  displayName: "Customer",
+                },
+              },
+            },
           ],
         },
-        shipping_options: [
-          {
-            shipping_rate_data: {
-              type: "fixed_amount",
-              fixed_amount: {
-                amount: 0, // Free shipping
-                currency: currency.code.toLowerCase(),
-              },
-              display_name: "Free Shipping",
-              delivery_estimate: {
-                minimum: { unit: "business_day", value: 3 },
-                maximum: { unit: "business_day", value: 7 },
-              },
-            },
-          },
-        ],
-        success_url: `${request.nextUrl.origin}/${locale === "en" ? "" : locale + "/"}success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${request.nextUrl.origin}/${locale === "en" ? "" : locale + "/"}`,
       }
     }
 
-    // Add simplified Konbini configuration for Japanese customers
-    if (locale === "ja") {
-      sessionConfig.payment_method_options = {
-        konbini: {
-          expires_after_days: 3, // Payment expires after 3 days
-        },
-      }
+    // Create order first
+    const { result: orderResult } = await squareClient.ordersApi.createOrder(orderRequest)
+
+    if (!orderResult.order) {
+      throw new Error("Failed to create order")
     }
 
-    const session = await stripe.checkout.sessions.create(sessionConfig)
-    return NextResponse.json({ sessionId: session.id })
+    // Create checkout request
+    const checkoutRequest = {
+      askForShippingAddress: true,
+      merchantSupportEmail: "support@yourstore.com",
+      prePopulateShippingAddress: {
+        addressLine1: "",
+        addressLine2: "",
+        locality: "",
+        administrativeDistrictLevel1: "",
+        postalCode: "",
+        country: locale === "ja" ? "JP" : locale === "zh" ? "CN" : "US",
+      },
+      redirectUrl: `${request.nextUrl.origin}/${locale === "en" ? "" : locale + "/"}success?session_id={CHECKOUT_SESSION_ID}`,
+      order: {
+        locationId: process.env.SQUARE_LOCATION_ID,
+        orderId: orderResult.order.id,
+      },
+      paymentNote: `Order from ${productName || "Multiple Items"}`,
+      additionalRecipients: [],
+      note: `Checkout for ${locale} locale`,
+    }
+
+    // Create checkout
+    const { result: checkoutResult } = await squareClient.checkoutApi.createPaymentLink(checkoutRequest)
+
+    if (!checkoutResult.paymentLink) {
+      throw new Error("Failed to create checkout session")
+    }
+
+    // Return session ID in the same format as Stripe for UI compatibility
+    return NextResponse.json({
+      sessionId: checkoutResult.paymentLink.id,
+      checkoutUrl: checkoutResult.paymentLink.url,
+      orderId: orderResult.order.id,
+    })
   } catch (error) {
-    console.error("Error creating checkout session:", error)
+    console.error("Error creating Square checkout session:", error)
+
+    if (error instanceof ApiError) {
+      console.error("Square API Error:", error.errors)
+      return NextResponse.json(
+        {
+          error: `Square API Error: ${error.errors?.[0]?.detail || error.message}`,
+        },
+        { status: 500 },
+      )
+    }
+
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
-    return NextResponse.json({ error: "An unexpected error occurred while creating checkout session" }, { status: 500 })
+
+    return NextResponse.json(
+      {
+        error: "An unexpected error occurred while creating checkout session",
+      },
+      { status: 500 },
+    )
   }
 }
 
 export async function GET() {
-  const isConfigured = !!process.env.STRIPE_SECRET_KEY
+  const isConfigured = !!(process.env.SQUARE_ACCESS_TOKEN && process.env.SQUARE_LOCATION_ID)
   return NextResponse.json({
     configured: isConfigured,
-    message: isConfigured ? "Stripe is configured" : "Stripe configuration missing",
+    message: isConfigured ? "Square is configured" : "Square configuration missing",
   })
 }
