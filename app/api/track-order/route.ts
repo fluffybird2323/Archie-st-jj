@@ -1,10 +1,20 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { Client, Environment } from "squareup"
+import { Client } from "squareup"
 
-const squareClient = new Client({
-  accessToken: process.env.SQUARE_ACCESS_TOKEN!,
-  environment: process.env.SQUARE_ENVIRONMENT === "production" ? Environment.Production : Environment.Sandbox,
-})
+// Initialize Square client without Environment enum
+const getSquareClient = () => {
+  const accessToken = process.env.SQUARE_ACCESS_TOKEN
+  const environment = process.env.SQUARE_ENVIRONMENT
+
+  if (!accessToken) {
+    throw new Error("SQUARE_ACCESS_TOKEN environment variable is not set")
+  }
+
+  return new Client({
+    accessToken,
+    environment: environment === "production" ? "production" : "sandbox",
+  })
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,6 +23,8 @@ export async function POST(request: NextRequest) {
     if (!orderId) {
       return NextResponse.json({ error: "Order ID is required" }, { status: 400 })
     }
+
+    const squareClient = getSquareClient()
 
     // Retrieve order from Square
     const { result, statusCode } = await squareClient.ordersApi.retrieveOrder(orderId)
@@ -28,13 +40,13 @@ export async function POST(request: NextRequest) {
       id: order.id,
       status: order.state || "unknown",
       createdAt: order.createdAt,
-      totalAmount: order.totalMoney?.amount ? Number.parseInt(order.totalMoney.amount) : 0,
+      totalAmount: order.totalMoney?.amount ? Number(order.totalMoney.amount) : 0,
       currency: order.totalMoney?.currency || "USD",
       lineItems:
         order.lineItems?.map((item) => ({
           name: item.name || "Unknown Item",
-          quantity: Number.parseInt(item.quantity || "1"),
-          price: item.totalMoney?.amount ? Number.parseInt(item.totalMoney.amount) : 0,
+          quantity: Number(item.quantity || "1"),
+          price: item.totalMoney?.amount ? Number(item.totalMoney.amount) : 0,
         })) || [],
       fulfillment: order.fulfillments?.[0]
         ? {
