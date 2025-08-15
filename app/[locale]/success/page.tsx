@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Footer } from "@/components/footer"
 import { getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
-import { Client, Environment } from "squareup"
+import { Client } from "square"
 
 interface SuccessPageProps {
   params: {
@@ -26,7 +26,7 @@ const getSquareClient = () => {
 
   return new Client({
     accessToken,
-    environment: environment === "production" ? Environment.Production : Environment.Sandbox,
+    environment: environment === "production" ? "production" : "sandbox",
   })
 }
 
