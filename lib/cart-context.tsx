@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useReducer, useEffect, useRef } from "react"
 import { currencies, exchangeRates } from "./i18n/config"
-import type { Locale } from "./i18n/config"
+import type { Locale, CountryCode } from "./i18n/config"
 
 export interface CartItem {
   id: string
@@ -110,7 +110,7 @@ interface CartContextType {
   closeCart: () => void
   setLocale: (locale: Locale) => void
   getTotalItems: () => number
-  getTotalPrice: (locale?: Locale) => number
+  getTotalPrice: (country?: string) => number
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
@@ -181,16 +181,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }
 
   // Sum in USD, then convert and round the total at the end
-  const getTotalPrice = (locale?: Locale) => {
+  const getTotalPrice = (country?: string) => {
     // Sum all line items, then round once at the end
-    const totalUSD = Math.round(
-      state.items.reduce((total, item) => total + item.price * item.quantity, 0) * 100
-    ) / 100;
-    if (!locale) return totalUSD;
-    const currency = currencies[locale] || currencies.en;
-    const rate = exchangeRates[currency.code] || 1;
+    const totalUSD = state.items.reduce((total, item) => total + item.price * item.quantity, 0);
+    if (!country) return Math.round(totalUSD * 100); // Return in cents for USD
+    const currencyCode = currencies[country]?.code || currencies.US.code;
+    const rate = exchangeRates[currencyCode] || 1;
     const converted = totalUSD * rate;
-    return currency.code === "JPY" ? Math.round(converted) : Math.round(converted * 100) / 100;
+    // For JPY, return as is (no cents), otherwise convert to cents
+    return currencyCode === "JPY" ? Math.round(converted) : Math.round(converted * 100);
   };
 
   return (

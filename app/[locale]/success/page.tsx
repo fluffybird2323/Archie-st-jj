@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Footer } from "@/components/footer"
 import { getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
-import Stripe from "stripe"
-import { headers } from "next/headers"
+import { SquareClient, SquareEnvironment } from "square"
 
 interface SuccessPageProps {
   params: {
@@ -13,14 +12,12 @@ interface SuccessPageProps {
   }
 }
 
-const getStripe = () => {
-  const secretKey = process.env.STRIPE_SECRET_KEY
-  if (!secretKey) {
-    throw new Error("STRIPE_SECRET_KEY environment variable is not set")
+const getSquareClient = () => {
+  const accessToken = process.env.SQUARE_ACCESS_TOKEN
+  if (!accessToken) {
+    throw new Error("SQUARE_ACCESS_TOKEN environment variable is not set")
   }
-  return new Stripe(secretKey, {
-    apiVersion: "2025-05-28.basil",
-  })
+  return new SquareClient(accessToken, process.env.NODE_ENV === "production" ? SquareEnvironment.Production : SquareEnvironment.Sandbox)
 }
 
 async function sendTelegramOrderNotification(orderDetails: string) {
@@ -50,34 +47,42 @@ async function sendTelegramOrderNotification(orderDetails: string) {
   }
 }
 
-export default async function SuccessPage({ params, searchParams }: SuccessPageProps & { searchParams: { session_id?: string } }) {
+export default async function SuccessPage({ params, searchParams }: SuccessPageProps & { searchParams: { order_id?: string } }) {
   const dictionary = getDictionary(params.locale)
   const homeUrl = params.locale === "en" ? "/" : `/${params.locale}`
-  const sessionId = searchParams.session_id
+  const orderId = searchParams.order_id
 
   let orderNumber = `ARTIE-${Date.now().toString().slice(-6)}`
   let estimatedDelivery = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toLocaleDateString()
   let orderDetails = ''
+  let totalAmount = 0
+  let customerEmail = ''
 
-  if (sessionId) {
+  if (orderId) {
     try {
-      const stripe = getStripe()
-      const session = await stripe.checkout.sessions.retrieve(sessionId, {
-        expand: ['line_items', 'payment_intent']
-      })
-
-      if (session.payment_status === 'paid') {
+      const squareClient = getSquareClient()
+      const orderResponse = await squareClient.orders.retrieveOrder(orderId)
+      
+      if (orderResponse.result?.order) {
+        const order = orderResponse.result.order
+        
         // Generate order details
-        orderDetails = `Order ID: ${session.id}\nCustomer: ${session.customer_details?.name || 'N/A'}\nEmail: ${session.customer_details?.email || 'N/A'}\nAmount: ${(session.amount_total || 0) / 100} ${session.currency?.toUpperCase() || 'USD'}\nItems:\n${session.line_items?.data.map(item => `- ${item.description} x${item.quantity}`).join('\n') || 'No items'}`
+        const lineItems = order.lineItems || []
+        totalAmount = lineItems.reduce((sum: number, item: any) => sum + (parseInt(item.totalMoney?.amount || '0')), 0)
+        
+        orderDetails = `Order ID: ${order.id}
+Amount: ${(totalAmount / 100).toFixed(2)} ${order.totalMoney?.currency || 'USD'}
+Items:
+${lineItems.map((item: any) => `- ${item.name} x${item.quantity}`).join('\n') || 'No items'}`
 
         // Send to Telegram
         await sendTelegramOrderNotification(orderDetails)
 
         // Use real data if available
-        orderNumber = `ARTIE-${session.id.slice(-6).toUpperCase()}`
+        orderNumber = `ARTIE-${order.id.slice(-6).toUpperCase()}`
       }
     } catch (error) {
-      console.error('Error fetching Stripe session:', error)
+      console.error('Error fetching Square order:', error)
     }
   }
 

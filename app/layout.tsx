@@ -1,4 +1,4 @@
-import type React from "react"
+import React from "react";
 import { Inter, Outfit } from "next/font/google"
 import "./globals.css"
 import { CartProvider } from "@/lib/cart-context"
@@ -61,13 +61,12 @@ export const metadata = {
     generator: 'v0.dev'
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode; }) {
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
+      <head>
+        <script type="text/javascript" src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
+      </head>
       <body className="font-inter antialiased">
         <CartProvider>
           {children}

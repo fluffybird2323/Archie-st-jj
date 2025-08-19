@@ -19,8 +19,8 @@ function Header({ dictionary, locale }: { dictionary: Dictionary; locale: Locale
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href={getLocalizedPath("/")} className="flex items-center">
-            <Logo className="h-8 w-auto" />
+          <Link href={getLocalizedPath("/")} className="flex items-center text-2xl font-bold text-gray-900">
+            ARTIE
           </Link>
 
           <nav className="hidden md:flex items-center space-x-8">

@@ -1,7 +1,7 @@
 import type { Locale } from "./i18n/config"
 
 // DeepL API Configuration
-const DEEPL_API_KEY = "32ddbfe4-f0cb-45b2-8a99-0503cf1a94a3:fx"
+const DEEPL_API_KEY = ""
 const DEEPL_API_URL = "https://api-free.deepl.com/v2/translate"
 
 // Map our locales to DeepL language codes
@@ -89,7 +89,7 @@ export async function translateTextDeepL(
  * @returns boolean
  */
 export function isDeepLTranslationAvailable(): boolean {
-  return !!DEEPL_API_KEY
+  return !!DEEPL_API_KEY && DEEPL_API_KEY !== ""
 }
 
 /**

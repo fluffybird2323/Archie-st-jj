@@ -1,20 +1,15 @@
 "use client"
 
-import { useState } from "react"
+import React, { useState } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Trash2, Minus, Plus, ShoppingBag, X } from "lucide-react"
 import { useCart } from "@/lib/cart-context"
-import { loadStripe } from "@stripe/stripe-js"
-import { formatPrice } from "@/lib/i18n/utils"
-import { currencies, exchangeRates } from "@/lib/i18n/config"
-import { getDictionary } from "@/lib/i18n/utils"
+import Link from "next/link";
+import { formatPrice, getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
 
-const getStripePromise = () => {
-  const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-  return publishableKey ? loadStripe(publishableKey) : null
-}
+
 
 interface CartProps {
   locale: Locale
@@ -22,101 +17,8 @@ interface CartProps {
 
 export function Cart({ locale }: CartProps) {
   const { state, removeItem, updateQuantity, closeCart, getTotalItems, getTotalPrice } = useCart()
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+
   const dictionary = getDictionary(locale)
-
-  // Calculate total that matches Stripe calculation exactly
-  const getStripeMatchingTotal = () => {
-    const currency = currencies[locale] || currencies.en
-    const exchangeRate = exchangeRates[currency.code] || 1
-
-    // If USD, calculate directly
-    if (currency.code === "USD") {
-      return Math.round(
-        state.items.reduce((total, item) => total + item.price * item.quantity, 0) * 100
-      ) / 100
-    }
-
-    // If JPY, assume price is already in JPY (no conversion)
-    if (currency.code === "JPY") {
-      return state.items.reduce((total, item) => total + item.price * item.quantity, 0)
-    }
-
-    // For other currencies, apply exchange rate
-    const localizedTotal = state.items.reduce((total, item) => {
-      return total + item.price * item.quantity * exchangeRate
-    }, 0)
-    return Math.round(localizedTotal * 100) / 100
-  }
-
-  const handleCheckout = async () => {
-    if (state.items.length === 0) return
-
-    setIsLoading(true)
-    setError(null)
-
-    try {
-      const stripePromise = getStripePromise()
-      if (!stripePromise) {
-        throw new Error("Payment system is not configured")
-      }
-
-      // Get currency info for the locale
-      const currency = currencies[locale] || currencies.en
-      const exchangeRate = exchangeRates[currency.code] || 1
-
-      // Create line items for all cart items with localized pricing
-      const lineItems = state.items.map((item) => {
-        // Convert USD price to local currency with proper precision
-        const localPrice = Math.round(item.price * exchangeRate * 100) / 100
-        // Convert to smallest currency unit (cents for most currencies, but not for JPY)
-        const unitAmount = Math.round(localPrice * (currency.code === "JPY" ? 1 : 100))
-        
-        return {
-          price_data: {
-            currency: currency.code.toLowerCase(),
-            product_data: {
-              name: `${item.name} - Size: ${item.size} - Color: ${item.color}`,
-              images: [item.image],
-            },
-            unit_amount: unitAmount,
-          },
-          quantity: item.quantity,
-        }
-      })
-
-      const response = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          lineItems,
-          locale: locale,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to create checkout session")
-      }
-
-      const stripe = await stripePromise
-      if (stripe && data.sessionId) {
-        const { error } = await stripe.redirectToCheckout({ sessionId: data.sessionId })
-        if (error) {
-          throw new Error(error.message)
-        }
-      }
-    } catch (error) {
-      console.error("Checkout error:", error)
-      setError(error instanceof Error ? error.message : "An error occurred during checkout")
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   return (
     <div className={`fixed inset-0 z-50 overflow-hidden transition-opacity duration-500 ${
@@ -154,7 +56,7 @@ export function Cart({ locale }: CartProps) {
               </div>
             ) : (
               <div className="space-y-4">
-                {state.items.map((item) => (
+                {state.items.map((item: any) => (
                   <div key={item.id} className="flex gap-4 border-b border-gray-200 pb-4">
                     {/* Product Image */}
                     <div className="relative h-20 w-20 flex-shrink-0">
@@ -211,29 +113,23 @@ export function Cart({ locale }: CartProps) {
           {/* Footer */}
           {state.items.length > 0 && (
             <div className="border-t border-gray-200 px-6 py-4">
-              {/* Error Message */}
-              {error && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
-                  {error}
-                </div>
-              )}
-
               {/* Total */}
               <div className="flex justify-between items-center mb-4">
                 <span className="text-lg font-bold text-black">Total:</span>
                 <span className="text-lg font-bold text-black">
-                  {formatPrice(getStripeMatchingTotal(), locale)}
+                  {formatPrice(getTotalPrice(locale), locale)}
                 </span>
               </div>
 
               {/* Checkout Button */}
-              <Button
-                onClick={handleCheckout}
-                disabled={isLoading}
-                className="nike-button w-full py-3"
-              >
-                {isLoading ? "PROCESSING..." : "CHECKOUT"}
-              </Button>
+              <Link href={`/${locale}/checkout`} passHref>
+                <Button
+                  className="nike-button w-full py-3"
+                  onClick={closeCart}
+                >
+                  CHECKOUT
+                </Button>
+              </Link>
 
               {/* Free Shipping Notice */}
               <div className="mt-3 text-center">
