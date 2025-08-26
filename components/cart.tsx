@@ -24,7 +24,7 @@ export function Cart({ locale }: CartProps) {
   const { state, removeItem, updateQuantity, closeCart, getTotalItems, getTotalPrice } = useCart()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const dictionary = getDictionary(locale)
+  const dict = getDictionary(locale)
 
   // Calculate total that matches Stripe calculation exactly
   const getStripeMatchingTotal = () => {
@@ -149,8 +149,8 @@ export function Cart({ locale }: CartProps) {
             {state.items.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center">
                 <ShoppingBag className="h-16 w-16 text-gray-300 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Your cart is empty</h3>
-                <p className="text-gray-500">Add some products to get started</p>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">{dict.cart.empty}</h3>
+                <p className="text-gray-500">{dict.cart.addSomeProducts || "Add some products to get started"}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -198,7 +198,7 @@ export function Cart({ locale }: CartProps) {
                     <button
                       onClick={() => removeItem(item.id)}
                       className="text-gray-400 hover:text-red-500 transition-colors"
-                      title="Remove from cart"
+                      title={dict.cart.remove || "Remove from cart"}
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -220,7 +220,7 @@ export function Cart({ locale }: CartProps) {
 
               {/* Total */}
               <div className="flex justify-between items-center mb-4">
-                <span className="text-lg font-bold text-black">Total:</span>
+                <span className="text-lg font-bold text-black">{dict.cart.total}:</span>
                 <span className="text-lg font-bold text-black">
                   {formatPrice(getStripeMatchingTotal(), locale)}
                 </span>
@@ -232,12 +232,12 @@ export function Cart({ locale }: CartProps) {
                 disabled={isLoading}
                 className="nike-button w-full py-3"
               >
-                {isLoading ? "PROCESSING..." : "CHECKOUT"}
+                {isLoading ? dict.common.loading : dict.cart.checkout}
               </Button>
 
               {/* Free Shipping Notice */}
               <div className="mt-3 text-center">
-                <p className="text-green-600 text-sm font-medium">🚚 Free shipping worldwide</p>
+                <p className="text-green-600 text-sm font-medium">🚚 {dict.product.freeShipping}</p>
               </div>
             </div>
           )}

@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import type { Dictionary } from "@/lib/i18n/dictionaries"
 import type { Locale } from "@/lib/i18n/config"
 import type { Product } from "@/lib/products-dynamic"
-import { formatPrice } from "@/lib/i18n/utils"
+import { formatPrice, getDictionary } from "@/lib/i18n/utils"
 
 interface LocalizedProductCardProps {
   product: Product
@@ -16,6 +16,7 @@ interface LocalizedProductCardProps {
 }
 
 export function LocalizedProductCard({ product, dictionary, locale }: LocalizedProductCardProps) {
+  const dict = getDictionary(locale)
   const [currentImage, setCurrentImage] = useState(0)
   const [imageError, setImageError] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
@@ -77,7 +78,7 @@ export function LocalizedProductCard({ product, dictionary, locale }: LocalizedP
                 <button
                   onClick={goToPrev}
                   className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-black p-2 rounded-full shadow-lg transition-all duration-200 z-20"
-                  aria-label="Previous image"
+                  aria-label={dict.product.previousImage || "Previous image"}
                   tabIndex={0}
                 >
                   <ChevronLeft className="w-5 h-5" />
@@ -85,7 +86,7 @@ export function LocalizedProductCard({ product, dictionary, locale }: LocalizedP
                 <button
                   onClick={goToNext}
                   className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-black p-2 rounded-full shadow-lg transition-all duration-200 z-20"
-                  aria-label="Next image"
+                  aria-label={dict.product.nextImage || "Next image"}
                   tabIndex={0}
                 >
                   <ChevronRight className="w-5 h-5" />

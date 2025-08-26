@@ -66,10 +66,11 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
                 </p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
                   <li>Personal information (name, email address, phone number)</li>
-                  <li>Payment information (processed securely through Stripe)</li>
+                  <li>Payment information (processed securely through Stripe - we never store payment card details)</li>
                   <li>Shipping and billing addresses</li>
                   <li>Order history and preferences</li>
                   <li>Communications with our support team</li>
+                  <li>Device information and usage data for analytics</li>
                 </ul>
               </div>
             </section>
@@ -103,10 +104,20 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
                 <p>We implement appropriate security measures to protect your personal information:</p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
                   <li>SSL encryption for all data transmission</li>
-                  <li>Secure payment processing through Stripe</li>
+                  <li>Secure payment processing through Stripe (PCI DSS Level 1 compliant)</li>
                   <li>Regular security audits and updates</li>
-                  <li>Limited access to personal information</li>
-                  <li>Data retention policies</li>
+                  <li>Limited access to personal information on need-to-know basis</li>
+                  <li>Data retention policies (customer data deleted after 7 years of inactivity)</li>
+                  <li>No storage of payment card information on our servers</li>
+                </ul>
+                
+                <h3 className="text-lg font-semibold mt-6 text-black">Payment Data Processing</h3>
+                <p>Payment information is handled exclusively by Stripe, our payment processor:</p>
+                <ul className="list-disc list-inside space-y-2 ml-4 mt-2">
+                  <li>Stripe is PCI DSS Level 1 certified</li>
+                  <li>Card details are encrypted and tokenized</li>
+                  <li>We never see or store your full payment card information</li>
+                  <li>Stripe's privacy policy applies to payment data: <a href="https://stripe.com/privacy" target="_blank" className="text-blue-600 hover:underline">stripe.com/privacy</a></li>
                 </ul>
               </div>
             </section>
