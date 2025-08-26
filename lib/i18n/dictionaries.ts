@@ -71,6 +71,24 @@ export const dictionaries = {
       businessDays: "3-7 business days",
       trackingInfo: "You will receive tracking information via email once your order ships.",
     },
+    orderTracking: {
+      title: "Track Your Order",
+      subtitle: "Enter your order ID to check the status of your purchase",
+      enterOrderId: "Enter Order ID",
+      orderIdPlaceholder: "e.g., ORD-123456789",
+      orderIdHelp: "You can find your order ID in your confirmation email",
+      trackOrder: "Track Order",
+      searching: "Searching...",
+      orderNotFound: "Order Not Found",
+      orderDetails: "Order Details",
+      orderId: "Order ID",
+      orderDate: "Order Date",
+      email: "Email",
+      items: "Items",
+      fulfillment: "Shipping Information",
+      status: "Status",
+      trackingNumber: "Tracking Number",
+    },
     sizeGuide: {
       title: "SIZE GUIDE",
       subtitle: "Find your perfect fit",
@@ -99,7 +117,8 @@ export const dictionaries = {
       sizingNotesText:
         "Measurements may vary ±1-3cm due to manufacturing tolerances. For an oversized fit, consider sizing up. All dimensions are taken flat and may vary depending on fabric stretch and wash care.",
       backToShopping: "Back to Shopping",
-      measurementGuideIntro: "Our comprehensive measurement guide helps you find your perfect fit by providing detailed instructions on accurately measuring yourself.",
+      measurementGuideIntro:
+        "Our comprehensive measurement guide helps you find your perfect fit by providing detailed instructions on accurately measuring yourself.",
     },
     footer: {
       about: "About Us",
@@ -133,7 +152,8 @@ export const dictionaries = {
     about: {
       title: "About ARTIE",
       mainText: "We're not just a clothing brand.",
-      subText: "We're a movement towards conscious fashion, premium quality, and timeless design that transcends trends.",
+      subText:
+        "We're a movement towards conscious fashion, premium quality, and timeless design that transcends trends.",
     },
   },
   "zh-CN": {
@@ -208,6 +228,24 @@ export const dictionaries = {
       businessDays: "3-7个工作日",
       trackingInfo: "订单发货后，您将通过电子邮件收到跟踪信息。",
     },
+    orderTracking: {
+      title: "跟踪您的订单",
+      subtitle: "输入您的订单号以查看购买状态",
+      enterOrderId: "输入订单号",
+      orderIdPlaceholder: "例如：ORD-123456789",
+      orderIdHelp: "您可以在确认邮件中找到订单号",
+      trackOrder: "跟踪订单",
+      searching: "搜索中...",
+      orderNotFound: "未找到订单",
+      orderDetails: "订单详情",
+      orderId: "订单号",
+      orderDate: "订单日期",
+      email: "邮箱",
+      items: "商品",
+      fulfillment: "配送信息",
+      status: "状态",
+      trackingNumber: "跟踪号",
+    },
     sizeGuide: {
       title: "尺寸指南",
       subtitle: "精确自信地找到您的完美尺寸",
@@ -254,7 +292,7 @@ export const dictionaries = {
       privacy: "隐私政策",
       terms: "服务条款",
       sustainability: "可持续发展",
-      allRightsReserved: "版权所有。"
+      allRightsReserved: "版权所有。",
     },
     common: {
       loading: "加载中...",
@@ -345,6 +383,24 @@ export const dictionaries = {
       businessDays: "3-7 Werktage",
       trackingInfo: "Sie erhalten Tracking-Informationen per E-Mail, sobald Ihre Bestellung versendet wird.",
     },
+    orderTracking: {
+      title: "Bestellung verfolgen",
+      subtitle: "Geben Sie Ihre Bestellnummer ein, um den Status Ihres Kaufs zu überprüfen",
+      enterOrderId: "Bestellnummer eingeben",
+      orderIdPlaceholder: "z.B. ORD-123456789",
+      orderIdHelp: "Sie finden Ihre Bestellnummer in Ihrer Bestätigungs-E-Mail",
+      trackOrder: "Bestellung verfolgen",
+      searching: "Suche...",
+      orderNotFound: "Bestellung nicht gefunden",
+      orderDetails: "Bestelldetails",
+      orderId: "Bestellnummer",
+      orderDate: "Bestelldatum",
+      email: "E-Mail",
+      items: "Artikel",
+      fulfillment: "Versandinformationen",
+      status: "Status",
+      trackingNumber: "Sendungsnummer",
+    },
     sizeGuide: {
       title: "GRÖßENTABELLE",
       subtitle: "Finden Sie Ihre perfekte Passform mit Präzision und Vertrauen",
@@ -373,7 +429,8 @@ export const dictionaries = {
       sizingNotesText:
         "Messungen können aufgrund von Fertigungstoleranzen um ±1-3cm variieren. Für eine übergroße Passform sollten Sie eine Nummer größer wählen. Alle Maße werden flach genommen und können je nach Stoffdehnung und Waschpflege variieren.",
       backToShopping: "Zurück zum Einkaufen",
-      measurementGuideIntro: "Unser umfassender Messleitfaden hilft Ihnen, die perfekte Passform zu finden, indem er detaillierte Anweisungen zur genauen Selbstvermessung bietet.",
+      measurementGuideIntro:
+        "Unser umfassender Messleitfaden hilft Ihnen, die perfekte Passform zu finden, indem er detaillierte Anweisungen zur genauen Selbstvermessung bietet.",
     },
     footer: {
       about: "Über ARTIE",
@@ -408,7 +465,8 @@ export const dictionaries = {
     about: {
       title: "Über ARTIE",
       mainText: "Wir sind nicht nur eine Bekleidungsmarke.",
-      subText: "Wir sind eine Bewegung hin zu bewusster Mode, Premium-Qualität und zeitlosem Design, das Trends übersteigt.",
+      subText:
+        "Wir sind eine Bewegung hin zu bewusster Mode, Premium-Qualität und zeitlosem Design, das Trends übersteigt.",
     },
   },
   fr: {
@@ -483,72 +541,92 @@ export const dictionaries = {
       businessDays: "3-7 jours ouvrables",
       trackingInfo: "Vous recevrez les informations de suivi par e-mail une fois votre commande expédiée.",
     },
+    orderTracking: {
+      title: "Suivre votre commande",
+      subtitle: "Entrez votre numéro de commande pour vérifier le statut de votre achat",
+      enterOrderId: "Entrer le numéro de commande",
+      orderIdPlaceholder: "ex. ORD-123456789",
+      orderIdHelp: "Vous pouvez trouver votre numéro de commande dans votre e-mail de confirmation",
+      trackOrder: "Suivre la commande",
+      searching: "Recherche...",
+      orderNotFound: "Commande non trouvée",
+      orderDetails: "Détails de la commande",
+      orderId: "Numéro de commande",
+      orderDate: "Date de commande",
+      email: "E-mail",
+      items: "Articles",
+      fulfillment: "Informations d'expédition",
+      status: "Statut",
+      trackingNumber: "Numéro de suivi",
+    },
     sizeGuide: {
       title: "GUIDE DES TAILLES",
       subtitle: "Trouvez votre ajustement parfait avec précision et confiance",
       size: "TAILLE",
       height: "TAILLE",
-      weight: "POIDS",
+      weight: "PESO",
       chest: "POITRINE",
-      waist: "TAILLE",
+      waist: "VITA",
       visualGuide: "GUIDE VISUEL D'AJUSTEMENT",
       fitComparison: "COMPARAISON D'AJUSTEMENT",
-      slimFit: "Ajusté",
-      regularFit: "Régulier",
-      relaxedFit: "Décontracté",
-      looseFit: "Ample",
-      oversizedFit: "Surdimensionné",
+      slimFit: "Aderente",
+      regularFit: "Regolare",
+      relaxedFit: "Rilassata",
+      looseFit: "Ampia",
+      oversizedFit: "Oversize",
       howToMeasure: "COMMENT MESURER",
       chestMeasurement: "Mesure de poitrine",
       chestInstructions:
-        "Mesurez autour de la partie la plus pleine de votre poitrine, en gardant le ruban horizontal.",
+        "Mesurez autour de la partie la plus pleine de votre poitrine, mantenendo le ruban orizzontale.",
       waistMeasurement: "Mesure de taille",
       waistInstructions:
-        "Mesurez autour de votre ligne de taille naturelle, en gardant le ruban confortablement lâche.",
+        "Mesurez autour de votre ligne de taille naturelle, mantenendo le ruban confortablement largo.",
       heightMeasurement: "Mesure de taille",
-      heightInstructions: "Tenez-vous droit contre un mur et mesurez du sol au sommet de votre tête.",
+      heightInstructions: "Stai dritto contro un muro e mesure dal pavimento alla sommità della tua testa.",
       weightMeasurement: "Référence de poids",
-      weightInstructions: "Utilisez votre poids actuel comme référence pour la meilleure recommandation de taille.",
-      sizingNotes: "NOTES DE TAILLE",
+      weightInstructions: "Utilisez votre poids actuel comme référence pour la migliore raccomandazione di taglia.",
+      sizingNotes: "NOTE SULLE TAGLIE",
       sizingNotesText:
-        "Les mesures peuvent varier ±1-3cm en raison des tolérances de fabrication. Pour un ajustement surdimensionné, envisagez de prendre une taille au-dessus. Toutes les dimensions sont prises à plat et peuvent varier selon l'élasticité du tissu et l'entretien de lavage.",
-      backToShopping: "Retour aux achats",
-      measurementGuideIntro: "Notre guide de mesure complet vous aide à trouver la taille parfaite en fournissant des instructions détaillées pour vous mesurer avec précision.",
+        "Le misure possono variare di ±1-3cm a causa delle tolleranze di produzione. Per una vestibilità oversize, considera di prendere una taglia in più. Tutte le dimensioni sono prese piatte e possono variare a seconda dell'elasticità del tessuto e della cura del lavaggio.",
+      backToShopping: "Torna allo shopping",
+      measurementGuideIntro:
+        "La nostra guida completa alle misurazioni ti aiuta a trovare la vestibilità perfetta fornendo istruzioni dettagliate su come misurarti accuratamente.",
     },
     footer: {
       about: "À propos d'ARTIE",
       aboutText:
-        "Vêtements unisexes premium conçus pour la performance et le style. Chaque pièce est fabriquée avec attention aux détails et conçue pour durer.",
-      support: "SUPPORT",
-      sizeGuide: "Guide des tailles",
-      shippingInfo: "Info livraison",
-      returnsExchanges: "Retours & Échanges",
-      contactUs: "Nous contacter",
+        "Abbigliamento unisex premium progettato per prestazioni e stile. Ogni pezzo è realizzato con attenzione ai dettagli e costruito per durare.",
+      support: "SUPPORTO",
+      sizeGuide: "Guida alle taglie",
+      shippingInfo: "Info spedizione",
+      returnsExchanges: "Resi & Cambi",
+      contactUs: "Contattaci",
       newsletter: "Newsletter",
-      newsletterText: "Restez informé de nos dernières sorties et offres exclusives.",
-      subscribe: "S'abonner",
-      enterEmail: "Entrez votre email",
-      followUs: "Suivez-nous",
-      privacy: "Politique de confidentialité",
-      terms: "Conditions d'utilisation",
-      sustainability: "Durabilité",
-      allRightsReserved: "Tous droits réservés.",
+      newsletterText: "Rimani aggiornato con i nostri ultimi rilasci e offerte esclusive.",
+      subscribe: "Iscriviti",
+      enterEmail: "Inserisci la tua email",
+      followUs: "Seguici",
+      privacy: "Privacy Policy",
+      terms: "Termini di servizio",
+      sustainability: "Sostenibilità",
+      allRightsReserved: "Tutti i diritti riservati.",
     },
     common: {
-      loading: "Chargement...",
-      error: "Erreur",
-      success: "Succès",
-      cancel: "Annuler",
-      confirm: "Confirmer",
+      loading: "Caricamento...",
+      error: "Errore",
+      success: "Successo",
+      cancel: "Annulla",
+      confirm: "Conferma",
     },
     sections: {
       exploreLatest: "EXPLOREZ LES DERNIÈRES",
-      exploreLatestSubtitle: "Votre prochain essentiel commence ici",
+      exploreLatestSubtitle: "Il tuo prossimo essenziale inizia qui",
     },
     about: {
-      title: "À propos d'ARTIE",
-      mainText: "Nous ne sommes pas seulement une marque de vêtements.",
-      subText: "Nous sommes un mouvement vers une mode consciente, une qualité premium et un design intemporel qui transcende les tendances.",
+      title: "Chi è ARTIE",
+      mainText: "Non siamo solo un marchio di abbigliamento.",
+      subText:
+        "Siamo un movimento verso la moda consapevole, la qualità premium e il design senza tempo che trascende le tendenze.",
     },
   },
   es: {
@@ -623,6 +701,24 @@ export const dictionaries = {
       businessDays: "3-7 días hábiles",
       trackingInfo: "Recibirás información de seguimiento por correo electrónico una vez que se envíe tu pedido.",
     },
+    orderTracking: {
+      title: "Rastrear tu pedido",
+      subtitle: "Ingresa tu número de pedido para verificar el estado de tu compra",
+      enterOrderId: "Ingresar número de pedido",
+      orderIdPlaceholder: "ej. ORD-123456789",
+      orderIdHelp: "Puedes encontrar tu número de pedido en tu correo de confirmación",
+      trackOrder: "Rastrear pedido",
+      searching: "Buscando...",
+      orderNotFound: "Pedido no encontrado",
+      orderDetails: "Detalles del pedido",
+      orderId: "Número de pedido",
+      orderDate: "Fecha del pedido",
+      email: "Correo electrónico",
+      items: "Artículos",
+      fulfillment: "Información de envío",
+      status: "Estado",
+      trackingNumber: "Número de seguimiento",
+    },
     sizeGuide: {
       title: "GUÍA DE TALLAS",
       subtitle: "Encuentra tu ajuste perfecto con precisión y confianza",
@@ -651,7 +747,8 @@ export const dictionaries = {
       sizingNotesText:
         "Las medidas pueden variar ±1-3cm debido a tolerancias de fabricación. Para un ajuste oversize, considera tomar una talla más. Todas las dimensiones se toman planas y pueden variar dependiendo del estiramiento de la tela y el cuidado del lavado.",
       backToShopping: "Volver a comprar",
-      measurementGuideIntro: "Nuestra guía de medición integral te ayuda a encontrar la talla perfecta proporcionando instrucciones detalladas para medirte con precisión.",
+      measurementGuideIntro:
+        "Nuestra guía de medición integral te ayuda a encontrar la talla perfecta proporcionando instrucciones detalladas para medirte con precisión.",
     },
     footer: {
       about: "Acerca de ARTIE",
@@ -686,7 +783,8 @@ export const dictionaries = {
     about: {
       title: "Acerca de ARTIE",
       mainText: "No somos solo una marca de ropa.",
-      subText: "Somos un movimiento hacia la moda consciente, la calidad premium y el diseño atemporal que trasciende las tendencias.",
+      subText:
+        "Somos un movimiento hacia la moda consciente, la calidad premium y el diseño atemporal que trasciende las tendencias.",
     },
   },
   it: {
@@ -761,6 +859,24 @@ export const dictionaries = {
       businessDays: "3-7 giorni lavorativi",
       trackingInfo: "Riceverai le informazioni di tracciamento via email una volta spedito il tuo ordine.",
     },
+    orderTracking: {
+      title: "Traccia il tuo ordine",
+      subtitle: "Inserisci il tuo numero di ordine per controllare lo stato del tuo acquisto",
+      enterOrderId: "Inserisci numero ordine",
+      orderIdPlaceholder: "es. ORD-123456789",
+      orderIdHelp: "Puoi trovare il tuo numero di ordine nella tua email di conferma",
+      trackOrder: "Traccia ordine",
+      searching: "Ricerca...",
+      orderNotFound: "Ordine non trovato",
+      orderDetails: "Dettagli ordine",
+      orderId: "Numero ordine",
+      orderDate: "Data ordine",
+      email: "Email",
+      items: "Articoli",
+      fulfillment: "Informazioni spedizione",
+      status: "Stato",
+      trackingNumber: "Numero di tracciamento",
+    },
     sizeGuide: {
       title: "GUIDA ALLE TAGLIE",
       subtitle: "Trova la tua vestibilità perfetta con precisione e fiducia",
@@ -789,7 +905,8 @@ export const dictionaries = {
       sizingNotesText:
         "Le misure possono variare di ±1-3cm a causa delle tolleranze di produzione. Per una vestibilità oversize, considera di prendere una taglia in più. Tutte le dimensioni sono prese piatte e possono variare a seconda dell'elasticità del tessuto e della cura del lavaggio.",
       backToShopping: "Torna allo shopping",
-      measurementGuideIntro: "La nostra guida completa alle misurazioni ti aiuta a trovare la vestibilità perfetta fornendo istruzioni dettagliate su come misurarti accuratamente.",
+      measurementGuideIntro:
+        "La nostra guida completa alle misurazioni ti aiuta a trovare la vestibilità perfetta fornendo istruzioni dettagliate su come misurarti accuratamente.",
     },
     footer: {
       about: "Chi è ARTIE",
@@ -824,7 +941,8 @@ export const dictionaries = {
     about: {
       title: "Chi è ARTIE",
       mainText: "Non siamo solo un marchio di abbigliamento.",
-      subText: "Siamo un movimento verso la moda consapevole, la qualità premium e il design senza tempo che trascende le tendenze.",
+      subText:
+        "Siamo un movimento verso la moda consapevole, la qualità premium e il design senza tempo che trascende le tendenze.",
     },
   },
   ja: {
@@ -1372,5 +1490,9 @@ export const dictionaries = {
   },
 } as const;
 
-export type Dictionary = typeof dictionaries.en;
-export type Locale = keyof typeof dictionaries;
+export type Dictionary = typeof dictionaries.en
+export type Locale = keyof typeof dictionaries
+
+export async function getDictionary(locale: Locale): Promise<Dictionary> {
+  return dictionaries[locale] || dictionaries.en
+}

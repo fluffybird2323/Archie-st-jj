@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Footer } from "@/components/footer"
 import { getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
-import Stripe from "stripe"
-import { headers } from "next/headers"
+import { Client } from "square"
 
 interface SuccessPageProps {
   params: {
@@ -13,13 +12,21 @@ interface SuccessPageProps {
   }
 }
 
-const getStripe = () => {
-  const secretKey = process.env.STRIPE_SECRET_KEY
-  if (!secretKey) {
-    throw new Error("STRIPE_SECRET_KEY environment variable is not set")
+const getSquareClient = () => {
+  const accessToken = process.env.SQUARE_ACCESS_TOKEN
+  const environment = process.env.SQUARE_ENVIRONMENT
+
+  if (!accessToken) {
+    throw new Error("SQUARE_ACCESS_TOKEN environment variable is not set")
   }
-  return new Stripe(secretKey, {
-    apiVersion: "2025-05-28.basil",
+
+  if (!environment) {
+    throw new Error("SQUARE_ENVIRONMENT environment variable is not set")
+  }
+
+  return new Client({
+    accessToken,
+    environment: environment === "production" ? "production" : "sandbox",
   })
 }
 
@@ -28,7 +35,7 @@ async function sendTelegramOrderNotification(orderDetails: string) {
   const chatId = process.env.TELEGRAM_CHAT_ID
 
   if (!token || !chatId) {
-    console.error('Telegram configuration missing')
+    console.error("Telegram configuration missing")
     return
   }
 
@@ -36,48 +43,79 @@ async function sendTelegramOrderNotification(orderDetails: string) {
 
   try {
     const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ chat_id: chatId, text }),
     })
 
     if (!response.ok) {
       const errorData = await response.json()
-      console.error('Telegram API error:', errorData)
+      console.error("Telegram API error:", errorData)
     }
   } catch (error) {
-    console.error('Failed to send Telegram notification:', error)
+    console.error("Failed to send Telegram notification:", error)
   }
 }
 
-export default async function SuccessPage({ params, searchParams }: SuccessPageProps & { searchParams: { session_id?: string } }) {
+export default async function SuccessPage({
+  params,
+  searchParams,
+}: SuccessPageProps & { searchParams: { session_id?: string; order_id?: string } }) {
   const dictionary = getDictionary(params.locale)
   const homeUrl = params.locale === "en" ? "/" : `/${params.locale}`
-  const sessionId = searchParams.session_id
+
+  // Square uses order_id or session_id (which contains the order ID)
+  const orderId = searchParams.order_id || searchParams.session_id
 
   let orderNumber = `ARTIE-${Date.now().toString().slice(-6)}`
   let estimatedDelivery = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toLocaleDateString()
-  let orderDetails = ''
+  let orderDetails = ""
 
-  if (sessionId) {
+  if (orderId) {
     try {
-      const stripe = getStripe()
-      const session = await stripe.checkout.sessions.retrieve(sessionId, {
-        expand: ['line_items', 'payment_intent']
-      })
+      const squareClient = getSquareClient()
 
-      if (session.payment_status === 'paid') {
-        // Generate order details
-        orderDetails = `Order ID: ${session.id}\nCustomer: ${session.customer_details?.name || 'N/A'}\nEmail: ${session.customer_details?.email || 'N/A'}\nAmount: ${(session.amount_total || 0) / 100} ${session.currency?.toUpperCase() || 'USD'}\nItems:\n${session.line_items?.data.map(item => `- ${item.description} x${item.quantity}`).join('\n') || 'No items'}`
+      // Retrieve the order from Square
+      const { result: orderResult } = await squareClient.ordersApi.retrieveOrder(orderId)
+
+      if (orderResult.order) {
+        const order = orderResult.order
+
+        // Calculate total amount
+        const totalMoney = order.totalMoney
+        const totalAmount = totalMoney ? Number(totalMoney.amount) / (totalMoney.currency === "JPY" ? 1 : 100) : 0
+        const currency = totalMoney?.currency || "USD"
+
+        // Extract line items
+        const lineItemsText =
+          order.lineItems
+            ?.map(
+              (item) =>
+                `- ${item.name} x${item.quantity || 1} (${Number(item.totalMoney?.amount || 0) / (currency === "JPY" ? 1 : 100)} ${currency})`,
+            )
+            .join("\n") || "No items"
+
+        // Generate order details for Telegram
+        orderDetails = `Order ID: ${order.id}\nLocation: ${order.locationId}\nTotal: ${totalAmount} ${currency}\nState: ${order.state}\nItems:\n${lineItemsText}`
 
         // Send to Telegram
         await sendTelegramOrderNotification(orderDetails)
 
-        // Use real data if available
-        orderNumber = `ARTIE-${session.id.slice(-6).toUpperCase()}`
+        // Use real order data
+        orderNumber = `ARTIE-${order.id?.slice(-6).toUpperCase() || Date.now().toString().slice(-6)}`
+
+        // If order has fulfillments, we can get more detailed info
+        if (order.fulfillments && order.fulfillments.length > 0) {
+          const fulfillment = order.fulfillments[0]
+          if (fulfillment.shipmentDetails?.expectedShippedAt) {
+            const shippedDate = new Date(fulfillment.shipmentDetails.expectedShippedAt)
+            estimatedDelivery = new Date(shippedDate.getTime() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString()
+          }
+        }
       }
     } catch (error) {
-      console.error('Error fetching Stripe session:', error)
+      console.error("Error fetching Square order:", error)
+      // Continue with default values if order retrieval fails
     }
   }
 
