@@ -10,6 +10,7 @@ import { ChevronLeft, ChevronRight, Minus, Plus, Ruler } from "lucide-react"
 import { useCart } from "@/lib/cart-context"
 import { loadStripe } from "@stripe/stripe-js"
 import { formatPrice, getUSDPrice } from "@/lib/i18n/utils"
+import { getDictionary } from "@/lib/i18n/utils"
 import { Logo } from "@/components/logo"
 import { CartIcon } from "@/components/cart-icon"
 import { LanguageSwitcher } from "@/components/language-switcher"
@@ -46,6 +47,7 @@ interface ProductDetailPageProps {
 }
 
 export function ProductDetailPage({ product, dictionary, locale }: ProductDetailPageProps) {
+  const dict = getDictionary(locale)
   const [selectedImage, setSelectedImage] = useState(0)
   const [selectedSize, setSelectedSize] = useState("")
   const [selectedColor, setSelectedColor] = useState("")
@@ -85,7 +87,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
 
   const handleAddToCart = () => {
     if (!selectedSize || !selectedColor) {
-      setError("Please select size and color")
+      setError(dict.product.selectSizeColor || "Please select size and color")
       return
     }
 
@@ -112,7 +114,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
 
   const handleCheckout = async () => {
     if (!selectedSize || !selectedColor) {
-      setError("Please select size and color")
+      setError(dict.product.selectSizeColor || "Please select size and color")
       return
     }
 
@@ -122,7 +124,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
     try {
       const stripePromise = getStripePromise()
       if (!stripePromise) {
-        throw new Error("Payment system is not configured")
+        throw new Error(dict.product.paymentNotConfigured || "Payment system is not configured")
       }
 
       const productTitle = `${productName} - Size: ${selectedSize} - Color: ${selectedColor}`
@@ -144,7 +146,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create checkout session")
+        throw new Error(data.error || dict.product.checkoutSessionFailed || "Failed to create checkout session")
       }
 
       const stripe = await stripePromise
@@ -156,7 +158,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
       }
     } catch (error) {
       console.error("Checkout error:", error)
-      setError(error instanceof Error ? error.message : "An error occurred during checkout")
+      setError(error instanceof Error ? error.message : dict.product.checkoutError || "An error occurred during checkout")
     } finally {
       setIsLoading(false)
     }
@@ -447,14 +449,14 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
                     className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-black transition-colors underline"
                   >
                     <Ruler className="w-4 h-4" />
-                    Size Guide
+                    {dict.product.sizeGuide}
                   </Link>
                 </div>
 
                 {/* Color Selection */}
                 <div className="option-section mb-6">
                   <div className="option-label font-semibold mb-3 text-gray-900 text-base">
-                    Color: {selectedColor && <span className="text-gray-600">({selectedColor})</span>}
+                    {dict.product.color}: {selectedColor && <span className="text-gray-600">({selectedColor})</span>}
                   </div>
                   <div className="color-options grid grid-cols-2 gap-4">
                     {(product.colors as ColorOption[]).map((colorOpt, idx) => {
@@ -478,7 +480,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
 
                 {/* Quantity Selector */}
                 <div className="quantity-section flex items-center gap-6 mb-6">
-                  <span className="quantity-label font-semibold text-gray-900">Quantity</span>
+                  <span className="quantity-label font-semibold text-gray-900">{dict.product.quantity || "Quantity"}</span>
                   <div className="quantity-controls flex items-center border-2 border-gray-200 rounded-xl bg-white">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -508,9 +510,9 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
                     <span role="img" aria-label="box">
                       📦
                     </span>{" "}
-                    Free shipping worldwide
+                    {dict.product.freeShipping}
                   </div>
-                  <div className="shipping-details text-green-700 text-sm">Delivered in 5-15 business days</div>
+                  <div className="shipping-details text-green-700 text-sm">{dict.product.deliveredIn || "Delivered in 5-15 business days"}</div>
                 </div>
 
                 {/* Error Message */}
@@ -521,7 +523,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
                 {/* Success Message */}
                 {addToCartSuccess && (
                   <div className="p-3 bg-green-50 border border-green-200 rounded text-green-600 text-sm mb-2">
-                    ✅ Added to cart successfully!
+                    ✅ {dict.products.addedToCart}
                   </div>
                 )}
 
@@ -532,22 +534,22 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
                     disabled={!selectedSize || !selectedColor}
                     className="add-to-cart w-full py-5 bg-black text-white text-lg font-bold rounded-lg shadow-lg hover:bg-gray-900 transition-all border-0 min-h-[56px]"
                   >
-                    Add to Cart
+                    {dict.products.addToCart}
                   </Button>
                 </div>
 
                 {/* Product Details Collapsible */}
                 <details className="product-details bg-white rounded-2xl shadow border-0 mt-8">
                   <summary className="details-header flex items-center justify-between cursor-pointer py-3 px-2 text-base font-semibold text-gray-900">
-                    <span className="details-title">Product Details</span>
+                    <span className="details-title">{dict.products.productDetails}</span>
                     <span>▼</span>
                   </summary>
                   <ul className="mt-2 space-y-2 text-gray-600 text-base px-2 pb-4">
-                    <li>• Premium materials and construction</li>
-                    <li>• Unisex sizing for all body types</li>
-                    <li>• Machine washable</li>
-                    <li>• Designed for comfort and durability</li>
-                    <li>• Free worldwide shipping</li>
+                    <li>• {dict.product.premiumMaterials || "Premium materials and construction"}</li>
+                    <li>• {dict.product.unisexSizing || "Unisex sizing for all body types"}</li>
+                    <li>• {dict.product.machineWashable || "Machine washable"}</li>
+                    <li>• {dict.product.comfortDurability || "Designed for comfort and durability"}</li>
+                    <li>• {dict.product.freeShipping}</li>
                   </ul>
                 </details>
               </div>
@@ -558,7 +560,7 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
         {/* Reviews Section */}
         <div className="max-w-6xl mx-auto px-4 mt-16">
           <div className="bg-white rounded-2xl shadow-xl p-10">
-            <h2 className="reviews-header text-2xl md:text-3xl font-extrabold mb-8 text-gray-900">Reviews</h2>
+            <h2 className="reviews-header text-2xl md:text-3xl font-extrabold mb-8 text-gray-900">{dict.product.reviews}</h2>
             {reviews.length > 0 ? (
               <div>
                 <div className="divide-y divide-gray-100">
@@ -610,10 +612,10 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
                       disabled={reviewPage === 0}
                       style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.08)" }}
                     >
-                      Previous
+                      {dict.common.previous || "Previous"}
                     </button>
                     <span className="mx-3 text-base text-gray-700 font-semibold select-none">
-                      Page {reviewPage + 1} of {totalPages}
+                      {dict.common.page || "Page"} {reviewPage + 1} {dict.common.of || "of"} {totalPages}
                     </span>
                     <button
                       className="px-5 py-2 border border-black rounded-full bg-white text-black font-semibold shadow transition-all hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-black/30 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-md"
@@ -621,13 +623,13 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
                       disabled={reviewPage === totalPages - 1}
                       style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.08)" }}
                     >
-                      Next
+                      {dict.common.next || "Next"}
                     </button>
                   </div>
                 )}
               </div>
             ) : (
-              <div className="text-gray-500 text-lg text-center py-12">No reviews yet.</div>
+              <div className="text-gray-500 text-lg text-center py-12">{dict.product.noReviews || "No reviews yet."}</div>
             )}
           </div>
         </div>

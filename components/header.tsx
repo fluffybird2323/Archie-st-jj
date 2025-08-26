@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { Menu } from "lucide-react"
 import { Logo } from "./logo"
 import { LanguageSwitcher } from "./language-switcher"
 import { CartIcon } from "./cart-icon"
@@ -41,18 +42,10 @@ function Header({ dictionary, locale }: { dictionary: Dictionary; locale: Locale
           <div className="flex items-center space-x-4">
             <button
               className="md:hidden text-gray-900 hover:text-gray-600 focus:outline-none"
-              aria-label="Toggle menu"
+              aria-label={dictionary.common.toggleMenu || "Toggle menu"}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+              <Menu className="h-6 w-6" />
             </button>
             <LanguageSwitcher />
             <CartIcon />
@@ -100,3 +93,4 @@ function Header({ dictionary, locale }: { dictionary: Dictionary; locale: Locale
 }
 
 export default Header
+export { Header }
