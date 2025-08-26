@@ -2,20 +2,16 @@
 
 import { ShoppingBag } from "lucide-react"
 import { useCart } from "@/lib/cart-context"
-import { getDictionary } from "@/lib/i18n/utils"
-import { useParams } from "next/navigation"
 
 export function CartIcon() {
   const { toggleCart, getTotalItems } = useCart()
   const itemCount = getTotalItems()
-  const params = useParams()
-  const dict = getDictionary(params?.locale as string || "en")
 
   return (
     <button
       onClick={toggleCart}
-      className="relative p-2 text-black hover:text-gray-600 transition-colors" 
-      aria-label={dict.cart.shoppingCart || "Shopping cart"}
+      className="relative p-2 text-black hover:text-gray-600 transition-colors"
+      aria-label="Shopping cart"
     >
       <ShoppingBag className="h-6 w-6" />
       {itemCount > 0 && (

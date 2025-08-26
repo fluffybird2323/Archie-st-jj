@@ -17,26 +17,23 @@ export function Cart({ isOpen, onClose, dictionary, locale }: CartProps) {
   const { items, updateQuantity, removeItem, getTotalPrice, clearCart } = useCart()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const dict = getDictionary(locale)
-
-  // Calculate total that matches Stripe calculation exactly
-  const getStripeMatchingTotal = () => {
-    const currency = currencies[locale] || currencies.en
-    const exchangeRate = exchangeRates[currency.code] || 1
-
-    // If USD, calculate directly
-    if (currency.code === "USD") {
-      return Math.round(
-        state.items.reduce((total, item) => total + item.price * item.quantity, 0) * 100
-      ) / 100
-    }
 
   const currency = currencies[locale] || currencies.en
   const exchangeRate = exchangeRates[currency.code] || 1
 
   const handleCheckout = async () => {
     setIsLoading(true)
+    setError(null)
+    
     try {
+      // Import Stripe dynamically
+      const { loadStripe } = await import("@stripe/stripe-js")
+      const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+      
+      if (!stripePromise) {
+        throw new Error("Payment system is not configured")
+      }
+
       const response = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: {
@@ -47,22 +44,28 @@ export function Cart({ isOpen, onClose, dictionary, locale }: CartProps) {
             name: item.name,
             price: item.price,
             quantity: item.quantity,
+            image: item.image,
           })),
           locale,
         }),
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        throw new Error("Failed to create checkout session")
+        throw new Error(data.error || "Failed to create checkout session")
       }
 
-      const { checkoutUrl } = await response.json()
-
-      // Redirect to Square checkout
-      window.location.href = checkoutUrl
+      const stripe = await stripePromise
+      if (stripe && data.sessionId) {
+        const { error } = await stripe.redirectToCheckout({ sessionId: data.sessionId })
+        if (error) {
+          throw new Error(error.message)
+        }
+      }
     } catch (error) {
       console.error("Checkout error:", error)
-      // Handle error (show toast, etc.)
+      setError(error instanceof Error ? error.message : "An error occurred during checkout")
     } finally {
       setIsLoading(false)
     }
@@ -100,9 +103,8 @@ export function Cart({ isOpen, onClose, dictionary, locale }: CartProps) {
             {items.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center">
                 <ShoppingBag className="h-16 w-16 text-gray-300 mb-4" />
-
-                <h3 className="text-lg font-medium text-gray-900 mb-2">{dict.cart.empty}</h3>
-                <p className="text-gray-500">{dict.cart.addSomeProducts || "Add some products to get started"}</p>
+                <p className="text-gray-500 mb-2">{dictionary.cart.empty}</p>
+                <p className="text-sm text-gray-400">{dictionary.cart.emptyDescription}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -157,16 +159,6 @@ export function Cart({ isOpen, onClose, dictionary, locale }: CartProps) {
                         <p className="text-sm font-medium">{formatPrice(item.price * item.quantity)}</p>
                       </div>
                     </div>
-
-
-                    {/* Remove Button */}
-                    <button
-                      onClick={() => removeItem(item.id)}
-                      className="text-gray-400 hover:text-red-500 transition-colors"
-                      title={dict.cart.remove || "Remove from cart"}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
                   </div>
                 ))}
               </div>
@@ -174,20 +166,16 @@ export function Cart({ isOpen, onClose, dictionary, locale }: CartProps) {
           </div>
 
           {/* Footer */}
-          {state.items.length > 0 && (
-            <div className="border-t border-gray-200 px-6 py-4">
-              {/* Error Message */}
-              {error && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
-                  {error}
-                </div>
-              )}
-
-              {/* Total */}
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-lg font-bold text-black">{dict.cart.total}:</span>
-                <span className="text-lg font-bold text-black">
-                  {formatPrice(getStripeMatchingTotal(), locale)}
+          {items.length > 0 && (
+            <div className="border-t p-4 space-y-4">
+              <div className="flex justify-between text-lg font-semibold">
+                <span>{dictionary.cart.total}</span>
+                <span>
+                  {new Intl.NumberFormat(locale === "ja" ? "ja-JP" : locale === "zh" ? "zh-CN" : "en-US", {
+                    style: "currency",
+                    currency: currency.code,
+                    minimumFractionDigits: currency.code === "JPY" ? 0 : 2,
+                  }).format(localTotalPrice)}
                 </span>
               </div>
 
@@ -198,14 +186,12 @@ export function Cart({ isOpen, onClose, dictionary, locale }: CartProps) {
                 disabled={isLoading}
                 className="w-full bg-black text-white hover:bg-gray-800 disabled:opacity-50"
               >
-                {isLoading ? dict.common.loading : dict.cart.checkout}
+                {isLoading ? dictionary.cart.processing : dictionary.cart.checkout}
               </Button>
 
-              {/* Free Shipping Notice */}
-              <div className="mt-3 text-center">
-                <p className="text-green-600 text-sm font-medium">🚚 {dict.product.freeShipping}</p>
-              </div>
-
+              <button onClick={clearCart} className="w-full text-sm text-gray-500 hover:text-gray-700">
+                {dictionary.cart.clear}
+              </button>
             </div>
           )}
         </div>

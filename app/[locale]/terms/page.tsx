@@ -89,7 +89,6 @@ export default async function TermsPage({ params }: TermsPageProps) {
                   <li>You will receive email confirmation once your order is placed</li>
                   <li>We reserve the right to cancel orders for any reason</li>
                   <li>Payment is processed securely through Stripe</li>
-                  <li>By placing an order, you agree to our <a href="/commerce-disclosure" className="text-blue-600 hover:underline">Commerce Disclosure</a></li>
                 </ul>
               </div>
             </section>
