@@ -1,79 +1,112 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { Client } from "square"
+import Stripe from "stripe"
+import { currencies, exchangeRates, type Locale } from "@/lib/i18n/config"
 
-// Initialize Square client
-const squareClient = new Client({
-  accessToken: process.env.SQUARE_ACCESS_TOKEN,
-  environment: process.env.SQUARE_ENVIRONMENT === "production" ? "production" : "sandbox",
-})
+// Initialize Stripe
+const getStripe = () => {
+  const secretKey = process.env.STRIPE_SECRET_KEY
+  if (!secretKey) {
+    throw new Error("STRIPE_SECRET_KEY environment variable is not set")
+  }
+  return new Stripe(secretKey, {
+    apiVersion: "2025-05-28.basil",
+  })
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const { items, locale } = await request.json()
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json(
+        { error: "Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable." },
+        { status: 500 },
+      )
+    }
 
-    // Calculate total amount in cents
-    const totalAmount = items.reduce((sum: number, item: any) => {
-      return sum + item.price * item.quantity * 100 // Convert to cents
-    }, 0)
+    const stripe = getStripe()
+    const body = await request.json()
+    const { items, locale = "en" } = body
 
-    // Create order
-    const orderRequest = {
-      order: {
-        locationId: process.env.SQUARE_LOCATION_ID,
-        lineItems: items.map((item: any) => ({
-          name: item.name,
-          quantity: item.quantity.toString(),
-          basePriceMoney: {
-            amount: BigInt(item.price * 100), // Convert to cents as BigInt
-            currency: "USD",
+    // Get currency info for the locale
+    const currency = currencies[locale as Locale] || currencies.en
+    const exchangeRate = exchangeRates[currency.code] || 1
+
+    // Configure payment methods based on locale
+    const paymentMethodTypes: Stripe.Checkout.SessionCreateParams.PaymentMethodType[] = ["card"]
+    if (locale === "ja") paymentMethodTypes.push("konbini")
+    if (locale === "zh") paymentMethodTypes.push("alipay", "wechat_pay")
+
+    // Convert items to Stripe line items
+    const lineItems = items.map((item: any) => {
+      // Convert to local currency
+      const localPrice = item.price * exchangeRate
+      const priceInSmallestUnit = Math.round(localPrice * (currency.code === "JPY" ? 1 : 100))
+      
+      return {
+        price_data: {
+          currency: currency.code.toLowerCase(),
+          product_data: {
+            name: item.name,
+            images: item.image ? [item.image] : [],
           },
-        })),
-        totalMoney: {
-          amount: BigInt(totalAmount),
-          currency: "USD",
+          unit_amount: priceInSmallestUnit,
         },
-      },
-    }
-
-    const { result: orderResult } = await squareClient.ordersApi.createOrder(orderRequest)
-
-    if (!orderResult.order) {
-      throw new Error("Failed to create order")
-    }
-
-    // Create checkout link
-    const checkoutRequest = {
-      idempotencyKey: crypto.randomUUID(),
-      order: {
-        locationId: process.env.SQUARE_LOCATION_ID,
-        lineItems: items.map((item: any) => ({
-          name: item.name,
-          quantity: item.quantity.toString(),
-          basePriceMoney: {
-            amount: BigInt(item.price * 100),
-            currency: "USD",
-          },
-        })),
-      },
-      checkoutOptions: {
-        redirectUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/${locale}/success?session_id={CHECKOUT_SESSION_ID}`,
-        askForShippingAddress: true,
-      },
-    }
-
-    const { result: checkoutResult } = await squareClient.checkoutApi.createPaymentLink(checkoutRequest)
-
-    if (!checkoutResult.paymentLink) {
-      throw new Error("Failed to create checkout session")
-    }
-
-    return NextResponse.json({
-      sessionId: checkoutResult.paymentLink.id,
-      checkoutUrl: checkoutResult.paymentLink.url,
-      orderId: orderResult.order.id,
+        quantity: item.quantity,
+      }
     })
+
+    const sessionConfig: Stripe.Checkout.SessionCreateParams = {
+      payment_method_types: paymentMethodTypes,
+      line_items: lineItems,
+      mode: "payment",
+      shipping_address_collection: {
+        allowed_countries: [
+          "US", "CA", "GB", "AU", "DE", "FR", "IT", "ES", "NL", "BE", "AT", "CH", "SE", "NO", "DK", "FI", "IE", "PT", "LU", "GR", "JP", "SG", "HK", "NZ", "MX", "BR", "IN", "KR", "TW", "TH",
+        ],
+      },
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            type: "fixed_amount",
+            fixed_amount: {
+              amount: 0, // Free shipping
+              currency: currency.code.toLowerCase(),
+            },
+            display_name: "Free Shipping",
+            delivery_estimate: {
+              minimum: { unit: "business_day", value: 3 },
+              maximum: { unit: "business_day", value: 7 },
+            },
+          },
+        },
+      ],
+      success_url: `${request.nextUrl.origin}/${locale === "en" ? "" : locale + "/"}success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${request.nextUrl.origin}/${locale === "en" ? "" : locale + "/"}`,
+    }
+
+    // Add Konbini configuration for Japanese customers
+    if (locale === "ja") {
+      sessionConfig.payment_method_options = {
+        konbini: {
+          expires_after_days: 3,
+        },
+      }
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionConfig)
+    return NextResponse.json({ sessionId: session.id })
   } catch (error) {
-    console.error("Square checkout error:", error)
-    return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 })
+    console.error("Error creating checkout session:", error)
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+    return NextResponse.json({ error: "An unexpected error occurred while creating checkout session" }, { status: 500 })
   }
+}
+
+export async function GET() {
+  const isConfigured = !!process.env.STRIPE_SECRET_KEY
+  return NextResponse.json({
+    configured: isConfigured,
+    message: isConfigured ? "Stripe is configured" : "Stripe configuration missing",
+  })
 }

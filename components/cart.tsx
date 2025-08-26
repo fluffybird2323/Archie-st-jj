@@ -23,7 +23,17 @@ export function Cart({ isOpen, onClose, dictionary, locale }: CartProps) {
 
   const handleCheckout = async () => {
     setIsLoading(true)
+    setError(null)
+    
     try {
+      // Import Stripe dynamically
+      const { loadStripe } = await import("@stripe/stripe-js")
+      const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+      
+      if (!stripePromise) {
+        throw new Error("Payment system is not configured")
+      }
+
       const response = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: {
@@ -34,22 +44,28 @@ export function Cart({ isOpen, onClose, dictionary, locale }: CartProps) {
             name: item.name,
             price: item.price,
             quantity: item.quantity,
+            image: item.image,
           })),
           locale,
         }),
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        throw new Error("Failed to create checkout session")
+        throw new Error(data.error || "Failed to create checkout session")
       }
 
-      const { checkoutUrl } = await response.json()
-
-      // Redirect to Square checkout
-      window.location.href = checkoutUrl
+      const stripe = await stripePromise
+      if (stripe && data.sessionId) {
+        const { error } = await stripe.redirectToCheckout({ sessionId: data.sessionId })
+        if (error) {
+          throw new Error(error.message)
+        }
+      }
     } catch (error) {
       console.error("Checkout error:", error)
-      // Handle error (show toast, etc.)
+      setError(error instanceof Error ? error.message : "An error occurred during checkout")
     } finally {
       setIsLoading(false)
     }
