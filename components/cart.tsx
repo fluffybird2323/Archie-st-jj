@@ -5,16 +5,10 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Trash2, Minus, Plus, ShoppingBag, X } from "lucide-react"
 import { useCart } from "@/lib/cart-context"
-import { loadStripe } from "@stripe/stripe-js"
 import { formatPrice } from "@/lib/i18n/utils"
 import { currencies, exchangeRates } from "@/lib/i18n/config"
 import { getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
-
-const getStripePromise = () => {
-  const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-  return publishableKey ? loadStripe(publishableKey) : null
-}
 
 interface CartProps {
   locale: Locale
@@ -50,72 +44,10 @@ export function Cart({ locale }: CartProps) {
     return Math.round(localizedTotal * 100) / 100
   }
 
-  const handleCheckout = async () => {
-    if (state.items.length === 0) return
-
-    setIsLoading(true)
-    setError(null)
-
-    try {
-      const stripePromise = getStripePromise()
-      if (!stripePromise) {
-        throw new Error("Payment system is not configured")
-      }
-
-      // Get currency info for the locale
-      const currency = currencies[locale] || currencies.en
-      const exchangeRate = exchangeRates[currency.code] || 1
-
-      // Create line items for all cart items with localized pricing
-      const lineItems = state.items.map((item) => {
-        // Convert USD price to local currency with proper precision
-        const localPrice = Math.round(item.price * exchangeRate * 100) / 100
-        // Convert to smallest currency unit (cents for most currencies, but not for JPY)
-        const unitAmount = Math.round(localPrice * (currency.code === "JPY" ? 1 : 100))
-        
-        return {
-          price_data: {
-            currency: currency.code.toLowerCase(),
-            product_data: {
-              name: `${item.name} - Size: ${item.size} - Color: ${item.color}`,
-              images: [item.image],
-            },
-            unit_amount: unitAmount,
-          },
-          quantity: item.quantity,
-        }
-      })
-
-      const response = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          lineItems,
-          locale: locale,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to create checkout session")
-      }
-
-      const stripe = await stripePromise
-      if (stripe && data.sessionId) {
-        const { error } = await stripe.redirectToCheckout({ sessionId: data.sessionId })
-        if (error) {
-          throw new Error(error.message)
-        }
-      }
-    } catch (error) {
-      console.error("Checkout error:", error)
-      setError(error instanceof Error ? error.message : "An error occurred during checkout")
-    } finally {
-      setIsLoading(false)
-    }
+  const handleCheckout = () => {
+    // Checkout functionality has been disabled
+    // Nothing happens when clicking checkout
+    return
   }
 
   return (
@@ -226,13 +158,13 @@ export function Cart({ locale }: CartProps) {
                 </span>
               </div>
 
-              {/* Checkout Button */}
+              {/* Checkout Button - Disabled */}
               <Button
                 onClick={handleCheckout}
-                disabled={isLoading}
-                className="nike-button w-full py-3"
+                disabled={true}
+                className="nike-button w-full py-3 opacity-50 cursor-not-allowed"
               >
-                {isLoading ? "PROCESSING..." : "CHECKOUT"}
+                CHECKOUT (DISABLED)
               </Button>
 
               {/* Free Shipping Notice */}

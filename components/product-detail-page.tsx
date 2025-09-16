@@ -8,7 +8,6 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight, Minus, Plus, Ruler } from "lucide-react"
 import { useCart } from "@/lib/cart-context"
-import { loadStripe } from "@stripe/stripe-js"
 import { formatPrice, getUSDPrice } from "@/lib/i18n/utils"
 import { Logo } from "@/components/logo"
 import { CartIcon } from "@/components/cart-icon"
@@ -22,11 +21,6 @@ type ColorOption = string | { name: string; imageIndex: number }
 
 const getColorName = (c: ColorOption): string => (typeof c === "string" ? c : (c?.name ?? ""))
 const getColorImageIndex = (c: ColorOption): number => (typeof c === "string" ? 0 : (c?.imageIndex ?? 0))
-
-const getStripePromise = () => {
-  const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-  return publishableKey ? loadStripe(publishableKey) : null
-}
 
 // Add a type for ProductReview
 interface ProductReview {
@@ -110,56 +104,10 @@ export function ProductDetailPage({ product, dictionary, locale }: ProductDetail
     setTimeout(() => setAddToCartSuccess(false), 3000)
   }
 
-  const handleCheckout = async () => {
-    if (!selectedSize || !selectedColor) {
-      setError("Please select size and color")
-      return
-    }
-
-    setIsLoading(true)
-    setError(null)
-
-    try {
-      const stripePromise = getStripePromise()
-      if (!stripePromise) {
-        throw new Error("Payment system is not configured")
-      }
-
-      const productTitle = `${productName} - Size: ${selectedSize} - Color: ${selectedColor}`
-      const usdPrice = getUSDPrice(product.price)
-
-      const response = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          priceId: usdPrice * quantity,
-          productName: productTitle,
-          productImage: product.images[selectedImage] || product.images[0],
-          locale: locale,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to create checkout session")
-      }
-
-      const stripe = await stripePromise
-      if (stripe && data.sessionId) {
-        const { error } = await stripe.redirectToCheckout({ sessionId: data.sessionId })
-        if (error) {
-          throw new Error(error.message)
-        }
-      }
-    } catch (error) {
-      console.error("Checkout error:", error)
-      setError(error instanceof Error ? error.message : "An error occurred during checkout")
-    } finally {
-      setIsLoading(false)
-    }
+  // Checkout functionality has been removed
+  const handleCheckout = () => {
+    // Do nothing - checkout is disabled
+    return
   }
 
   // Navigation functions

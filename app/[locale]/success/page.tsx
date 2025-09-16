@@ -4,23 +4,12 @@ import { Button } from "@/components/ui/button"
 import { Footer } from "@/components/footer"
 import { getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
-import Stripe from "stripe"
 import { headers } from "next/headers"
 
 interface SuccessPageProps {
   params: {
     locale: Locale
   }
-}
-
-const getStripe = () => {
-  const secretKey = process.env.STRIPE_SECRET_KEY
-  if (!secretKey) {
-    throw new Error("STRIPE_SECRET_KEY environment variable is not set")
-  }
-  return new Stripe(secretKey, {
-    apiVersion: "2025-05-28.basil",
-  })
 }
 
 async function sendTelegramOrderNotification(orderDetails: string) {
@@ -59,27 +48,8 @@ export default async function SuccessPage({ params, searchParams }: SuccessPageP
   let estimatedDelivery = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toLocaleDateString()
   let orderDetails = ''
 
-  if (sessionId) {
-    try {
-      const stripe = getStripe()
-      const session = await stripe.checkout.sessions.retrieve(sessionId, {
-        expand: ['line_items', 'payment_intent']
-      })
-
-      if (session.payment_status === 'paid') {
-        // Generate order details
-        orderDetails = `Order ID: ${session.id}\nCustomer: ${session.customer_details?.name || 'N/A'}\nEmail: ${session.customer_details?.email || 'N/A'}\nAmount: ${(session.amount_total || 0) / 100} ${session.currency?.toUpperCase() || 'USD'}\nItems:\n${session.line_items?.data.map(item => `- ${item.description} x${item.quantity}`).join('\n') || 'No items'}`
-
-        // Send to Telegram
-        await sendTelegramOrderNotification(orderDetails)
-
-        // Use real data if available
-        orderNumber = `ARTIE-${session.id.slice(-6).toUpperCase()}`
-      }
-    } catch (error) {
-      console.error('Error fetching Stripe session:', error)
-    }
-  }
+  // Stripe checkout has been disabled
+  // The success page will show with default order details
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
