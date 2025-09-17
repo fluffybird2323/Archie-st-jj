@@ -1,10 +1,9 @@
 import { getDictionary } from "./utils"
-import { translateTextDeepL, isDeepLTranslationAvailable } from "../deepl-translate"
 import { translateTextFree, getFallbackTranslation, isFreeTranslationAvailable } from "../free-translate"
 import type { Locale } from "./config"
 
 /**
- * Enhanced dictionary that uses DeepL API with fallback to free translation
+ * Enhanced dictionary that uses free translation
  */
 export class EnhancedDictionary {
   private staticDictionary: any
@@ -16,7 +15,7 @@ export class EnhancedDictionary {
   }
 
   /**
-   * Get a translation with fallback to DeepL API, then free translation
+   * Get a translation with fallback to free translation
    */
   async get(key: string, fallbackText?: string): Promise<string> {
     // First try static dictionary
@@ -25,7 +24,7 @@ export class EnhancedDictionary {
       return staticTranslation
     }
 
-    // If we have fallback text, try DeepL first, then free translation
+    // If we have fallback text, try free translation
     if (fallbackText && this.locale !== "en") {
       // First try fallback translations for common terms
       const fallbackTranslation = getFallbackTranslation(fallbackText, this.locale)
@@ -33,17 +32,7 @@ export class EnhancedDictionary {
         return fallbackTranslation
       }
 
-      // Then try DeepL API (highest quality)
-      if (isDeepLTranslationAvailable()) {
-        try {
-          return await translateTextDeepL(fallbackText, this.locale)
-        } catch (error) {
-          console.error(`DeepL translation failed for key: ${key}`, error)
-          // Fall through to free translation
-        }
-      }
-
-      // Finally try free translation service
+      // Try free translation service
       if (isFreeTranslationAvailable()) {
         try {
           return await translateTextFree(fallbackText, this.locale)
@@ -63,13 +52,6 @@ export class EnhancedDictionary {
    */
   getStatic(key: string): string | undefined {
     return this.getNestedValue(this.staticDictionary, key)
-  }
-
-  /**
-   * Check if DeepL translation is available
-   */
-  isDeepLTranslationAvailable(): boolean {
-    return isDeepLTranslationAvailable()
   }
 
   /**
@@ -104,7 +86,7 @@ export function createEnhancedDictionary(locale: Locale): EnhancedDictionary {
 }
 
 /**
- * Product translation utility with DeepL priority
+ * Product translation utility
  */
 export async function translateProductContent(
   product: any,

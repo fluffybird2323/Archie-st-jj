@@ -83,7 +83,6 @@ npm run dev
 │   ├── admin/             # Admin panel routes
 │   ├── api/               # API routes
 │   │   ├── translate/     # Google Translate API (premium)
-│   │   ├── translate-deepl/ # DeepL API (premium)
 │   │   └── translate-free/ # Free translation API
 │   └── globals.css        # Global styles
 ├── components/            # React components
@@ -93,11 +92,10 @@ npm run dev
 │   ├── auth.ts           # Authentication utilities
 │   ├── supabase.ts       # Supabase client
 │   ├── i18n/             # Internationalization
-│   │   ├── enhanced-utils.ts      # DeepL + Free translation integration
+│   │   ├── enhanced-utils.ts      # Free translation integration
 │   │   ├── simple-enhanced-utils.ts # Free translation integration
-│   │   ├── use-enhanced-dictionary.ts # React hooks for DeepL
+│   │   ├── use-enhanced-dictionary.ts # React hooks for translation
 │   │   └── use-simple-translation.ts # React hooks for free translation
-│   ├── deepl-translate.ts         # DeepL API integration
 │   ├── google-translate.ts        # Google Translate API
 │   ├── free-translate.ts          # Free translation service
 │   └── cart-context.tsx           # Shopping cart state
@@ -107,13 +105,6 @@ npm run dev
 
 ## Translation Services
 
-### DeepL API (Primary - High Quality)
-The app uses DeepL API as the primary translation service:
-- **Higher quality translations** than Google Translate
-- **500,000 characters/month free** with DeepL Free plan
-- **Automatic caching** to reduce API calls
-- **Usage statistics** available via API
-- **Fallback to free service** if DeepL fails
 
 ### Free Translation Service (Fallback)
 MyMemory API as a free fallback:
@@ -127,14 +118,13 @@ MyMemory API as a free fallback:
 Google Translate API as an alternative:
 - **Requires API key** (`GOOGLE_TRANSLATE_API_KEY`)
 - **No character limits** (subject to Google's pricing)
-- **Automatic fallback** to DeepL/free service if not configured
+- **Automatic fallback** to free service if not configured
 
 ### Translation Priority Order:
 1. **Static dictionaries** (fastest, most reliable)
 2. **Fallback translations** (common UI terms)
-3. **DeepL API** (highest quality)
-4. **Free translation service** (MyMemory API)
-5. **Original text** (if all else fails)
+3. **Free translation service** (MyMemory API)
+4. **Original text** (if all else fails)
 
 ### Using Translation in Components
 
@@ -142,17 +132,17 @@ Google Translate API as an alternative:
 import { useEnhancedDictionary } from "@/lib/i18n/use-enhanced-dictionary"
 
 function MyComponent() {
-  const { t, isLoading, isDeepLTranslationAvailable } = useEnhancedDictionary(locale)
+  const { t, isLoading, isFreeTranslationAvailable } = useEnhancedDictionary(locale)
   
   const handleTranslate = async () => {
     const translatedText = await t("some.key", "Text to translate")
-    // Will use DeepL first, then fallback to free service
+    // Will use free translation service
   }
   
   return (
     <div>
       {isLoading ? "Translating..." : "Content"}
-      {isDeepLTranslationAvailable && <span>✨ DeepL Available</span>}
+      {isFreeTranslationAvailable && <span>✨ Translation Available</span>}
     </div>
   )
 }
@@ -160,8 +150,6 @@ function MyComponent() {
 
 ### Translation API Endpoints
 
-- `GET /api/translate-deepl` - Check DeepL service status and usage
-- `POST /api/translate-deepl` - Translate text using DeepL API
 - `GET /api/translate-free` - Check free translation service status
 - `POST /api/translate-free` - Translate text using free service
 - `GET /api/translate` - Check Google Translate service status (if configured)
@@ -197,5 +185,5 @@ Continue building your app on:
 - **Payments**: Stripe
 - **Deployment**: Vercel
 - **Package Manager**: pnpm
-- **Translation**: DeepL API (primary) + MyMemory API (fallback) + Google Translate API (optional)
+- **Translation**: MyMemory API (free) + Google Translate API (optional)
 - **Shopping Cart**: React Context + localStorage

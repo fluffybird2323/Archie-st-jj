@@ -5,7 +5,7 @@ import { createEnhancedDictionary } from "./enhanced-utils"
 import type { Locale } from "./config"
 
 /**
- * React hook for using enhanced dictionary with DeepL translation
+ * React hook for using enhanced dictionary with translation
  */
 export function useEnhancedDictionary(locale: Locale) {
   const [dictionary, setDictionary] = useState(createEnhancedDictionary(locale))
@@ -17,7 +17,7 @@ export function useEnhancedDictionary(locale: Locale) {
   }, [locale])
 
   /**
-   * Get a translation with fallback to DeepL API, then free translation
+   * Get a translation with fallback to free translation
    */
   const t = useCallback(async (key: string, fallbackText?: string): Promise<string> => {
     setIsLoading(true)
@@ -37,13 +37,6 @@ export function useEnhancedDictionary(locale: Locale) {
   }, [dictionary])
 
   /**
-   * Check if DeepL translation is available
-   */
-  const isDeepLTranslationAvailable = useCallback((): boolean => {
-    return dictionary.isDeepLTranslationAvailable()
-  }, [dictionary])
-
-  /**
    * Check if free translation is available
    */
   const isFreeTranslationAvailable = useCallback((): boolean => {
@@ -54,14 +47,13 @@ export function useEnhancedDictionary(locale: Locale) {
     t,
     tStatic,
     isLoading,
-    isDeepLTranslationAvailable,
     isFreeTranslationAvailable,
     locale: dictionary.getLocale(),
   }
 }
 
 /**
- * Hook for translating product content with DeepL priority
+ * Hook for translating product content
  */
 export function useProductTranslation(locale: Locale) {
   const { t, isLoading } = useEnhancedDictionary(locale)

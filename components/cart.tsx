@@ -9,6 +9,7 @@ import { formatPrice } from "@/lib/i18n/utils"
 import { currencies, exchangeRates } from "@/lib/i18n/config"
 import { getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
+import { CheckoutForm, type CustomerInfo } from "@/components/checkout-form"
 
 interface CartProps {
   locale: Locale
@@ -18,6 +19,7 @@ export function Cart({ locale }: CartProps) {
   const { state, removeItem, updateQuantity, closeCart, getTotalItems, getTotalPrice } = useCart()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showCheckoutForm, setShowCheckoutForm] = useState(false)
   const dictionary = getDictionary(locale)
 
   // Calculate total that matches Stripe calculation exactly
@@ -44,15 +46,79 @@ export function Cart({ locale }: CartProps) {
     return Math.round(localizedTotal * 100) / 100
   }
 
+  const processCheckout = async (customerInfo: CustomerInfo) => {
+    if (state.items.length === 0) return
+
+    setIsLoading(true)
+    setError(null)
+    setShowCheckoutForm(false)
+
+    try {
+      // Create line items for Square payment
+      const lineItems = state.items.map((item) => ({
+        name: item.name,
+        price: item.price,
+        size: item.size,
+        color: item.color,
+        quantity: item.quantity,
+        image: item.image
+      }))
+
+      const response = await fetch("/api/create-square-payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          lineItems,
+          locale: locale,
+          customerInfo: customerInfo
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create payment link")
+      }
+
+      // Redirect to Square's hosted checkout page
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        throw new Error("No payment URL received")
+      }
+    } catch (error) {
+      console.error("Checkout error:", error)
+      setError(error instanceof Error ? error.message : "An error occurred during checkout")
+      setShowCheckoutForm(true) // Re-show form on error
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const handleCheckout = () => {
-    // Checkout functionality has been disabled
-    // Nothing happens when clicking checkout
-    return
+    if (state.items.length === 0) return
+    // Close the cart and show the mandatory checkout form
+    closeCart()
+    setShowCheckoutForm(true)
   }
 
   return (
+    <>
+      {/* Mandatory Checkout Form */}
+      {showCheckoutForm && (
+        <CheckoutForm
+          onSubmit={processCheckout}
+          onClose={() => setShowCheckoutForm(false)}
+          isLoading={isLoading}
+          isMandatory={true}
+        />
+      )}
+
+      
     <div className={`fixed inset-0 z-50 overflow-hidden transition-opacity duration-500 ${
-      state.isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+      state.isOpen && !showCheckoutForm ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
     }`}>
       {/* Backdrop */}
       <div 
@@ -62,7 +128,7 @@ export function Cart({ locale }: CartProps) {
       
       {/* Cart Panel */}
       <div className={`absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl transform transition-transform duration-500 ease-out ${
-        state.isOpen ? 'translate-x-0' : 'translate-x-full'
+        state.isOpen && !showCheckoutForm ? 'translate-x-0' : 'translate-x-full'
       }`}>
         <div className="flex h-full flex-col">
           {/* Header */}
@@ -158,13 +224,13 @@ export function Cart({ locale }: CartProps) {
                 </span>
               </div>
 
-              {/* Checkout Button - Disabled */}
+              {/* Checkout Button */}
               <Button
                 onClick={handleCheckout}
-                disabled={true}
-                className="nike-button w-full py-3 opacity-50 cursor-not-allowed"
+                disabled={isLoading || state.items.length === 0}
+                className="nike-button w-full py-3"
               >
-                CHECKOUT (DISABLED)
+                {isLoading ? "PROCESSING..." : "CHECKOUT"}
               </Button>
 
               {/* Free Shipping Notice */}
@@ -176,5 +242,6 @@ export function Cart({ locale }: CartProps) {
         </div>
       </div>
     </div>
+    </>
   )
 }
