@@ -81,6 +81,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
       <head>
+        <link rel="preload" href="https://i.imgur.com/gZlvEPD.mp4" as="video" type="video/mp4" crossOrigin="anonymous" />
         <OrganizationStructuredData locale="en" />
       </head>
       <body className="font-inter antialiased">

@@ -57,12 +57,13 @@ export async function translateTextFree(
     )
 
     if (!response.ok) {
-      throw new Error(`MyMemory API error: ${response.status}`)
+      console.error(`MyMemory API HTTP error: ${response.status}`)
+      throw new Error(`MyMemory API HTTP error: ${response.status}`)
     }
 
     const data = await response.json()
     
-    if (data.responseStatus === 200 && data.responseData) {
+    if (data.responseStatus === 200 && data.responseData && !data.responseDetails && !data.exception_code) {
       const translatedText = data.responseData.translatedText
       
       // Cache the translation
@@ -70,7 +71,8 @@ export async function translateTextFree(
       
       return translatedText
     } else {
-      throw new Error("Invalid response from MyMemory API")
+      const errorMessage = data.responseDetails || `MyMemory API error with exception code: ${data.exception_code}` || "Invalid response from MyMemory API"
+      throw new Error(errorMessage)
     }
   } catch (error) {
     console.error("Translation error:", error)

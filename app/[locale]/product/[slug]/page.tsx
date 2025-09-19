@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: LocaleProductPageProps): Prom
           },
         ],
         locale: locale === 'en' ? 'en_US' : locale === 'ja' ? 'ja_JP' : 'en_US',
-        type: 'product',
+        type: 'website',
       },
       twitter: {
         card: 'summary_large_image',

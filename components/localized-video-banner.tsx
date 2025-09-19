@@ -18,8 +18,10 @@ export function LocalizedVideoBanner({ dictionary, title, mainText, subText }: L
   const [activeIndex, setActiveIndex] = useState(0)
   const [videoLoaded, setVideoLoaded] = useState(false)
   const [videoError, setVideoError] = useState(false)
+  const [canPlay, setCanPlay] = useState(false)
   const starfieldRef = useRef<HTMLCanvasElement>(null)
   const [showStarfield, setShowStarfield] = useState(true)
+  const videoRef = useRef<HTMLVideoElement>(null)
 
   const thematicTexts =
     mainText && subText
@@ -44,13 +46,30 @@ export function LocalizedVideoBanner({ dictionary, title, mainText, subText }: L
   }, [thematicTexts.length])
 
   useEffect(() => {
-    if (videoLoaded) {
-      // Fade out starfield smoothly
-      setTimeout(() => setShowStarfield(false), 1000)
+    if (canPlay) {
+      // Fade out starfield much faster
+      setTimeout(() => setShowStarfield(false), 300)
+      setVideoLoaded(true)
     } else {
       setShowStarfield(true)
     }
-  }, [videoLoaded])
+  }, [canPlay])
+
+  // Preload video when component mounts with priority loading
+  useEffect(() => {
+    if (videoRef.current) {
+      // Start loading immediately
+      videoRef.current.load()
+
+      // Try to play as soon as possible
+      const playPromise = videoRef.current.play()
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Auto-play failed, but that's okay for muted videos
+        })
+      }
+    }
+  }, [])
 
   useEffect(() => {
     if (!showStarfield) return
@@ -112,25 +131,31 @@ export function LocalizedVideoBanner({ dictionary, title, mainText, subText }: L
     <section className="relative h-screen w-full overflow-hidden bg-black">
       {/* Video Background */}
       <video
+        ref={videoRef}
         autoPlay
         loop
         muted
         playsInline
-        preload="auto"
+        preload="metadata"
         className={cn(
-          "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
-          videoLoaded ? "opacity-100" : "opacity-0",
+          "absolute inset-0 w-full h-full object-cover transition-opacity duration-300",
+          canPlay ? "opacity-100" : "opacity-0",
         )}
-        onCanPlay={() => setVideoLoaded(true)}
+        onLoadedData={() => setCanPlay(true)}
+        onCanPlayThrough={() => setCanPlay(true)}
         onError={() => setVideoError(true)}
         poster="/placeholder.svg?height=1080&width=1920"
+        style={{
+          willChange: 'opacity',
+          transform: 'translateZ(0)'
+        }}
       >
         <source src="https://i.imgur.com/gZlvEPD.mp4" type="video/mp4" />
       </video>
 
       {/* Animated Starfield Overlay (only visible when video is loading or fails) */}
-      {showStarfield && (!videoLoaded || videoError) && (
-        <canvas ref={starfieldRef} className="absolute inset-0 w-full h-full z-0 pointer-events-none transition-opacity duration-1000" style={{ opacity: videoLoaded ? 0 : 1 }} />
+      {showStarfield && (!canPlay || videoError) && (
+        <canvas ref={starfieldRef} className="absolute inset-0 w-full h-full z-0 pointer-events-none transition-opacity duration-300" style={{ opacity: canPlay ? 0 : 1 }} />
       )}
 
       {/* Dark Overlay */}
