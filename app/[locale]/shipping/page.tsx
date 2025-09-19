@@ -1,23 +1,18 @@
-"use client"
-
 import Link from "next/link"
 import { ChevronLeft, Truck, Clock, Globe, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
-import type { Dictionary } from "@/lib/i18n/dictionaries"
-import { use } from "react"
 
 interface ShippingPageProps {
-  params: {
+  params: Promise<{
     locale: Locale
-  }
+  }>
 }
 
-export default function ShippingPage({ params }: ShippingPageProps) {
-  // Use the params object correctly with the use() hook
-const { locale } = params as { locale: Locale }
-  const dictionary = getDictionary(locale)
+export default async function ShippingPage({ params }: ShippingPageProps) {
+  const { locale } = await params
+  const dictionary = await getDictionary(locale)
   const backUrl = locale === "en" ? "/" : `/${locale}`
 
   return (

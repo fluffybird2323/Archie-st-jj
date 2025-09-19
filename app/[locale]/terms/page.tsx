@@ -1,9 +1,10 @@
 import { getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
 import { Footer } from "@/components/footer"
-import { Scale, AlertTriangle, CheckCircle } from "lucide-react"
+import { Scale, AlertTriangle, CheckCircle, FileText } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
 import { designSystem, cn } from "@/lib/design-system"
+import Link from "next/link"
 
 interface TermsPageProps {
   params: {

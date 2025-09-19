@@ -1,4 +1,4 @@
-import { type Locale, defaultLocale, currencies, exchangeRates } from "./config"
+import { type Locale, defaultLocale, currencies, exchangeRates, locales } from "./config"
 import { dictionaries, type Dictionary } from "./dictionaries"
 
 export function getDictionary(locale: Locale): Dictionary {
@@ -41,7 +41,7 @@ export function getLocaleFromUrl(pathname: string): Locale {
   const firstSegment = segments[0] as Locale
 
   // Check if the first segment is a valid locale
-  if (firstSegment && dictionaries[firstSegment]) {
+  if (firstSegment && locales.includes(firstSegment)) {
     return firstSegment
   }
 
@@ -56,8 +56,8 @@ export function removeLocaleFromUrl(pathname: string): string {
 
   const firstSegment = segments[0] as Locale
 
-  // If the first segment is a locale, remove it
-  if (firstSegment && dictionaries[firstSegment]) {
+  // If the first segment is a valid locale, remove it
+  if (firstSegment && locales.includes(firstSegment)) {
     const remainingPath = segments.slice(1).join("/")
     return remainingPath ? `/${remainingPath}` : "/"
   }

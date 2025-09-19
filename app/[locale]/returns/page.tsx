@@ -5,14 +5,14 @@ import { getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
 
 interface ReturnsPageProps {
-  params: {
+  params: Promise<{
     locale: Locale
-  }
+  }>
 }
 
 export default async function ReturnsPage({ params }: ReturnsPageProps) {
   const { locale } = await params
-  const dictionary = getDictionary(locale)
+  const dictionary = await getDictionary(locale)
   const backUrl = locale === "en" ? "/" : `/${locale}`
 
   return (

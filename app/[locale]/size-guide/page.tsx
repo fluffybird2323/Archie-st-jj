@@ -5,71 +5,82 @@ import { getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
 
 interface SizeGuidePageProps {
-  params: {
+  params: Promise<{
     locale: Locale
-  }
+  }>
 }
 
 export default async function SizeGuidePage({ params }: SizeGuidePageProps) {
   const { locale } = await params
-  const dictionary = getDictionary(locale)
+  const dictionary = await getDictionary(locale)
   const backUrl = locale === "en" ? "/" : `/${locale}`
 
   const sizeData = [
     {
+      size: "XS",
+      height: "155-165 cm",
+      heightImperial: "5'1\"–5'5\"",
+      weight: "45-55 kg",
+      weightImperial: "99–121 lbs",
+      chest: "81-86 cm",
+      chestImperial: "32–34\"",
+      waist: "66-71 cm",
+      waistImperial: "26–28\"",
+    },
+    {
       size: "S",
-      height: "150-155 cm",
-      heightImperial: "4'11\"–5'1\"",
-      weight: "40-47 kg",
-      weightImperial: "88–104 lbs",
-      chest: "76-81 cm",
-      chestImperial: "30–32\"",
-      waist: "58-64 cm",
-      waistImperial: "23–25\"",
+      height: "160-170 cm",
+      heightImperial: "5'3\"–5'7\"",
+      weight: "55-65 kg",
+      weightImperial: "121–143 lbs",
+      chest: "86-91 cm",
+      chestImperial: "34–36\"",
+      waist: "71-76 cm",
+      waistImperial: "28–30\"",
     },
     {
       size: "M",
-      height: "155-160 cm",
-      heightImperial: "5'1\"–5'3\"",
-      weight: "47-54 kg",
-      weightImperial: "104–119 lbs",
-      chest: "81-86 cm",
-      chestImperial: "32–34\"",
-      waist: "64-70 cm",
-      waistImperial: "25–27.5\"",
+      height: "165-175 cm",
+      heightImperial: "5'5\"–5'9\"",
+      weight: "65-75 kg",
+      weightImperial: "143–165 lbs",
+      chest: "96-102 cm",
+      chestImperial: "38–40\"",
+      waist: "81-86 cm",
+      waistImperial: "32–34\"",
     },
     {
       size: "L",
-      height: "160-165 cm",
-      heightImperial: "5'3\"–5'5\"",
-      weight: "54-61 kg",
-      weightImperial: "119–134 lbs",
-      chest: "86-91 cm",
-      chestImperial: "34–36\"",
-      waist: "70-76 cm",
-      waistImperial: "27.5–30\"",
+      height: "170-180 cm",
+      heightImperial: "5'7\"–5'11\"",
+      weight: "75-85 kg",
+      weightImperial: "165–187 lbs",
+      chest: "107-112 cm",
+      chestImperial: "42–44\"",
+      waist: "91-97 cm",
+      waistImperial: "36–38\"",
     },
     {
       size: "XL",
-      height: "165-170 cm",
-      heightImperial: "5'5\"–5'7\"",
-      weight: "61-68 kg",
-      weightImperial: "134–150 lbs",
-      chest: "91-96 cm",
-      chestImperial: "36–38\"",
-      waist: "76-82 cm",
-      waistImperial: "30–32.5\"",
+      height: "175-185 cm",
+      heightImperial: "5'9\"–6'1\"",
+      weight: "85-95 kg",
+      weightImperial: "187–209 lbs",
+      chest: "117-122 cm",
+      chestImperial: "46–48\"",
+      waist: "102-107 cm",
+      waistImperial: "40–42\"",
     },
     {
       size: "XXL",
-      height: "180-195 cm",
-      heightImperial: "5'11\"–6'5\"",
-      weight: "80-95 kg",
-      weightImperial: "176–210 lbs",
-      chest: "101-108 cm",
-      chestImperial: "40–42.5\"",
-      waist: "88-94 cm",
-      waistImperial: "34.5–37\"",
+      height: "180-190 cm",
+      heightImperial: "5'11\"–6'3\"",
+      weight: "95-110 kg",
+      weightImperial: "209–243 lbs",
+      chest: "127-132 cm",
+      chestImperial: "50–52\"",
+      waist: "112-117 cm",
+      waistImperial: "44–46\"",
     },
   ]
 
@@ -152,15 +163,16 @@ export default async function SizeGuidePage({ params }: SizeGuidePageProps) {
         {/* Size Recommendations */}
         <div className="mb-16">
           <h3 className="text-2xl md:text-3xl font-bold text-center mb-12">Size Recommendations</h3>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {sizeData.map((size) => {
               let bodyType = '';
               switch(size.size) {
-                case 'S': bodyType = 'Slim or petite build, ideal for smaller frames.'; break;
-                case 'M': bodyType = 'Average athletic build, suitable for standard proportions.'; break;
-                case 'L': bodyType = 'Muscular or broader build, good for athletic physiques.'; break;
-                case 'XL': bodyType = 'Larger build, accommodates taller or fuller figures.'; break;
-                case 'XXL': bodyType = 'Plus size or very tall, for maximum comfort and coverage.'; break;
+                case 'XS': bodyType = 'Petite build, ideal for slender frames and those who prefer a fitted look.'; break;
+                case 'S': bodyType = 'Slim to average build, perfect for most people seeking a tailored fit.'; break;
+                case 'M': bodyType = 'Average to athletic build, suitable for standard proportions and active lifestyles.'; break;
+                case 'L': bodyType = 'Broader or muscular build, ideal for athletic physiques and comfortable fit.'; break;
+                case 'XL': bodyType = 'Larger build, accommodates broader shoulders and fuller figures comfortably.'; break;
+                case 'XXL': bodyType = 'Plus size or very tall, designed for maximum comfort and coverage.'; break;
               }
               return (
                 <div key={size.size} className="bg-gray-50 rounded-xl p-6 text-center hover:bg-gray-100 transition-colors">

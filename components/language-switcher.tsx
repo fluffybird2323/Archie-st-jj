@@ -16,8 +16,23 @@ export function LanguageSwitcher() {
   const pathWithoutLocale = removeLocaleFromUrl(pathname)
 
   const handleLocaleChange = (locale: Locale) => {
-    // Always construct the new path properly
-    const newPath = `/${locale}${pathWithoutLocale === "/" ? "" : pathWithoutLocale}`
+    // Get the current path without any locale prefix
+    let pathWithoutAnyLocale = pathname
+
+    // Remove any existing locale prefix from the current path
+    const segments = pathname.split("/").filter(Boolean)
+    if (segments.length > 0) {
+      const firstSegment = segments[0] as Locale
+      // Check if first segment is a valid locale and remove it
+      if (locales.includes(firstSegment)) {
+        pathWithoutAnyLocale = segments.length > 1 ? `/${segments.slice(1).join("/")}` : "/"
+      }
+    }
+
+    // Construct new path with the selected locale
+    const newPath = locale === "en"
+      ? pathWithoutAnyLocale === "/" ? "/" : pathWithoutAnyLocale
+      : `/${locale}${pathWithoutAnyLocale === "/" ? "" : pathWithoutAnyLocale}`
 
     // Set locale preference cookie
     document.cookie = `locale-preference=${locale}; path=/; max-age=${365 * 24 * 60 * 60}; samesite=lax`

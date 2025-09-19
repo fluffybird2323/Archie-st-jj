@@ -5,17 +5,18 @@ import { getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
 import { PageHeader } from "@/components/page-header"
 import { designSystem, cn } from "@/lib/design-system"
+import { Button } from "@/components/ui/button"
 
 interface ContactPageProps {
-  params: {
+  params: Promise<{
     locale: Locale
-  }
+  }>
 }
 
-export default async function ContactPage({ params: paramsPromise }: ContactPageProps) {
-  const params = await paramsPromise;
-  const dictionary = getDictionary(params.locale)
-  const backUrl = params.locale === "en" ? "/" : `/${params.locale}`
+export default async function ContactPage({ params }: ContactPageProps) {
+  const { locale } = await params
+  const dictionary = await getDictionary(locale)
+  const backUrl = locale === "en" ? "/" : `/${locale}`
 
   return (
     <div className="min-h-screen bg-white">
