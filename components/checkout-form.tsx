@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
+import { getDictionary } from "@/lib/i18n/utils"
+import type { Locale } from "@/lib/i18n/config"
 
 export interface CustomerInfo {
   email?: string
@@ -24,9 +26,11 @@ interface CheckoutFormProps {
   onClose: () => void
   isLoading?: boolean
   isMandatory?: boolean
+  locale: Locale
 }
 
-export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false }: CheckoutFormProps) {
+export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false, locale }: CheckoutFormProps) {
+  const dictionary = getDictionary(locale)
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
     email: "",
     phone: "",
@@ -56,20 +60,20 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     // Validate required fields
     if (!customerInfo.email || !customerInfo.phone) {
-      alert("Please provide email and phone number")
+      alert(dictionary.checkout.errors.emailPhone)
       return
     }
-    
+
     if (!customerInfo.address?.firstName || !customerInfo.address?.lastName ||
         !customerInfo.address?.line1 || !customerInfo.address?.city ||
         !customerInfo.address?.state || !customerInfo.address?.postalCode) {
-      alert("Please fill in all required shipping address fields")
+      alert(dictionary.checkout.errors.shippingAddress)
       return
     }
-    
+
     onSubmit(customerInfo)
   }
 
@@ -94,7 +98,7 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
           <div className="p-6">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold">Shipping & Contact Information</h2>
+              <h2 className="text-2xl font-bold">{dictionary.checkout.title}</h2>
               <button
                 onClick={onClose}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -106,36 +110,35 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
             {/* Info Message */}
             <div className="mb-6 p-4 bg-amber-50 rounded-lg">
               <p className="text-sm text-amber-800">
-                <strong>Required:</strong> Please provide your shipping address and contact information so we can deliver your order.
-                All fields marked with * are mandatory.
+                <strong>{dictionary.checkout.required}:</strong> {dictionary.checkout.requiredMessage}
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Contact Information */}
               <div>
-                <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
+                <h3 className="text-lg font-semibold mb-4">{dictionary.checkout.contactInfo}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-1">Email *</label>
+                    <label className="block text-sm font-medium mb-1">{dictionary.checkout.email} *</label>
                     <input
                       ref={firstInputRef}
                       type="email"
                       value={customerInfo.email}
                       onChange={(e) => setCustomerInfo({ ...customerInfo, email: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black focus:ring-2 focus:ring-black focus:ring-opacity-20"
-                      placeholder="your@email.com"
+                      placeholder={dictionary.checkout.emailPlaceholder}
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1">Phone Number *</label>
+                    <label className="block text-sm font-medium mb-1">{dictionary.checkout.phone} *</label>
                     <input
                       type="tel"
                       value={customerInfo.phone}
                       onChange={(e) => setCustomerInfo({ ...customerInfo, phone: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
-                      placeholder="+1 (555) 123-4567"
+                      placeholder={dictionary.checkout.phonePlaceholder}
                       required
                     />
                   </div>
@@ -144,11 +147,11 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
 
               {/* Shipping Address */}
               <div>
-                <h3 className="text-lg font-semibold mb-4">Shipping Address</h3>
+                <h3 className="text-lg font-semibold mb-4">{dictionary.checkout.shippingAddress}</h3>
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium mb-1">First Name *</label>
+                      <label className="block text-sm font-medium mb-1">{dictionary.checkout.firstName} *</label>
                       <input
                         type="text"
                         value={customerInfo.address?.firstName}
@@ -158,7 +161,7 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-1">Last Name *</label>
+                      <label className="block text-sm font-medium mb-1">{dictionary.checkout.lastName} *</label>
                       <input
                         type="text"
                         value={customerInfo.address?.lastName}
@@ -170,31 +173,31 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Address Line 1 *</label>
+                    <label className="block text-sm font-medium mb-1">{dictionary.checkout.addressLine1} *</label>
                     <input
                       type="text"
                       value={customerInfo.address?.line1}
                       onChange={(e) => updateAddress("line1", e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
-                      placeholder="123 Main St"
+                      placeholder={dictionary.checkout.addressLine1Placeholder}
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Address Line 2 (Optional)</label>
+                    <label className="block text-sm font-medium mb-1">{dictionary.checkout.addressLine2}</label>
                     <input
                       type="text"
                       value={customerInfo.address?.line2}
                       onChange={(e) => updateAddress("line2", e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
-                      placeholder="Apt, Suite, Unit, etc."
+                      placeholder={dictionary.checkout.addressLine2Placeholder}
                     />
                   </div>
 
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm font-medium mb-1">City *</label>
+                      <label className="block text-sm font-medium mb-1">{dictionary.checkout.city} *</label>
                       <input
                         type="text"
                         value={customerInfo.address?.city}
@@ -204,47 +207,47 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-1">State/Province *</label>
+                      <label className="block text-sm font-medium mb-1">{dictionary.checkout.state} *</label>
                       <input
                         type="text"
                         value={customerInfo.address?.state}
                         onChange={(e) => updateAddress("state", e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
-                        placeholder="CA"
+                        placeholder={dictionary.checkout.statePlaceholder}
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-1">Postal Code *</label>
+                      <label className="block text-sm font-medium mb-1">{dictionary.checkout.postalCode} *</label>
                       <input
                         type="text"
                         value={customerInfo.address?.postalCode}
                         onChange={(e) => updateAddress("postalCode", e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
-                        placeholder="12345"
+                        placeholder={dictionary.checkout.postalCodePlaceholder}
                         required
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Country *</label>
+                    <label className="block text-sm font-medium mb-1">{dictionary.checkout.country} *</label>
                     <select
                       value={customerInfo.address?.country}
                       onChange={(e) => updateAddress("country", e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
                       required
                     >
-                      <option value="US">United States</option>
-                      <option value="CA">Canada</option>
-                      <option value="GB">United Kingdom</option>
-                      <option value="AU">Australia</option>
-                      <option value="DE">Germany</option>
-                      <option value="FR">France</option>
-                      <option value="JP">Japan</option>
-                      <option value="IN">India</option>
-                      <option value="BR">Brazil</option>
-                      <option value="MX">Mexico</option>
+                      <option value="US">{dictionary.checkout.countries.US}</option>
+                      <option value="CA">{dictionary.checkout.countries.CA}</option>
+                      <option value="GB">{dictionary.checkout.countries.GB}</option>
+                      <option value="AU">{dictionary.checkout.countries.AU}</option>
+                      <option value="DE">{dictionary.checkout.countries.DE}</option>
+                      <option value="FR">{dictionary.checkout.countries.FR}</option>
+                      <option value="JP">{dictionary.checkout.countries.JP}</option>
+                      <option value="IN">{dictionary.checkout.countries.IN}</option>
+                      <option value="BR">{dictionary.checkout.countries.BR}</option>
+                      <option value="MX">{dictionary.checkout.countries.MX}</option>
                     </select>
                   </div>
                 </div>
@@ -258,14 +261,14 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
                   disabled={isLoading}
                   className="flex-1 bg-gray-200 text-gray-800 hover:bg-gray-300"
                 >
-                  Cancel
+                  {dictionary.checkout.cancel}
                 </Button>
                 <Button
                   type="submit"
                   disabled={isLoading}
                   className="flex-1 bg-black text-white hover:bg-gray-900"
                 >
-                  {isLoading ? "Processing..." : "Continue to Square Checkout"}
+                  {isLoading ? dictionary.checkout.processing : dictionary.checkout.continueToCheckout}
                 </Button>
               </div>
             </form>

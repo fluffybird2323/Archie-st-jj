@@ -113,6 +113,7 @@ export function Cart({ locale }: CartProps) {
           onClose={() => setShowCheckoutForm(false)}
           isLoading={isLoading}
           isMandatory={true}
+          locale={locale}
         />
       )}
 
@@ -133,7 +134,7 @@ export function Cart({ locale }: CartProps) {
         <div className="flex h-full flex-col">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b">
-            <h2 className="text-lg font-semibold">Cart</h2>
+            <h2 className="text-lg font-semibold">{dictionary.cart.title}</h2>
             <button
               onClick={closeCart}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -147,8 +148,8 @@ export function Cart({ locale }: CartProps) {
             {state.items.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center">
                 <ShoppingBag className="h-16 w-16 text-gray-300 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Your cart is empty</h3>
-                <p className="text-gray-500">Add some products to get started</p>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">{dictionary.cart.empty}</h3>
+                <p className="text-gray-500">{dictionary.cart.emptyDescription}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -168,7 +169,7 @@ export function Cart({ locale }: CartProps) {
                     <div className="flex-1 min-w-0">
                       <h3 className="text-sm font-medium text-black truncate">{item.name}</h3>
                       <p className="text-sm text-gray-500">
-                        Size: {item.size} | Color: {item.color}
+                        {dictionary.cart.size}: {item.size} | {dictionary.cart.color}: {item.color}
                       </p>
                       <p className="text-sm font-medium text-black mt-1">
                         {formatPrice(item.price, locale)}
@@ -196,7 +197,7 @@ export function Cart({ locale }: CartProps) {
                     <button
                       onClick={() => removeItem(item.id)}
                       className="text-gray-400 hover:text-red-500 transition-colors"
-                      title="Remove from cart"
+                      title={dictionary.cart.removeTitle}
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -218,7 +219,7 @@ export function Cart({ locale }: CartProps) {
 
               {/* Total */}
               <div className="flex justify-between items-center mb-4">
-                <span className="text-lg font-bold text-black">Total:</span>
+                <span className="text-lg font-bold text-black">{dictionary.cart.total}:</span>
                 <span className="text-lg font-bold text-black">
                   {formatPrice(getStripeMatchingTotal(), locale)}
                 </span>
@@ -230,12 +231,12 @@ export function Cart({ locale }: CartProps) {
                 disabled={isLoading || state.items.length === 0}
                 className="nike-button w-full py-3"
               >
-                {isLoading ? "PROCESSING..." : "CHECKOUT"}
+                {isLoading ? dictionary.cart.processing : dictionary.cart.checkout}
               </Button>
 
               {/* Free Shipping Notice */}
               <div className="mt-3 text-center">
-                <p className="text-green-600 text-sm font-medium">🚚 Free shipping worldwide</p>
+                <p className="text-green-600 text-sm font-medium">{dictionary.cart.freeShipping}</p>
               </div>
             </div>
           )}
