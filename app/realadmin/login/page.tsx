@@ -1,8 +1,6 @@
 "use client"
 
-import type React from "react"
-
-import { useState } from "react"
+import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -34,7 +32,6 @@ export default function RealAdminLoginPage() {
       const data = await response.json()
 
       if (data.success) {
-        // Store simple auth flag in localStorage
         localStorage.setItem("admin_authenticated", "true")
         router.push("/realadmin")
       } else {
@@ -56,43 +53,42 @@ export default function RealAdminLoginPage() {
           <h1 className={cn(designSystem.typography.h3, "mb-2")}>Admin Login</h1>
           <p className={designSystem.typography.caption}>Sign in to manage your ARTIE store</p>
         </div>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@artiestudio.org"
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                required
-              />
-            </div>
-            {error && <div className="text-red-600 text-sm">{error}</div>}
-            <button
-              type="submit"
-              className={cn(designSystem.components.buttonPrimary, "w-full")}
-              disabled={loading}
-            >
-              {loading ? "Signing in..." : "Sign In"}
-            </button>
-          </form>
-          <div className={cn("mt-6 p-4 bg-gray-50 rounded-lg text-center", designSystem.typography.caption)}>
-            <p className="font-semibold mb-1">Demo credentials:</p>
-            <p>Email: admin@artiestudio.org</p>
-            <p>Password: admin123</p>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="admin@artiestudio.org"
+              required
+            />
           </div>
+          <div>
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+          {error && <div className="text-red-600 text-sm">{error}</div>}
+          <button
+            type="submit"
+            className={cn(designSystem.components.buttonPrimary, "w-full")}
+            disabled={loading}
+          >
+            {loading ? "Signing in..." : "Sign In"}
+          </button>
+        </form>
+        <div className={cn("mt-6 p-4 bg-gray-50 rounded-lg text-center", designSystem.typography.caption)}>
+          <p className="font-semibold mb-1">Demo credentials:</p>
+          <p>Email: admin@artiestudio.org</p>
+          <p>Password: admin123</p>
         </div>
       </div>
     </div>
