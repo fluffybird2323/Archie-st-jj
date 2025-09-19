@@ -45,22 +45,22 @@ VALUES (
 
 -- Insert sample products
 INSERT INTO products (slug, name, price, category, description, images, sizes, colors) VALUES
-('archie-hoodie-black', 'ARCHIE Hoodie', 59.99, 'Hoodies', 'Premium cotton hoodie with modern fit', 
+('artie-hoodie-black', 'ARTIE Hoodie', 59.99, 'Hoodies', 'Premium cotton hoodie with modern fit', 
  ARRAY['https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800'], 
  ARRAY['XS', 'S', 'M', 'L', 'XL', 'XXL'], 
  ARRAY['Black', 'White', 'Gray']),
 
-('archie-tee-white', 'ARCHIE T-Shirt', 29.99, 'T-Shirts', 'Classic cotton t-shirt with premium quality', 
+('artie-tee-white', 'ARTIE T-Shirt', 29.99, 'T-Shirts', 'Classic cotton t-shirt with premium quality', 
  ARRAY['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800'], 
  ARRAY['XS', 'S', 'M', 'L', 'XL', 'XXL'], 
  ARRAY['White', 'Black', 'Gray']),
 
-('archie-joggers-gray', 'ARCHIE Joggers', 49.99, 'Pants', 'Comfortable joggers for everyday wear', 
+('artie-joggers-gray', 'ARTIE Joggers', 49.99, 'Pants', 'Comfortable joggers for everyday wear', 
  ARRAY['https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800'], 
  ARRAY['XS', 'S', 'M', 'L', 'XL', 'XXL'], 
  ARRAY['Gray', 'Black', 'Navy']),
 
-('archie-shorts-navy', 'ARCHIE Shorts', 34.99, 'Shorts', 'Athletic shorts with moisture-wicking fabric', 
+('artie-shorts-navy', 'ARTIE Shorts', 34.99, 'Shorts', 'Athletic shorts with moisture-wicking fabric', 
  ARRAY['https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=800'], 
  ARRAY['XS', 'S', 'M', 'L', 'XL', 'XXL'], 
  ARRAY['Navy', 'Black', 'Gray'])

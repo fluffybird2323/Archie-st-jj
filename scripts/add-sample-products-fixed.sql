@@ -5,7 +5,7 @@ DELETE FROM products;
 INSERT INTO products (slug, name, price, category, description, images, sizes, colors, created_at, updated_at) VALUES
 
 -- T-Shirt with multiple color options mapped to specific images
-('archie-essential-tee', 'ARCHIE Essential Tee', 39.99, 'T-Shirts', 
+('artie-essential-tee', 'ARTIE Essential Tee', 39.99, 'T-Shirts', 
  'Our signature essential tee crafted from 100% organic cotton. Available in multiple colors.',
  ARRAY[
    'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=800&fit=crop',
@@ -22,7 +22,7 @@ INSERT INTO products (slug, name, price, category, description, images, sizes, c
  NOW() - (random() * interval '7 days')),
 
 -- Hoodie with color mapping
-('archie-signature-hoodie', 'ARCHIE Signature Hoodie', 89.99, 'Hoodies',
+('artie-signature-hoodie', 'ARTIE Signature Hoodie', 89.99, 'Hoodies',
  'Premium heavyweight hoodie with brushed fleece interior. Multiple color options available.',
  ARRAY[
    'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&h=800&fit=crop',
@@ -39,7 +39,7 @@ INSERT INTO products (slug, name, price, category, description, images, sizes, c
  NOW() - (random() * interval '7 days')),
 
 -- Shorts with color mapping
-('archie-performance-shorts', 'ARCHIE Performance Shorts', 54.99, 'Shorts',
+('artie-performance-shorts', 'ARTIE Performance Shorts', 54.99, 'Shorts',
  'Athletic shorts designed for movement. Available in versatile colors.',
  ARRAY[
    'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=800&h=800&fit=crop',
@@ -54,7 +54,7 @@ INSERT INTO products (slug, name, price, category, description, images, sizes, c
  NOW() - (random() * interval '7 days')),
 
 -- Joggers with color mapping
-('archie-comfort-joggers', 'ARCHIE Comfort Joggers', 69.99, 'Pants',
+('artie-comfort-joggers', 'ARTIE Comfort Joggers', 69.99, 'Pants',
  'Premium joggers with tapered fit and ribbed cuffs. Multiple color options.',
  ARRAY[
    'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800&h=800&fit=crop',
@@ -69,7 +69,7 @@ INSERT INTO products (slug, name, price, category, description, images, sizes, c
  NOW() - (random() * interval '7 days')),
 
 -- Single color products (for variety)
-('archie-premium-tank', 'ARCHIE Premium Tank', 29.99, 'T-Shirts',
+('artie-premium-tank', 'ARTIE Premium Tank', 29.99, 'T-Shirts',
  'Lightweight tank top perfect for workouts and summer days.',
  ARRAY[
    'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=800&fit=crop'

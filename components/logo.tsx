@@ -1,7 +1,7 @@
 "use client"
 
 /**
- * Simple ARCHIE logo component.
+ * Simple ARTIE logo component.
  * Feel free to swap the SVG, font, or styling to match your branding.
  */
 export function Logo({ className = "" }: { className?: string }) {

@@ -5,9 +5,10 @@ import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { designSystem, cn } from "@/lib/design-system"
+import { Logo } from "@/components/logo"
 
 export default function RealAdminLoginPage() {
   const [email, setEmail] = useState("")
@@ -48,13 +49,13 @@ export default function RealAdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
-          <CardDescription>Sign in to manage your ARCHIE store</CardDescription>
-        </CardHeader>
-        <CardContent>
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className={cn(designSystem.components.card, "w-full max-w-md")}>
+        <div className="text-center mb-8">
+          <Logo className="h-12 w-auto mx-auto mb-6" />
+          <h1 className={cn(designSystem.typography.h3, "mb-2")}>Admin Login</h1>
+          <p className={designSystem.typography.caption}>Sign in to manage your ARTIE store</p>
+        </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="email">Email</Label>
@@ -63,7 +64,7 @@ export default function RealAdminLoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@archie.com"
+                placeholder="admin@artiestudio.org"
                 required
               />
             </div>
@@ -79,17 +80,21 @@ export default function RealAdminLoginPage() {
               />
             </div>
             {error && <div className="text-red-600 text-sm">{error}</div>}
-            <Button type="submit" className="w-full" disabled={loading}>
+            <button
+              type="submit"
+              className={cn(designSystem.components.buttonPrimary, "w-full")}
+              disabled={loading}
+            >
               {loading ? "Signing in..." : "Sign In"}
-            </Button>
+            </button>
           </form>
-          <div className="mt-4 text-center text-sm text-gray-600">
-            <p>Demo credentials:</p>
-            <p>Email: admin@archie.com</p>
+          <div className={cn("mt-6 p-4 bg-gray-50 rounded-lg text-center", designSystem.typography.caption)}>
+            <p className="font-semibold mb-1">Demo credentials:</p>
+            <p>Email: admin@artiestudio.org</p>
             <p>Password: admin123</p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }

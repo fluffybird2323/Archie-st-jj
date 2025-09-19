@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 
 // Simple admin credentials
-const ADMIN_EMAIL = "admin@archie.com"
+const ADMIN_EMAIL = "admin@artiestudio.org"
 const ADMIN_PASSWORD = "admin123"
 
 export async function POST(request: NextRequest) {

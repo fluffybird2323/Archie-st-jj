@@ -2,9 +2,10 @@ import { getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, Users, Target, Award, Heart, Zap, Globe } from "lucide-react"
-import { Logo } from "@/components/logo"
+import { Users, Target, Award, Heart, Zap, Globe } from "lucide-react"
 import { LocalizedVideoBanner } from "@/components/localized-video-banner"
+import { PageHeader } from "@/components/page-header"
+import { designSystem, cn } from "@/lib/design-system"
 
 interface AboutPageProps {
   params: {
@@ -23,23 +24,17 @@ export default async function AboutPage({ params }: AboutPageProps) {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href={getLocalizedPath("/")} className="flex items-center">
-            <Logo className="h-8 w-auto" />
-          </Link>
-          <Link
-            href={getLocalizedPath("/")}
-            className="flex items-center text-gray-600 hover:text-black transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            {dictionary.nav.back}
-          </Link>
-        </div>
-      </header>
+      <PageHeader
+        showBack={true}
+        backUrl={getLocalizedPath("/")}
+        backText={dictionary.nav.back}
+        showLogo={true}
+        showCart={false}
+        showLanguage={false}
+      />
 
       {/* Main Content */}
-      <main className="pt-20 pb-16">
+      <main className="pt-24">
         {/* Hero Section */}
         <LocalizedVideoBanner locale={params.locale}
           dictionary={dictionary}
@@ -48,13 +43,13 @@ export default async function AboutPage({ params }: AboutPageProps) {
           subText={dictionary.about.subText}
         />
 
-        <div className="max-w-6xl mx-auto px-4">
+        <div className={cn(designSystem.layout.container, designSystem.spacing.page)}>
           {/* Story Section */}
-          <section className="py-20">
+          <section className={designSystem.spacing.sectionY}>
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div>
-                <h2 className="text-4xl font-bold mb-8">Our Story</h2>
-                <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
+                <h2 className={cn(designSystem.typography.h2, "mb-8")}>Our Story</h2>
+                <div className={cn("space-y-6", designSystem.typography.bodyLarge, designSystem.colors.textSecondary, "leading-relaxed")}>
                   <p>
                     ARTIE was born from a simple belief: that great design should be accessible, sustainable, and built to last. We are committed to transparency and ethical practices in all aspects of our business. Founded in 2023, we set out to challenge the fast fashion industry with a different
                     approach.
@@ -84,10 +79,10 @@ export default async function AboutPage({ params }: AboutPageProps) {
           </section>
 
           {/* Values Section */}
-          <section className="py-20 bg-gray-50 -mx-4 px-4 rounded-3xl">
+          <section className={cn(designSystem.spacing.sectionY, designSystem.colors.bgSecondary, "-mx-4 px-4", designSystem.radius.lg)}>
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-6">Our Values</h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              <h2 className={cn(designSystem.typography.h2, "mb-6")}>Our Values</h2>
+              <p className={cn(designSystem.typography.lead, "max-w-2xl mx-auto")}>
                 These principles guide everything we do, from design to delivery.
               </p>
             </div>
@@ -97,8 +92,8 @@ export default async function AboutPage({ params }: AboutPageProps) {
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-black rounded-2xl mb-6 group-hover:scale-110 transition-transform">
                   <Award className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold mb-4">Quality First</h3>
-                <p className="text-gray-600">
+                <h3 className={cn(designSystem.typography.h4, "mb-4")}>Quality First</h3>
+                <p className={designSystem.colors.textSecondary}>
                   We never compromise on materials or craftsmanship. Every piece is built to last and improve with time.
                 </p>
               </div>
@@ -107,8 +102,8 @@ export default async function AboutPage({ params }: AboutPageProps) {
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-green-600 rounded-2xl mb-6 group-hover:scale-110 transition-transform">
                   <Heart className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold mb-4">Sustainability</h3>
-                <p className="text-gray-600">
+                <h3 className={cn(designSystem.typography.h4, "mb-4")}>Sustainability</h3>
+                <p className={designSystem.colors.textSecondary}>
                   Environmental responsibility is at our core. We're committed to reducing our impact on the planet.
                 </p>
               </div>
@@ -117,8 +112,8 @@ export default async function AboutPage({ params }: AboutPageProps) {
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-6 group-hover:scale-110 transition-transform">
                   <Users className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold mb-4">Community</h3>
-                <p className="text-gray-600">
+                <h3 className={cn(designSystem.typography.h4, "mb-4")}>Community</h3>
+                <p className={designSystem.colors.textSecondary}>
                   We believe in fair labor practices and building lasting relationships with our partners and customers.
                 </p>
               </div>
@@ -126,7 +121,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
           </section>
 
           {/* Mission & Vision */}
-          <section className="py-20">
+          <section className={designSystem.spacing.sectionY}>
             <div className="grid lg:grid-cols-2 gap-16">
               <div className="bg-black text-white rounded-3xl p-12">
                 <div className="flex items-center mb-6">
@@ -153,10 +148,10 @@ export default async function AboutPage({ params }: AboutPageProps) {
           </section>
 
           {/* Team Section */}
-          <section className="py-20">
+          <section className={designSystem.spacing.sectionY}>
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-6">Meet the Team</h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              <h2 className={cn(designSystem.typography.h2, "mb-6")}>Meet the Team</h2>
+              <p className={cn(designSystem.typography.lead, "max-w-2xl mx-auto")}>
                 The passionate individuals behind ARTIE, working to redefine fashion.
               </p>
             </div>
@@ -172,9 +167,9 @@ export default async function AboutPage({ params }: AboutPageProps) {
                     />
                   </div>
                 </div>
-                <h3 className="text-xl font-bold mb-2">Ishaan Yadav</h3>
-                <p className="text-gray-600 mb-2">Founder</p>
-                <p className="text-sm text-gray-500">
+                <h3 className={cn(designSystem.typography.h4, "mb-2")}>Ishaan Yadav</h3>
+                <p className={cn(designSystem.colors.textSecondary, "mb-2")}>Founder</p>
+                <p className={designSystem.typography.caption}>
                   The visionary behind ARTIE.
                 </p>
               </div>
@@ -182,12 +177,12 @@ export default async function AboutPage({ params }: AboutPageProps) {
           </section>
 
           {/* Global Impact */}
-          <section className="py-20 bg-gradient-to-r from-gray-900 to-black text-white rounded-3xl -mx-4 px-4">
+          <section className={cn(designSystem.spacing.sectionY, "bg-gradient-to-r from-gray-900 to-black text-white", designSystem.radius.lg, "-mx-4 px-4")}>
             <div className="text-center mb-16">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 rounded-2xl mb-6">
                 <Globe className="w-8 h-8 text-white" />
               </div>
-              <h2 className="text-4xl font-bold mb-6">Global Impact</h2>
+              <h2 className={cn(designSystem.typography.h2, "mb-6 text-white")}>Global Impact</h2>
               <p className="text-xl text-gray-300 max-w-2xl mx-auto">
                 Our commitment extends beyond fashion to creating positive change worldwide.
               </p>
@@ -214,22 +209,22 @@ export default async function AboutPage({ params }: AboutPageProps) {
           </section>
 
           {/* Call to Action */}
-          <section className="py-20 text-center">
-            <h2 className="text-4xl font-bold mb-6">Join Our Journey</h2>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <section className={cn(designSystem.spacing.sectionY, "text-center")}>
+            <h2 className={cn(designSystem.typography.h2, "mb-6")}>Join Our Journey</h2>
+            <p className={cn(designSystem.typography.lead, "mb-8 max-w-2xl mx-auto")}>
               Be part of the movement towards conscious fashion. Every purchase supports our mission to create a better
               future for fashion.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href={getLocalizedPath("/")}
-                className="inline-block bg-black text-white px-8 py-4 rounded-full font-semibold hover:bg-gray-800 transition-colors"
+                className={cn("inline-block", designSystem.components.buttonPrimary)}
               >
                 Shop Collection
               </Link>
               <Link
                 href={getLocalizedPath("/sustainability")}
-                className="inline-block border-2 border-black text-black px-8 py-4 rounded-full font-semibold hover:bg-black hover:text-white transition-colors"
+                className={cn("inline-block", designSystem.components.buttonSecondary)}
               >
                 Learn About Sustainability
               </Link>

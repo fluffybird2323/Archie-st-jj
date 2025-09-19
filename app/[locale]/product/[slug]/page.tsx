@@ -37,12 +37,12 @@ export async function generateMetadata({ params }: LocaleProductPageProps): Prom
     return {
       title: `${productName} - ${price}`,
       description: `${productDescription} Available in sizes ${product.sizes.join(', ')} and colors ${product.colors.map(c => typeof c === 'string' ? c : c.name).join(', ')}.`,
-      keywords: `${productName}, streetwear, fashion, ${product.sizes.join(', ')}, ${product.colors.map(c => typeof c === 'string' ? c : c.name).join(', ')}, ARCHIE`,
+      keywords: `${productName}, streetwear, fashion, ${product.sizes.join(', ')}, ${product.colors.map(c => typeof c === 'string' ? c : c.name).join(', ')}, ARTIE`,
       openGraph: {
-        title: `${productName} - ARCHIE`,
+        title: `${productName} - ARTIE`,
         description: `${productDescription} - ${price}`,
         url: `/${locale === 'en' ? '' : locale + '/'}product/${slug}`,
-        siteName: 'ARCHIE',
+        siteName: 'ARTIE',
         images: [
           {
             url: productImage,
@@ -51,10 +51,10 @@ export async function generateMetadata({ params }: LocaleProductPageProps): Prom
             alt: productName,
           },
           {
-            url: '/og-default.jpg',
+            url: '/og-default.png',
             width: 1200,
             height: 630,
-            alt: `${productName} - ARCHIE Premium Streetwear`,
+            alt: `${productName} - ARTIE Premium Streetwear`,
           },
         ],
         locale: locale === 'en' ? 'en_US' : locale === 'ja' ? 'ja_JP' : 'en_US',
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: LocaleProductPageProps): Prom
       },
       twitter: {
         card: 'summary_large_image',
-        title: `${productName} - ARCHIE`,
+        title: `${productName} - ARTIE`,
         description: `${productDescription} - ${price}`,
         images: {
           url: productImage,
@@ -73,15 +73,15 @@ export async function generateMetadata({ params }: LocaleProductPageProps): Prom
         'product:price:amount': product.price.toString(),
         'product:price:currency': 'USD',
         'product:availability': 'in stock',
-        'product:brand': 'ARCHIE',
+        'product:brand': 'ARTIE',
         'product:condition': 'new',
       },
     }
   } catch (error) {
     console.error('Error generating metadata:', error)
     return {
-      title: 'Product - ARCHIE',
-      description: 'Discover premium streetwear at ARCHIE.',
+      title: 'Product - ARTIE',
+      description: 'Discover premium streetwear at ARTIE.',
     }
   }
 }

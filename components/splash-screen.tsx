@@ -35,7 +35,7 @@ export function SplashScreen() {
       )}
     >
       <div className="mb-8">
-        <h1 className="font-outfit text-6xl font-black text-black tracking-tight">ARCHIE</h1>
+        <h1 className="font-outfit text-6xl font-black text-black tracking-tight">ARTIE</h1>
       </div>
 
       <div className="w-48 h-1 bg-light-200 rounded-full overflow-hidden">

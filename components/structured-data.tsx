@@ -21,7 +21,7 @@ export function ProductStructuredData({ product, locale }: StructuredDataProps) 
     "image": product.images,
     "brand": {
       "@type": "Brand",
-      "name": "ARCHIE"
+      "name": "ARTIE"
     },
     "offers": {
       "@type": "Offer",
@@ -68,10 +68,10 @@ export function OrganizationStructuredData({ locale }: OrganizationStructuredDat
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "ARCHIE",
+    "name": "ARTIE",
     "description": "Premium streetwear that defines your style",
     "url": typeof window !== 'undefined' ? window.location.origin : '',
-    "logo": `${typeof window !== 'undefined' ? window.location.origin : ''}/og-default.jpg`,
+    "logo": `${typeof window !== 'undefined' ? window.location.origin : ''}/og-default.png`,
     "sameAs": [
       // Add your social media URLs here
       // "https://instagram.com/archie",

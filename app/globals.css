@@ -44,6 +44,52 @@ body {
   @apply border-2 border-black text-black px-8 py-3 rounded-full font-medium hover:bg-black hover:text-white transition-all duration-200;
 }
 
+/* Loader animations */
+@keyframes loader-dot {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes loader-line {
+  0% {
+    width: 0;
+  }
+  50% {
+    width: 100%;
+  }
+  100% {
+    width: 0;
+    left: auto;
+    right: 0;
+  }
+}
+
+.animate-loader-dot {
+  animation: loader-dot 1.4s infinite ease-in-out;
+}
+
+.animate-loader-line {
+  animation: loader-line 2s infinite ease-in-out;
+}
+
+.animation-delay-0 {
+  animation-delay: 0s;
+}
+
+.animation-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animation-delay-400 {
+  animation-delay: 0.4s;
+}
+
 @keyframes gradient-move {
   0% {
     background-position: 0% 50%;

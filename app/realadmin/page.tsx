@@ -9,10 +9,12 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Trash2, Edit, Plus, Users, Package, BarChart3, X, Save, ChevronLeft, ChevronRight } from "lucide-react"
+import { Trash2, Edit, Plus, Users, Package, BarChart3, X, Save, ChevronLeft, ChevronRight, LogOut } from "lucide-react"
 import { getProducts, type Product } from "@/lib/products-dynamic"
 import { createProduct, updateProduct, deleteProduct, checkProductExists, testSupabaseConnection } from "@/lib/supabase"
 import Image from "next/image"
+import { designSystem, cn } from "@/lib/design-system"
+import { Logo } from "@/components/logo"
 
 interface ColorWithIndex {
   name: string
@@ -346,68 +348,78 @@ export default function RealAdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Real Admin Dashboard</h1>
-              <p className="text-gray-600">Manage your ARCHIE store</p>
+      <div className="bg-white border-b border-gray-200">
+        <div className={cn(designSystem.layout.container, designSystem.spacing.page, "py-6")}>
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-6">
+              <Logo className="h-10 w-auto" />
+              <div className="h-8 w-px bg-gray-300" />
+              <div>
+                <h1 className={cn(designSystem.typography.h3, "mb-1")}>Admin Dashboard</h1>
+                <p className={designSystem.typography.caption}>Manage your ARTIE store</p>
+              </div>
             </div>
-            <div className="flex gap-4">
-              <Button onClick={() => setShowForm(true)} className="flex items-center gap-2">
+            <div className="flex gap-3">
+              <button onClick={() => setShowForm(true)} className={cn(designSystem.components.buttonPrimary, "flex items-center gap-2 !px-6 !py-2.5")}>
                 <Plus className="h-4 w-4" />
                 Add Product
-              </Button>
-              <Button variant="outline" onClick={loadProducts} className="flex items-center gap-2 bg-transparent">
+              </button>
+              <button onClick={loadProducts} className={cn(designSystem.components.buttonSecondary, "flex items-center gap-2 !px-6 !py-2.5")}>
                 <Package className="h-4 w-4" />
                 Refresh
-              </Button>
-              <Button
-                variant="outline"
+              </button>
+              <button
                 onClick={async () => {
                   const result = await testSupabaseConnection()
                   alert(result.success ? "Connection successful!" : `Connection failed: ${result.error}`)
                 }}
-                className="flex items-center gap-2"
+                className={cn(designSystem.components.buttonGhost, "flex items-center gap-2")}
               >
                 Test DB
-              </Button>
-              <Button variant="outline" onClick={handleLogout}>
+              </button>
+              <button onClick={handleLogout} className={cn(designSystem.components.buttonGhost, "flex items-center gap-2 text-red-600 hover:text-red-700")}>
+                <LogOut className="h-4 w-4" />
                 Logout
-              </Button>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className={cn(designSystem.layout.container, designSystem.spacing.page, "py-8")}>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-lg font-semibold mb-4">Quick Stats</h2>
+            <div className={designSystem.components.card}>
+              <h2 className={cn(designSystem.typography.h4, "mb-4")}>Quick Stats</h2>
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <Package className="h-5 w-5 text-blue-500" />
+                  <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
+                    <Package className="h-5 w-5 text-white" />
+                  </div>
                   <div>
-                    <p className="text-sm text-gray-600">Total Products</p>
-                    <p className="font-semibold">{products.length}</p>
+                    <p className={designSystem.typography.caption}>Total Products</p>
+                    <p className={designSystem.typography.h5}>{products.length}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <BarChart3 className="h-5 w-5 text-green-500" />
+                  <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center">
+                    <BarChart3 className="h-5 w-5 text-white" />
+                  </div>
                   <div>
-                    <p className="text-sm text-gray-600">Categories</p>
-                    <p className="font-semibold">{new Set(products.map((p) => p.category)).size}</p>
+                    <p className={designSystem.typography.caption}>Categories</p>
+                    <p className={designSystem.typography.h5}>{new Set(products.map((p) => p.category)).size}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Users className="h-5 w-5 text-purple-500" />
+                  <div className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center">
+                    <Users className="h-5 w-5 text-white" />
+                  </div>
                   <div>
-                    <p className="text-sm text-gray-600">Admin Users</p>
-                    <p className="font-semibold">1</p>
+                    <p className={designSystem.typography.caption}>Admin Users</p>
+                    <p className={designSystem.typography.h5}>1</p>
                   </div>
                 </div>
               </div>
@@ -417,10 +429,10 @@ export default function RealAdminPage() {
           {/* Main Content */}
           <div className="lg:col-span-3">
             {showForm && (
-              <div className="bg-white rounded-lg shadow-sm mb-8">
-                <div className="p-6 border-b">
-                  <h3 className="text-lg font-semibold">{editingProduct ? "Edit Product" : "Add New Product"}</h3>
-                  <p className="text-sm text-gray-600">
+              <div className={cn(designSystem.components.card, "mb-8")}>
+                <div className="border-b border-gray-100 pb-6 mb-6">
+                  <h3 className={cn(designSystem.typography.h3)}>{editingProduct ? "Edit Product" : "Add New Product"}</h3>
+                  <p className={cn(designSystem.typography.caption, "mt-2")}>
                     {editingProduct ? "Update product information" : "Create a new product for your store"}
                   </p>
                 </div>

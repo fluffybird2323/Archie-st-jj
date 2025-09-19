@@ -1,8 +1,9 @@
 import { getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
 import { Footer } from "@/components/footer"
-import Link from "next/link"
-import { ArrowLeft, Shield, Eye, Lock, Users } from "lucide-react"
+import { Shield, Eye, Lock, Users } from "lucide-react"
+import { PageHeader } from "@/components/page-header"
+import { designSystem, cn } from "@/lib/design-system"
 
 interface PrivacyPageProps {
   params: {
@@ -21,31 +22,25 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href={getLocalizedPath("/")} className="text-2xl font-bold">
-            ARTIE
-          </Link>
-          <Link
-            href={getLocalizedPath("/")}
-            className="flex items-center text-gray-600 hover:text-black transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            {dictionary.nav.back}
-          </Link>
-        </div>
-      </header>
+      <PageHeader
+        showBack={true}
+        backUrl={getLocalizedPath("/")}
+        backText={dictionary.nav.back}
+        showLogo={true}
+        showCart={false}
+        showLanguage={false}
+      />
 
       {/* Main Content */}
-      <main className="pt-20 pb-16">
-        <div className="max-w-4xl mx-auto px-4">
+      <main className="pt-24">
+        <div className={cn(designSystem.layout.containerNarrow, designSystem.spacing.page)}>
           {/* Hero Section */}
           <div className="text-center mb-16">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-black rounded-full mb-6">
               <Shield className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Privacy Policy</h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <h1 className={cn(designSystem.typography.h1, "mb-4")}>Privacy Policy</h1>
+            <p className={cn(designSystem.typography.lead, "max-w-2xl mx-auto")}>
               Your privacy is important to us. This policy explains how we collect, use, and protect your information. Additionally, it outlines your rights and our obligations under applicable laws.
             </p>
             <div className="text-sm text-gray-500 mt-4">Last updated: January 2024</div>

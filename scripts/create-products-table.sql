@@ -27,19 +27,19 @@ CREATE TABLE IF NOT EXISTS product_translations (
 
 -- Insert sample products
 INSERT INTO products (slug, name, price, category, description, images, sizes, colors) VALUES
-('archie-classic-tshirt', 'tshirt', 49.99, 'T-Shirts', 'tshirtDesc', 
+('artie-classic-tshirt', 'tshirt', 49.99, 'T-Shirts', 'tshirtDesc', 
  ARRAY['https://i.pinimg.com/736x/92/06/56/920656e03f09691d871e149b5dad8f7f.jpg', 'https://i.pinimg.com/736x/94/d3/14/94d31436dfc73fcf93058089f69ffd96.jpg'], 
  ARRAY['XS', 'S', 'M', 'L', 'XL', 'XXL'], 
  ARRAY['Black', 'White', 'Gray']),
-('archie-premium-shorts', 'shorts', 79.99, 'Shorts', 'shortsDesc',
+('artie-premium-shorts', 'shorts', 79.99, 'Shorts', 'shortsDesc',
  ARRAY['https://i.pinimg.com/736x/92/06/56/920656e03f09691d871e149b5dad8f7f.jpg', 'https://i.pinimg.com/736x/94/d3/14/94d31436dfc73fcf93058089f69ffd96.jpg'],
  ARRAY['XS', 'S', 'M', 'L', 'XL', 'XXL'],
  ARRAY['Black', 'Navy', 'Khaki']),
-('archie-signature-hoodie', 'hoodie', 149.99, 'Hoodies', 'hoodieDesc',
+('artie-signature-hoodie', 'hoodie', 149.99, 'Hoodies', 'hoodieDesc',
  ARRAY['https://i.pinimg.com/736x/92/06/56/920656e03f09691d871e149b5dad8f7f.jpg', 'https://i.pinimg.com/736x/94/d3/14/94d31436dfc73fcf93058089f69ffd96.jpg'],
  ARRAY['XS', 'S', 'M', 'L', 'XL', 'XXL'],
  ARRAY['Black', 'Gray', 'Navy']),
-('archie-essential-pants', 'pants', 119.99, 'Pants', 'pantsDesc',
+('artie-essential-pants', 'pants', 119.99, 'Pants', 'pantsDesc',
  ARRAY['https://i.pinimg.com/736x/92/06/56/920656e03f09691d871e149b5dad8f7f.jpg', 'https://i.pinimg.com/736x/94/d3/14/94d31436dfc73fcf93058089f69ffd96.jpg'],
  ARRAY['XS', 'S', 'M', 'L', 'XL', 'XXL'],
  ARRAY['Black', 'Charcoal', 'Olive']);
@@ -48,10 +48,10 @@ INSERT INTO products (slug, name, price, category, description, images, sizes, c
 INSERT INTO product_translations (product_id, locale, name, description) 
 SELECT id, 'en', 
   CASE name 
-    WHEN 'tshirt' THEN 'ARCHIE Classic T-Shirt'
-    WHEN 'shorts' THEN 'ARCHIE Premium Shorts'
-    WHEN 'hoodie' THEN 'ARCHIE Signature Hoodie'
-    WHEN 'pants' THEN 'ARCHIE Essential Pants'
+    WHEN 'tshirt' THEN 'ARTIE Classic T-Shirt'
+    WHEN 'shorts' THEN 'ARTIE Premium Shorts'
+    WHEN 'hoodie' THEN 'ARTIE Signature Hoodie'
+    WHEN 'pants' THEN 'ARTIE Essential Pants'
   END,
   CASE name 
     WHEN 'tshirt' THEN 'Premium cotton blend t-shirt with modern fit. Perfect for everyday wear with superior comfort and style.'

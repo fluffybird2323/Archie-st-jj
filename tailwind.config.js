@@ -71,10 +71,26 @@ module.exports = {
           "0%": { transform: "scale(0.95)" },
           "100%": { transform: "scale(1)" },
         },
+        "loader-dot": {
+          "0%, 80%, 100%": { transform: "scale(0.8)", opacity: "0.5" },
+          "40%": { transform: "scale(1.2)", opacity: "1" },
+        },
+        "loader-line": {
+          "0%": { width: "0" },
+          "50%": { width: "100%" },
+          "100%": { width: "0", left: "auto", right: "0" },
+        },
+        "pulse": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.5" },
+        },
       },
       animation: {
         "fade-in": "fade-in 0.5s ease-out",
         "scale-in": "scale-in 0.2s ease-out",
+        "loader-dot": "loader-dot 1.4s infinite ease-in-out",
+        "loader-line": "loader-line 2s infinite ease-in-out",
+        "pulse": "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
       borderRadius: {
         lg: "var(--radius)",

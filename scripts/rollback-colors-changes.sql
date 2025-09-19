@@ -23,7 +23,7 @@ CREATE TABLE products (
 INSERT INTO products (slug, name, price, category, description, images, sizes, colors, is_active) VALUES
 
 -- T-Shirts
-('archie-essential-tee-black', 'ARCHIE Essential Tee - Black', 39.99, 'T-Shirts', 
+('artie-essential-tee-black', 'ARTIE Essential Tee - Black', 39.99, 'T-Shirts', 
  'Our signature essential tee crafted from 100% organic cotton. Features a relaxed fit with reinforced seams for durability. Perfect for everyday wear or layering.',
  ARRAY[
    'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=800&fit=crop',
@@ -33,7 +33,7 @@ INSERT INTO products (slug, name, price, category, description, images, sizes, c
  ARRAY['Black'],
  true),
 
-('archie-essential-tee-white', 'ARCHIE Essential Tee - White', 39.99, 'T-Shirts',
+('artie-essential-tee-white', 'ARTIE Essential Tee - White', 39.99, 'T-Shirts',
  'Clean, minimalist white tee made from premium cotton blend. Pre-shrunk and garment-washed for the perfect fit that lasts.',
  ARRAY[
    'https://images.unsplash.com/photo-1562157873-818bc0726f68?w=800&h=800&fit=crop',
@@ -44,7 +44,7 @@ INSERT INTO products (slug, name, price, category, description, images, sizes, c
  true),
 
 -- Hoodies
-('archie-signature-hoodie-black', 'ARCHIE Signature Hoodie - Black', 89.99, 'Hoodies',
+('artie-signature-hoodie-black', 'ARTIE Signature Hoodie - Black', 89.99, 'Hoodies',
  'Premium heavyweight hoodie with brushed fleece interior. Features kangaroo pocket, adjustable drawstrings, and our signature logo embroidery.',
  ARRAY[
    'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&h=800&fit=crop',
@@ -54,7 +54,7 @@ INSERT INTO products (slug, name, price, category, description, images, sizes, c
  ARRAY['Black'],
  true),
 
-('archie-signature-hoodie-gray', 'ARCHIE Signature Hoodie - Gray', 89.99, 'Hoodies',
+('artie-signature-hoodie-gray', 'ARTIE Signature Hoodie - Gray', 89.99, 'Hoodies',
  'Comfortable oversized hoodie in heather gray. Made with sustainable materials and designed for maximum comfort and style.',
  ARRAY[
    'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&h=800&fit=crop',
@@ -65,7 +65,7 @@ INSERT INTO products (slug, name, price, category, description, images, sizes, c
  true),
 
 -- Shorts
-('archie-performance-shorts-black', 'ARCHIE Performance Shorts - Black', 54.99, 'Shorts',
+('artie-performance-shorts-black', 'ARTIE Performance Shorts - Black', 54.99, 'Shorts',
  'Athletic shorts designed for movement. Features moisture-wicking fabric, side pockets, and a comfortable elastic waistband with drawstring.',
  ARRAY[
    'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=800&h=800&fit=crop',
@@ -75,7 +75,7 @@ INSERT INTO products (slug, name, price, category, description, images, sizes, c
  ARRAY['Black'],
  true),
 
-('archie-performance-shorts-navy', 'ARCHIE Performance Shorts - Navy', 54.99, 'Shorts',
+('artie-performance-shorts-navy', 'ARTIE Performance Shorts - Navy', 54.99, 'Shorts',
  'Versatile navy shorts perfect for workouts or casual wear. Quick-dry technology and anti-odor treatment keep you fresh all day.',
  ARRAY[
    'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=800&h=800&fit=crop',
@@ -86,7 +86,7 @@ INSERT INTO products (slug, name, price, category, description, images, sizes, c
  true),
 
 -- Pants
-('archie-joggers-black', 'ARCHIE Comfort Joggers - Black', 69.99, 'Pants',
+('artie-joggers-black', 'ARTIE Comfort Joggers - Black', 69.99, 'Pants',
  'Premium joggers with tapered fit and ribbed cuffs. Made from soft cotton blend with side pockets and back pocket for essentials.',
  ARRAY[
    'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800&h=800&fit=crop',
@@ -96,7 +96,7 @@ INSERT INTO products (slug, name, price, category, description, images, sizes, c
  ARRAY['Black'],
  true),
 
-('archie-joggers-gray', 'ARCHIE Comfort Joggers - Gray', 69.99, 'Pants',
+('artie-joggers-gray', 'ARTIE Comfort Joggers - Gray', 69.99, 'Pants',
  'Relaxed-fit joggers in versatile heather gray. Perfect for lounging or casual outings with a modern streetwear aesthetic.',
  ARRAY[
    'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800&h=800&fit=crop',

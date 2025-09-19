@@ -34,7 +34,7 @@ export async function loginAdmin(email: string, password: string): Promise<{ suc
   try {
     // In this simplified version, we're just checking against hardcoded values
     // In a real app, you'd fetch user from DB and compare hashed passwords
-    if (email === "admin@archie.com" && password === "admin123") {
+    if (email === "admin@artiestudio.org" && password === "admin123") {
       return { success: true }
     }
 

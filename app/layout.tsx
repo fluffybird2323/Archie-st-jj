@@ -4,6 +4,7 @@ import "./globals.css"
 import { CartProvider } from "@/lib/cart-context"
 import { CartWrapper } from "@/components/cart-wrapper"
 import { OrganizationStructuredData } from "@/components/structured-data"
+import { PageLoader } from "@/components/page-loader"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -18,32 +19,32 @@ const outfit = Outfit({
 })
 
 export const metadata = {
-  metadataBase: new URL(process.env.NODE_ENV === 'production' ? 'https://your-domain.com' : 'http://localhost:3000'),
+  metadataBase: new URL(process.env.NODE_ENV === 'production' ? 'https://artiestudio.org' : 'http://localhost:3000'),
   title: {
-    default: "ARCHIE - Premium Streetwear",
-    template: "%s | ARCHIE"
+    default: "ARTIE - Premium Streetwear",
+    template: "%s | ARTIE"
   },
-  description: "Premium streetwear that defines your style. Discover ARCHIE's collection of contemporary urban fashion and signature hoodies.",
-  keywords: "streetwear, fashion, urban, premium, clothing, hoodies, t-shirts, ARCHIE, japanese fashion, tokyo streetwear",
-  authors: [{ name: "ARCHIE" }],
-  creator: "ARCHIE",
-  publisher: "ARCHIE",
+  description: "Premium streetwear that defines your style. Discover ARTIE's collection of contemporary urban fashion and signature hoodies.",
+  keywords: "streetwear, fashion, urban, premium, clothing, hoodies, t-shirts, ARTIE, japanese fashion, tokyo streetwear",
+  authors: [{ name: "ARTIE" }],
+  creator: "ARTIE",
+  publisher: "ARTIE",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
   openGraph: {
-    title: "ARCHIE - Premium Streetwear",
+    title: "ARTIE - Premium Streetwear",
     description: "Premium streetwear that defines your style. Shop signature hoodies and contemporary urban fashion.",
     url: "/",
-    siteName: "ARCHIE",
+    siteName: "ARTIE",
     images: [
       {
-        url: "/og-default.jpg",
+        url: "/og-default.png",
         width: 1200,
         height: 630,
-        alt: "ARCHIE - Premium Streetwear Collection",
+        alt: "ARTIE - Premium Streetwear Collection",
       },
     ],
     locale: "en_US",
@@ -51,11 +52,11 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "ARCHIE - Premium Streetwear",
+    title: "ARTIE - Premium Streetwear",
     description: "Premium streetwear that defines your style. Shop signature hoodies and contemporary urban fashion.",
     images: {
-      url: "/og-default.jpg",
-      alt: "ARCHIE - Premium Streetwear Collection",
+      url: "/og-default.png",
+      alt: "ARTIE - Premium Streetwear Collection",
     },
   },
   robots: {
@@ -83,6 +84,7 @@ export default function RootLayout({
         <OrganizationStructuredData locale="en" />
       </head>
       <body className="font-inter antialiased">
+        <PageLoader />
         <CartProvider>
           {children}
           <CartWrapper />

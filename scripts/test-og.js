@@ -46,7 +46,7 @@ function testOpenGraphTags(url) {
 // Test URLs
 const testUrls = [
   'http://localhost:3000',
-  'http://localhost:3000/product/archie-signature-hoodie'
+  'http://localhost:3000/product/artie-signature-hoodie'
 ]
 
 async function runTests() {

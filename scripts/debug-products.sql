@@ -11,4 +11,4 @@ ORDER BY ordinal_position;
 SELECT * FROM products LIMIT 5;
 
 -- Check if we have the specific product
-SELECT * FROM products WHERE slug = 'archie-joggers-black';
+SELECT * FROM products WHERE slug = 'artie-joggers-black';

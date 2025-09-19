@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 1200px;
+            height: 630px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradient background -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a1a"/>
+      <stop offset="100%" style="stop-color:#000000"/>
+    </linearGradient>
+    
+    <!-- Text shadow filter -->
+    <filter id="textShadow">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  
+  <!-- Subtle grid pattern -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#333" stroke-width="0.5" opacity="0.3"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  
+  <!-- Main ARTIE text -->
+  <text x="600" y="280" 
+        font-family="'Helvetica Neue', Arial, sans-serif" 
+        font-weight="900" 
+        font-size="140" 
+        fill="#FFFFFF" 
+        text-anchor="middle" 
+        dominant-baseline="middle"
+        letter-spacing="12px"
+        filter="url(#textShadow)">ARTIE</text>
+  
+  <!-- Underline accent -->
+  <rect x="380" y="320" width="440" height="4" fill="#FFFFFF" rx="2"/>
+  
+  <!-- Tagline -->
+  <text x="600" y="380" 
+        font-family="'Helvetica Neue', Arial, sans-serif" 
+        font-weight="300" 
+        font-size="24" 
+        fill="#CCCCCC" 
+        text-anchor="middle" 
+        dominant-baseline="middle"
+        letter-spacing="6px">PREMIUM STREETWEAR</text>
+        
+  <!-- Subtle brand element -->
+  <circle cx="200" cy="150" r="60" fill="none" stroke="#333" stroke-width="1" opacity="0.5"/>
+  <circle cx="1000" cy="480" r="80" fill="none" stroke="#333" stroke-width="1" opacity="0.3"/>
+</svg>
+</body>
+</html>

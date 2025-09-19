@@ -6,7 +6,7 @@ import type { Locale } from "@/lib/i18n/config"
  * This uses the first product image as the social media preview
  */
 export function getProductOGImage(product: Product): string {
-  return product.images[0] || '/og-default.jpg'
+  return product.images[0] || '/og-default.png'
 }
 
 /**
@@ -15,11 +15,11 @@ export function getProductOGImage(product: Product): string {
 export function getPageOGImage(page?: string): string {
   switch (page) {
     case 'home':
-      return '/og-default.jpg'
+      return '/og-default.png'
     case 'about':
-      return '/og-about.jpg'
+      return '/og-default.png'
     default:
-      return '/og-default.jpg'
+      return '/og-default.png'
   }
 }
 
@@ -34,8 +34,8 @@ export function generateProductShareText(product: Product, locale: Locale): {
   const productDescription = product.translatedDescription || product.description
   
   return {
-    title: `${productName} - ARCHIE Premium Streetwear`,
-    description: `${productDescription} Available in multiple sizes and colors. Shop premium streetwear at ARCHIE.`
+    title: `${productName} - ARTIE Premium Streetwear`,
+    description: `${productDescription} Available in multiple sizes and colors. Shop premium streetwear at ARTIE.`
   }
 }
 
