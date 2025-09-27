@@ -121,7 +121,7 @@ export function LocalizedVideoBanner({ dictionary, title, mainText, subText }: L
   }, [showStarfield])
 
   const scrollToProducts = () => {
-    const element = document.getElementById("product-section")
+    const element = document.getElementById("products")
     if (element) {
       element.scrollIntoView({ behavior: "smooth" })
     }

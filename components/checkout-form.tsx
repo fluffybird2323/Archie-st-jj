@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
-import { X } from "lucide-react"
+import { X, AlertCircle } from "lucide-react"
 import { getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
 
@@ -29,6 +29,17 @@ interface CheckoutFormProps {
   locale: Locale
 }
 
+interface FieldErrors {
+  email?: string
+  phone?: string
+  firstName?: string
+  lastName?: string
+  line1?: string
+  city?: string
+  state?: string
+  postalCode?: string
+}
+
 export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false, locale }: CheckoutFormProps) {
   const dictionary = getDictionary(locale)
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
@@ -46,6 +57,8 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
     }
   })
 
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
+  const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set())
   const firstInputRef = useRef<HTMLInputElement>(null)
 
   // Auto-focus first input when form opens
@@ -58,19 +71,81 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
     }
   }, [])
 
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  const validatePhone = (phone: string): boolean => {
+    // Basic phone validation - at least 10 digits
+    const phoneDigits = phone.replace(/\D/g, '')
+    return phoneDigits.length >= 10
+  }
+
+  const validateField = (fieldName: string, value: string): string | undefined => {
+    const errors = dictionary.checkout.errors
+
+    switch (fieldName) {
+      case 'email':
+        if (!value) return errors.fieldRequired
+        if (!validateEmail(value)) return errors.invalidEmail
+        break
+      case 'phone':
+        if (!value) return errors.fieldRequired
+        if (!validatePhone(value)) return errors.invalidPhone
+        break
+      case 'firstName':
+        if (!value) return errors.firstNameRequired
+        break
+      case 'lastName':
+        if (!value) return errors.lastNameRequired
+        break
+      case 'line1':
+        if (!value) return errors.addressRequired
+        break
+      case 'city':
+        if (!value) return errors.cityRequired
+        break
+      case 'state':
+        if (!value) return errors.stateRequired
+        break
+      case 'postalCode':
+        if (!value) return errors.postalCodeRequired
+        break
+    }
+    return undefined
+  }
+
+  const handleFieldBlur = (fieldName: string, value: string) => {
+    setTouchedFields(prev => new Set(prev).add(fieldName))
+    const error = validateField(fieldName, value)
+    setFieldErrors(prev => ({
+      ...prev,
+      [fieldName]: error
+    }))
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Validate required fields
-    if (!customerInfo.email || !customerInfo.phone) {
-      alert(dictionary.checkout.errors.emailPhone)
-      return
-    }
+    // Validate all fields
+    const errors: FieldErrors = {}
+    errors.email = validateField('email', customerInfo.email || '')
+    errors.phone = validateField('phone', customerInfo.phone || '')
+    errors.firstName = validateField('firstName', customerInfo.address?.firstName || '')
+    errors.lastName = validateField('lastName', customerInfo.address?.lastName || '')
+    errors.line1 = validateField('line1', customerInfo.address?.line1 || '')
+    errors.city = validateField('city', customerInfo.address?.city || '')
+    errors.state = validateField('state', customerInfo.address?.state || '')
+    errors.postalCode = validateField('postalCode', customerInfo.address?.postalCode || '')
 
-    if (!customerInfo.address?.firstName || !customerInfo.address?.lastName ||
-        !customerInfo.address?.line1 || !customerInfo.address?.city ||
-        !customerInfo.address?.state || !customerInfo.address?.postalCode) {
-      alert(dictionary.checkout.errors.shippingAddress)
+    // Check if there are any errors
+    const hasErrors = Object.values(errors).some(error => error !== undefined)
+
+    if (hasErrors) {
+      setFieldErrors(errors)
+      // Mark all fields as touched to show errors
+      setTouchedFields(new Set(['email', 'phone', 'firstName', 'lastName', 'line1', 'city', 'state', 'postalCode']))
       return
     }
 
@@ -87,11 +162,18 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
     }))
   }
 
+  const getFieldError = (fieldName: string): string | undefined => {
+    if (touchedFields.has(fieldName)) {
+      return fieldErrors[fieldName as keyof FieldErrors]
+    }
+    return undefined
+  }
+
   return (
     <div className="fixed inset-0 z-[60] overflow-hidden">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black bg-opacity-50" onClick={onClose} />
-      
+
       {/* Form Panel */}
       <div className="absolute inset-0 flex items-center justify-center p-4">
         <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -126,10 +208,18 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
                       type="email"
                       value={customerInfo.email}
                       onChange={(e) => setCustomerInfo({ ...customerInfo, email: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black focus:ring-2 focus:ring-black focus:ring-opacity-20"
+                      onBlur={(e) => handleFieldBlur('email', e.target.value)}
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-20 ${
+                        getFieldError('email') ? 'border-red-500' : 'border-gray-300 focus:border-black'
+                      }`}
                       placeholder={dictionary.checkout.emailPlaceholder}
-                      required
                     />
+                    {getFieldError('email') && (
+                      <p className="mt-1 text-xs text-red-500 flex items-center">
+                        <AlertCircle className="w-3 h-3 mr-1" />
+                        {getFieldError('email')}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">{dictionary.checkout.phone} *</label>
@@ -137,10 +227,18 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
                       type="tel"
                       value={customerInfo.phone}
                       onChange={(e) => setCustomerInfo({ ...customerInfo, phone: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+                      onBlur={(e) => handleFieldBlur('phone', e.target.value)}
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-20 ${
+                        getFieldError('phone') ? 'border-red-500' : 'border-gray-300 focus:border-black'
+                      }`}
                       placeholder={dictionary.checkout.phonePlaceholder}
-                      required
                     />
+                    {getFieldError('phone') && (
+                      <p className="mt-1 text-xs text-red-500 flex items-center">
+                        <AlertCircle className="w-3 h-3 mr-1" />
+                        {getFieldError('phone')}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -156,9 +254,17 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
                         type="text"
                         value={customerInfo.address?.firstName}
                         onChange={(e) => updateAddress("firstName", e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
-                        required
+                        onBlur={(e) => handleFieldBlur('firstName', e.target.value)}
+                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-20 ${
+                          getFieldError('firstName') ? 'border-red-500' : 'border-gray-300 focus:border-black'
+                        }`}
                       />
+                      {getFieldError('firstName') && (
+                        <p className="mt-1 text-xs text-red-500 flex items-center">
+                          <AlertCircle className="w-3 h-3 mr-1" />
+                          {getFieldError('firstName')}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1">{dictionary.checkout.lastName} *</label>
@@ -166,9 +272,17 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
                         type="text"
                         value={customerInfo.address?.lastName}
                         onChange={(e) => updateAddress("lastName", e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
-                        required
+                        onBlur={(e) => handleFieldBlur('lastName', e.target.value)}
+                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-20 ${
+                          getFieldError('lastName') ? 'border-red-500' : 'border-gray-300 focus:border-black'
+                        }`}
                       />
+                      {getFieldError('lastName') && (
+                        <p className="mt-1 text-xs text-red-500 flex items-center">
+                          <AlertCircle className="w-3 h-3 mr-1" />
+                          {getFieldError('lastName')}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -178,10 +292,18 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
                       type="text"
                       value={customerInfo.address?.line1}
                       onChange={(e) => updateAddress("line1", e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+                      onBlur={(e) => handleFieldBlur('line1', e.target.value)}
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-20 ${
+                        getFieldError('line1') ? 'border-red-500' : 'border-gray-300 focus:border-black'
+                      }`}
                       placeholder={dictionary.checkout.addressLine1Placeholder}
-                      required
                     />
+                    {getFieldError('line1') && (
+                      <p className="mt-1 text-xs text-red-500 flex items-center">
+                        <AlertCircle className="w-3 h-3 mr-1" />
+                        {getFieldError('line1')}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -190,7 +312,7 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
                       type="text"
                       value={customerInfo.address?.line2}
                       onChange={(e) => updateAddress("line2", e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black focus:ring-2 focus:ring-black focus:ring-opacity-20"
                       placeholder={dictionary.checkout.addressLine2Placeholder}
                     />
                   </div>
@@ -202,9 +324,17 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
                         type="text"
                         value={customerInfo.address?.city}
                         onChange={(e) => updateAddress("city", e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
-                        required
+                        onBlur={(e) => handleFieldBlur('city', e.target.value)}
+                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-20 ${
+                          getFieldError('city') ? 'border-red-500' : 'border-gray-300 focus:border-black'
+                        }`}
                       />
+                      {getFieldError('city') && (
+                        <p className="mt-1 text-xs text-red-500 flex items-center">
+                          <AlertCircle className="w-3 h-3 mr-1" />
+                          {getFieldError('city')}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1">{dictionary.checkout.state} *</label>
@@ -212,10 +342,18 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
                         type="text"
                         value={customerInfo.address?.state}
                         onChange={(e) => updateAddress("state", e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+                        onBlur={(e) => handleFieldBlur('state', e.target.value)}
+                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-20 ${
+                          getFieldError('state') ? 'border-red-500' : 'border-gray-300 focus:border-black'
+                        }`}
                         placeholder={dictionary.checkout.statePlaceholder}
-                        required
                       />
+                      {getFieldError('state') && (
+                        <p className="mt-1 text-xs text-red-500 flex items-center">
+                          <AlertCircle className="w-3 h-3 mr-1" />
+                          {getFieldError('state')}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1">{dictionary.checkout.postalCode} *</label>
@@ -223,10 +361,18 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
                         type="text"
                         value={customerInfo.address?.postalCode}
                         onChange={(e) => updateAddress("postalCode", e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+                        onBlur={(e) => handleFieldBlur('postalCode', e.target.value)}
+                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-20 ${
+                          getFieldError('postalCode') ? 'border-red-500' : 'border-gray-300 focus:border-black'
+                        }`}
                         placeholder={dictionary.checkout.postalCodePlaceholder}
-                        required
                       />
+                      {getFieldError('postalCode') && (
+                        <p className="mt-1 text-xs text-red-500 flex items-center">
+                          <AlertCircle className="w-3 h-3 mr-1" />
+                          {getFieldError('postalCode')}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -235,7 +381,7 @@ export function CheckoutForm({ onSubmit, onClose, isLoading, isMandatory = false
                     <select
                       value={customerInfo.address?.country}
                       onChange={(e) => updateAddress("country", e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black focus:ring-2 focus:ring-black focus:ring-opacity-20"
                       required
                     >
                       <option value="US">{dictionary.checkout.countries.US}</option>

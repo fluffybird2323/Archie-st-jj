@@ -10,6 +10,7 @@ import { currencies, exchangeRates } from "@/lib/i18n/config"
 import { getDictionary } from "@/lib/i18n/utils"
 import type { Locale } from "@/lib/i18n/config"
 import { CheckoutForm, type CustomerInfo } from "@/components/checkout-form"
+import { LoadingOverlay } from "@/components/loading-overlay"
 
 interface CartProps {
   locale: Locale
@@ -20,6 +21,7 @@ export function Cart({ locale }: CartProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showCheckoutForm, setShowCheckoutForm] = useState(false)
+  const [showLoadingOverlay, setShowLoadingOverlay] = useState(false)
   const dictionary = getDictionary(locale)
 
   // Calculate total that matches Stripe calculation exactly
@@ -52,6 +54,7 @@ export function Cart({ locale }: CartProps) {
     setIsLoading(true)
     setError(null)
     setShowCheckoutForm(false)
+    setShowLoadingOverlay(true) // Show loading overlay
 
     try {
       // Create line items for Square payment
@@ -92,6 +95,7 @@ export function Cart({ locale }: CartProps) {
       console.error("Checkout error:", error)
       setError(error instanceof Error ? error.message : "An error occurred during checkout")
       setShowCheckoutForm(true) // Re-show form on error
+      setShowLoadingOverlay(false) // Hide loading overlay on error
     } finally {
       setIsLoading(false)
     }
@@ -106,6 +110,14 @@ export function Cart({ locale }: CartProps) {
 
   return (
     <>
+      {/* Loading Overlay */}
+      {showLoadingOverlay && (
+        <LoadingOverlay
+          message={dictionary.checkout.loading?.preparingCheckout || "Preparing secure checkout"}
+          subMessage={dictionary.checkout.loading?.doNotClose || "Do not close or refresh this page"}
+        />
+      )}
+
       {/* Mandatory Checkout Form */}
       {showCheckoutForm && (
         <CheckoutForm

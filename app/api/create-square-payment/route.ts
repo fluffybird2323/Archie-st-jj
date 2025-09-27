@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { currencies, exchangeRates, type Locale } from "@/lib/i18n/config"
+import { sendOrderConfirmation, sendAdminOrderNotification, type OrderData } from "@/lib/sendgrid"
 
 // Helper function to send order notification via Telegram
 async function sendTelegramOrderNotification(orderDetails: string) {
@@ -108,13 +109,55 @@ export async function POST(request: NextRequest) {
       checkoutOptions.merchant_support_email = process.env.MERCHANT_SUPPORT_EMAIL
     }
 
-    // Store customer info and send notification
+    // Store customer info and send notifications
     if (customerInfo?.email) {
+      const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`
+
+      // Prepare order data for email templates
+      const orderData: OrderData = {
+        orderId,
+        items: lineItems.map((item: any) => ({
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity || 1,
+          size: item.size,
+          color: item.color,
+          image: item.image
+        })),
+        total: localAmount,
+        currency: currency.symbol || currency.code,
+        customer: {
+          name: `${customerInfo.address?.firstName || ''} ${customerInfo.address?.lastName || ''}`.trim() || 'Customer',
+          email: customerInfo.email,
+          phone: customerInfo.phone,
+          address: customerInfo.address ? {
+            street: `${customerInfo.address.line1} ${customerInfo.address.line2 || ''}`.trim(),
+            city: customerInfo.address.city,
+            state: customerInfo.address.state,
+            zipCode: customerInfo.address.postalCode,
+            country: customerInfo.address.country
+          } : undefined
+        },
+        orderDate: new Date()
+      }
+
+      // Send email notifications
+      try {
+        await sendOrderConfirmation(orderData)
+        await sendAdminOrderNotification(orderData)
+        console.log(`✅ Email notifications sent for order ${orderId}`)
+      } catch (emailError) {
+        console.error('❌ Failed to send email notifications:', emailError)
+      }
+
+      // Telegram notification (existing)
       const orderInfo = `
 <b>🛍️ New Order Received!</b>
 
+<b>Order ID:</b> ${orderId}
+
 <b>Customer Information:</b>
-Name: ${customerInfo.address?.firstName} ${customerInfo.address?.lastName}
+Name: ${orderData.customer.name}
 Email: ${customerInfo.email}
 Phone: ${customerInfo.phone}
 
@@ -131,12 +174,13 @@ ${itemDescriptions.map(item => `• ${item}`).join('\n')}
 <b>Payment Status:</b> Pending (Customer redirected to Square)
 <b>Order Time:</b> ${new Date().toLocaleString()}
       `.trim()
-      
-      // Send notification
+
+      // Send Telegram notification
       await sendTelegramOrderNotification(orderInfo)
 
-      // You can also store this in a database here if needed
-      console.log('Order submitted with customer info:', {
+      // Log order details
+      console.log('Order submitted:', {
+        orderId,
         customerInfo,
         items: lineItems,
         total: localAmount,
