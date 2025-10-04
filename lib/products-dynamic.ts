@@ -1,6 +1,6 @@
 import { getProducts as getDbProducts, getProductBySlug as getDbProductBySlug } from "./supabase"
 import { translateProductContent } from "./i18n/enhanced-utils"
-import type { Locale } from "./i18n/config"
+import { type Locale, locales, defaultLocale } from "./i18n/config"
 
 export interface Product {
   id: string
@@ -21,6 +21,9 @@ export interface Product {
 // Export both getProducts and getAllProducts for compatibility
 export async function getProducts(locale: Locale = "en"): Promise<Product[]> {
   try {
+    // Validate and sanitize locale
+    const validLocale = validateLocale(locale)
+
     const products = await getDbProducts()
 
     if (!products || products.length === 0) {
@@ -29,7 +32,7 @@ export async function getProducts(locale: Locale = "en"): Promise<Product[]> {
     }
 
     // If English, return products as-is
-    if (locale === "en") {
+    if (validLocale === "en") {
       return products
     }
 
@@ -37,7 +40,7 @@ export async function getProducts(locale: Locale = "en"): Promise<Product[]> {
     const translatedProducts = await Promise.all(
       products.map(async (product) => {
         try {
-          const translated = await translateProductContent(product, locale, ["name", "description"])
+          const translated = await translateProductContent(product, validLocale, ["name", "description"])
           return {
             ...product,
             translatedName: translated.name,
@@ -63,6 +66,9 @@ export const getAllProducts = getProducts
 
 export async function getProductBySlug(slug: string, locale: Locale = "en"): Promise<Product | null> {
   try {
+    // Validate and sanitize locale
+    const validLocale = validateLocale(locale)
+
     console.log(`Fetching product with slug: ${slug}`)
     const product = await getDbProductBySlug(slug)
 
@@ -74,13 +80,13 @@ export async function getProductBySlug(slug: string, locale: Locale = "en"): Pro
     console.log(`Found product:`, product)
 
     // If English, return product as-is
-    if (locale === "en") {
+    if (validLocale === "en") {
       return product
     }
 
     // Translate product using API services
     try {
-      const translated = await translateProductContent(product, locale, ["name", "description"])
+      const translated = await translateProductContent(product, validLocale, ["name", "description"])
       return {
         ...product,
         translatedName: translated.name,
@@ -95,4 +101,23 @@ export async function getProductBySlug(slug: string, locale: Locale = "en"): Pro
     console.error("Error in getProductBySlug:", error)
     return null
   }
+}
+
+/**
+ * Validates and returns a valid locale, falling back to defaultLocale if invalid
+ */
+function validateLocale(locale: any): Locale {
+  // Check if locale is undefined, null, or not a string
+  if (!locale || typeof locale !== 'string') {
+    console.warn(`Invalid locale provided: ${locale}, using default locale: ${defaultLocale}`)
+    return defaultLocale
+  }
+
+  // Check if locale is in the list of supported locales
+  if (!locales.includes(locale as Locale)) {
+    console.warn(`Unsupported locale: ${locale}, using default locale: ${defaultLocale}`)
+    return defaultLocale
+  }
+
+  return locale as Locale
 }

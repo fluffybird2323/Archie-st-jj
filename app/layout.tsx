@@ -3,7 +3,7 @@ import { Inter, Outfit } from "next/font/google"
 import "./globals.css"
 import { CartProvider } from "@/lib/cart-context"
 import { CartWrapper } from "@/components/cart-wrapper"
-import { OrganizationStructuredData } from "@/components/structured-data"
+import { OrganizationStructuredData, WebSiteStructuredData } from "@/components/structured-data"
 import { PageLoader } from "@/components/page-loader"
 
 const inter = Inter({
@@ -83,6 +83,7 @@ export default function RootLayout({
       <head>
         <link rel="preload" href="https://i.imgur.com/gZlvEPD.mp4" as="video" type="video/mp4" crossOrigin="anonymous" />
         <OrganizationStructuredData locale="en" />
+        <WebSiteStructuredData locale="en" />
       </head>
       <body className="font-inter antialiased">
         <PageLoader />

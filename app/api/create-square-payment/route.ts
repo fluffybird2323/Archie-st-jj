@@ -1,6 +1,29 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { currencies, exchangeRates, type Locale } from "@/lib/i18n/config"
+import { exchangeRates, countryToCurrency, squareSupportedCurrencies } from "@/lib/i18n/config"
 import { sendOrderConfirmation, sendAdminOrderNotification, type OrderData } from "@/lib/sendgrid"
+
+// Helper function to get payment currency
+// For simplicity, always use the merchant's configured currency
+function getPaymentCurrency(): { code: string; symbol: string } {
+  // In sandbox, the merchant is configured for JPY
+  // In production, this would be dynamically determined
+  const merchantCurrency = process.env.SQUARE_MERCHANT_CURRENCY || "JPY"
+
+  // Return the merchant's currency with proper symbol
+  const currencySymbols: Record<string, string> = {
+    USD: "$",
+    JPY: "¥",
+    EUR: "€",
+    GBP: "£",
+    CAD: "C$",
+    AUD: "A$"
+  }
+
+  return {
+    code: merchantCurrency,
+    symbol: currencySymbols[merchantCurrency] || "$"
+  }
+}
 
 // Helper function to send order notification via Telegram
 async function sendTelegramOrderNotification(orderDetails: string) {
@@ -52,10 +75,10 @@ export async function POST(request: NextRequest) {
       : "https://connect.squareupsandbox.com/v2/online-checkout/payment-links"
 
     const body = await request.json()
-    const { lineItems, locale = "en", customerInfo } = body
+    const { lineItems, customerInfo } = body
 
-    // Get currency info for the locale
-    const currency = currencies[locale as Locale] || currencies.en
+    // Always use merchant's configured currency
+    const currency = getPaymentCurrency()
     const exchangeRate = exchangeRates[currency.code] || 1
 
     // Handle cart checkout (multiple items)
@@ -87,15 +110,8 @@ export async function POST(request: NextRequest) {
     // Prepare checkout options
     const checkoutOptions: any = {
       allow_tipping: false,
-      redirect_url: `${request.nextUrl.origin}/${locale === "en" ? "" : locale + "/"}success?payment_link_id={payment_link_id}`,
+      redirect_url: `${request.nextUrl.origin}/success?payment_link_id={payment_link_id}`,
       ask_for_shipping_address: true,
-      shipping_fee: {
-        name: "Free Shipping",
-        charge: {
-          amount: 0,
-          currency: currency.code
-        }
-      },
       accepted_payment_methods: {
         apple_pay: true,
         google_pay: true,
@@ -220,26 +236,33 @@ ${itemDescriptions.map(item => `• ${item}`).join('\n')}
 
     // Debug logging
     console.log('Square API Request:', {
-      url: apiUrl,
-      environment,
-      locationId,
-      accessTokenLength: accessToken.length,
       amount: amountInCents,
-      currency: currency.code
+      currency: currency.code,
+      country: customerInfo?.address?.country || 'not specified'
     })
 
     // Make request to Square API
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Square-Version": "2024-01-18",
-        "Authorization": `Bearer ${accessToken}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(paymentLinkRequest)
-    })
+    let response;
+    let data;
 
-    const data = await response.json()
+    try {
+      response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Square-Version": "2024-01-18",
+          "Authorization": `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(paymentLinkRequest)
+      })
+
+      data = await response.json()
+    } catch (fetchError) {
+      console.error("Failed to fetch from Square API:", fetchError)
+      return NextResponse.json({
+        error: `Failed to connect to Square payment service: ${fetchError instanceof Error ? fetchError.message : 'Unknown error'}`
+      }, { status: 500 })
+    }
     
     console.log('Square API Response:', {
       status: response.status,

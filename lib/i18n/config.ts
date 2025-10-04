@@ -33,9 +33,35 @@ export const currencies: Record<Locale, { code: string; symbol: string }> = {
   it: { code: "EUR", symbol: "€" },
 }
 
+// Country to currency mapping
+export const countryToCurrency: Record<string, { code: string; symbol: string }> = {
+  US: { code: "USD", symbol: "$" },
+  CA: { code: "CAD", symbol: "C$" },
+  GB: { code: "GBP", symbol: "£" },
+  AU: { code: "AUD", symbol: "A$" },
+  DE: { code: "EUR", symbol: "€" },
+  FR: { code: "EUR", symbol: "€" },
+  JP: { code: "JPY", symbol: "¥" },
+  IN: { code: "INR", symbol: "₹" },
+  BR: { code: "BRL", symbol: "R$" },
+  MX: { code: "MXN", symbol: "$" },
+}
+
+// Currencies supported by Square API
+// https://developer.squareup.com/reference/square/enums/Currency
+export const squareSupportedCurrencies = [
+  "USD", "CAD", "GBP", "AUD", "EUR", "JPY"
+]
+
 export const exchangeRates: Record<string, number> = {
   USD: 1,
+  CAD: 1.35,
+  GBP: 0.79,
+  AUD: 1.52,
+  EUR: 0.85,
   CNY: 7.2,
   JPY: 150,
-  EUR: 0.85,
+  INR: 83,
+  BRL: 5.0,
+  MXN: 17.5,
 }

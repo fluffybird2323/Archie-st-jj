@@ -1,21 +1,31 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useTransition, useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { ChevronDown, Globe } from "lucide-react"
+import { ChevronDown, Globe, Loader2 } from "lucide-react"
 import { locales, localeNames, localeFlags, type Locale } from "@/lib/i18n/config"
 import { getLocaleFromUrl, removeLocaleFromUrl } from "@/lib/i18n/utils"
 
 export function LanguageSwitcher() {
   const [isOpen, setIsOpen] = useState(false)
+  const [isChanging, setIsChanging] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const router = useRouter()
   const pathname = usePathname()
 
   const currentLocale = getLocaleFromUrl(pathname)
   const pathWithoutLocale = removeLocaleFromUrl(pathname)
 
+  // Reset loading state when navigation completes
+  useEffect(() => {
+    if (!isPending) {
+      setIsChanging(false)
+    }
+  }, [isPending])
+
   const handleLocaleChange = (locale: Locale) => {
+    setIsChanging(true)
     // Get the current path without any locale prefix
     let pathWithoutAnyLocale = pathname
 
@@ -37,7 +47,11 @@ export function LanguageSwitcher() {
     // Set locale preference cookie
     document.cookie = `locale-preference=${locale}; path=/; max-age=${365 * 24 * 60 * 60}; samesite=lax`
 
-    router.push(newPath)
+    // Use transition for smoother navigation
+    startTransition(() => {
+      router.push(newPath)
+    })
+
     setIsOpen(false)
   }
 
@@ -46,14 +60,19 @@ export function LanguageSwitcher() {
       <Button
         variant="ghost"
         onClick={() => setIsOpen(!isOpen)}
+        disabled={isPending || isChanging}
         className="flex items-center gap-2 text-black hover:text-gray-600"
       >
-        <Globe className="w-4 h-4" />
+        {(isPending || isChanging) ? (
+          <Loader2 className="w-4 h-4 animate-spin" />
+        ) : (
+          <Globe className="w-4 h-4" />
+        )}
         <span className="hidden md:inline">
           {localeFlags[currentLocale]} {localeNames[currentLocale]}
         </span>
         <span className="md:hidden">{localeFlags[currentLocale]}</span>
-        <ChevronDown className="w-4 h-4" />
+        {!(isPending || isChanging) && <ChevronDown className="w-4 h-4" />}
       </Button>
 
       {isOpen && (

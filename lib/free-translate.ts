@@ -29,6 +29,12 @@ export async function translateTextFree(
   targetLocale: Locale,
   sourceLocale: Locale = "en"
 ): Promise<string> {
+  // Validate locales
+  if (!targetLocale || !sourceLocale) {
+    console.warn("Invalid locale provided to translateTextFree, returning original text")
+    return text
+  }
+
   // Return original text if target locale is the same as source
   if (targetLocale === sourceLocale) {
     return text
@@ -42,7 +48,7 @@ export async function translateTextFree(
 
   // Create cache key
   const cacheKey = `${text}_${sourceLocale}_${targetLocale}`
-  
+
   // Check cache first
   if (translationCache.has(cacheKey)) {
     return translationCache.get(cacheKey)!
@@ -51,6 +57,12 @@ export async function translateTextFree(
   try {
     const sourceLang = localeToMyMemoryCode[sourceLocale]
     const targetLang = localeToMyMemoryCode[targetLocale]
+
+    // Validate that locale mappings exist
+    if (!sourceLang || !targetLang) {
+      console.warn(`Unsupported locale for translation: source=${sourceLocale}, target=${targetLocale}`)
+      return text
+    }
     
     const response = await fetch(
       `${MYMEMORY_API_URL}?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`

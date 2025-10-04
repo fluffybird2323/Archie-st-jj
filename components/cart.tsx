@@ -67,19 +67,27 @@ export function Cart({ locale }: CartProps) {
         image: item.image
       }))
 
-      const response = await fetch("/api/create-square-payment", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          lineItems,
-          locale: locale,
-          customerInfo: customerInfo
-        }),
-      })
+      let response;
+      let data;
 
-      const data = await response.json()
+      try {
+        response = await fetch("/api/create-square-payment", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            lineItems,
+            locale: locale,
+            customerInfo: customerInfo
+          }),
+        })
+
+        data = await response.json()
+      } catch (fetchError) {
+        console.error("Network error during checkout:", fetchError)
+        throw new Error("Network error: Unable to connect to payment service. Please check your connection and try again.")
+      }
 
       if (!response.ok) {
         throw new Error(data.error || "Failed to create payment link")
