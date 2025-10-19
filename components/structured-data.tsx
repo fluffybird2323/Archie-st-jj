@@ -12,6 +12,7 @@ export function ProductStructuredData({ product, locale }: StructuredDataProps) 
   const productDescription = product.translatedDescription || product.description
   const price = product.price
   const productImage = product.images[0]
+  const baseUrl = process.env.NODE_ENV === 'production' ? 'https://artiestudio.org' : 'http://localhost:3000'
 
   const structuredData = {
     "@context": "https://schema.org/",
