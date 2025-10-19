@@ -94,7 +94,7 @@ export async function generateMetadata({ params }: LocaleProductPageProps): Prom
                 locale === 'es' ? 'es_ES' :
                 locale === 'it' ? 'it_IT' :
                 'en_US',
-        type: 'product',
+        type: 'website',
       },
       twitter: {
         card: 'summary_large_image',
