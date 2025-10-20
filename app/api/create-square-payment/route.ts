@@ -61,7 +61,16 @@ export async function POST(request: NextRequest) {
     const accessToken = process.env.SQUARE_ACCESS_TOKEN
     const locationId = process.env.SQUARE_LOCATION_ID
     const environment = process.env.SQUARE_ENVIRONMENT || 'sandbox'
-    
+
+    // Debug logging
+    console.log('Environment check:', {
+      hasAccessToken: !!accessToken,
+      tokenLength: accessToken?.length,
+      tokenPrefix: accessToken?.substring(0, 10),
+      locationId,
+      environment
+    })
+
     if (!accessToken || !locationId) {
       return NextResponse.json(
         { error: "Square is not configured. Please set SQUARE_ACCESS_TOKEN and SQUARE_LOCATION_ID environment variables." },
@@ -249,7 +258,7 @@ ${itemDescriptions.map(item => `• ${item}`).join('\n')}
       response = await fetch(apiUrl, {
         method: "POST",
         headers: {
-          "Square-Version": "2024-01-18",
+          "Square-Version": "2025-10-16",
           "Authorization": `Bearer ${accessToken}`,
           "Content-Type": "application/json"
         },
